@@ -8,8 +8,8 @@ namespace hudParse
 {
     public class HudElement
     {
-        List<KeyValue> m_ValueList = new List<KeyValue>();
-        List<SubElement> m_SubList = new List<SubElement>();
+        public List<KeyValue> m_ValueList = new List<KeyValue>();
+        public List<SubElement> m_SubList = new List<SubElement>();
 
         public enum removeType { KeyValue, SubElement };
 
@@ -97,6 +97,11 @@ namespace hudParse
                 }
                 m_NrOfSubElements--;
             }
+        }
+
+        public void Remove(KeyValue kv)
+        {
+            m_ValueList.Remove(kv);
         }
 
         public bool IsNull()

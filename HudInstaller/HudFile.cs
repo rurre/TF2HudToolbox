@@ -9,7 +9,7 @@ namespace hudParse
 {
     class HudFile
     {
-        List<HudElement> m_ElementList = new List<HudElement>();
+        public List<HudElement> m_ElementList = new List<HudElement>();
         string m_Name;
         string m_FileType;
         string m_Path;

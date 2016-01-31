@@ -57,7 +57,14 @@
             this.progressBar_Main = new System.Windows.Forms.ProgressBar();
             this.folderBrowse_CombineHud1 = new System.Windows.Forms.FolderBrowserDialog();
             this.folderBrowse_CombineHud2 = new System.Windows.Forms.FolderBrowserDialog();
+            this.button_MainCancel = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox_MainBrowse = new System.Windows.Forms.TextBox();
+            this.button_MainBrowse = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.tabControl_Main.SuspendLayout();
             this.tab_Install.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_HudThumb)).BeginInit();
@@ -83,6 +90,13 @@
             // tab_Install
             // 
             this.tab_Install.BackColor = System.Drawing.Color.Transparent;
+            this.tab_Install.Controls.Add(this.button4);
+            this.tab_Install.Controls.Add(this.button3);
+            this.tab_Install.Controls.Add(this.button2);
+            this.tab_Install.Controls.Add(this.button1);
+            this.tab_Install.Controls.Add(this.button_MainBrowse);
+            this.tab_Install.Controls.Add(this.textBox_MainBrowse);
+            this.tab_Install.Controls.Add(this.textBox1);
             this.tab_Install.Controls.Add(this.PictureBox_HudThumb);
             this.tab_Install.Controls.Add(this.Button_Install);
             this.tab_Install.Location = new System.Drawing.Point(4, 25);
@@ -95,17 +109,17 @@
             // PictureBox_HudThumb
             // 
             this.PictureBox_HudThumb.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PictureBox_HudThumb.Location = new System.Drawing.Point(20, 21);
+            this.PictureBox_HudThumb.Location = new System.Drawing.Point(20, 49);
             this.PictureBox_HudThumb.Name = "PictureBox_HudThumb";
-            this.PictureBox_HudThumb.Size = new System.Drawing.Size(227, 227);
+            this.PictureBox_HudThumb.Size = new System.Drawing.Size(194, 191);
             this.PictureBox_HudThumb.TabIndex = 1;
             this.PictureBox_HudThumb.TabStop = false;
             // 
             // Button_Install
             // 
-            this.Button_Install.Location = new System.Drawing.Point(418, 21);
+            this.Button_Install.Location = new System.Drawing.Point(418, 283);
             this.Button_Install.Name = "Button_Install";
-            this.Button_Install.Size = new System.Drawing.Size(171, 62);
+            this.Button_Install.Size = new System.Drawing.Size(171, 49);
             this.Button_Install.TabIndex = 0;
             this.Button_Install.Text = "Install";
             this.Button_Install.UseVisualStyleBackColor = true;
@@ -264,6 +278,7 @@
             this.button_Combine.TabIndex = 2;
             this.button_Combine.Text = "Combine";
             this.button_Combine.UseVisualStyleBackColor = true;
+            this.button_Combine.Click += new System.EventHandler(this.button_Combine_Click);
             // 
             // pictureBox1
             // 
@@ -355,22 +370,83 @@
             this.progressBar_Main.Size = new System.Drawing.Size(539, 23);
             this.progressBar_Main.TabIndex = 2;
             // 
+            // button_MainCancel
+            // 
+            this.button_MainCancel.Enabled = false;
+            this.button_MainCancel.Location = new System.Drawing.Point(554, 532);
+            this.button_MainCancel.Name = "button_MainCancel";
+            this.button_MainCancel.Size = new System.Drawing.Size(75, 25);
+            this.button_MainCancel.TabIndex = 3;
+            this.button_MainCancel.Text = "Cancel";
+            this.button_MainCancel.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(20, 21);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(194, 22);
+            this.textBox1.TabIndex = 2;
+            // 
+            // textBox_MainBrowse
+            // 
+            this.textBox_MainBrowse.Location = new System.Drawing.Point(20, 246);
+            this.textBox_MainBrowse.Name = "textBox_MainBrowse";
+            this.textBox_MainBrowse.ReadOnly = true;
+            this.textBox_MainBrowse.Size = new System.Drawing.Size(113, 22);
+            this.textBox_MainBrowse.TabIndex = 3;
+            // 
+            // button_MainBrowse
+            // 
+            this.button_MainBrowse.Location = new System.Drawing.Point(139, 245);
+            this.button_MainBrowse.Name = "button_MainBrowse";
+            this.button_MainBrowse.Size = new System.Drawing.Size(75, 23);
+            this.button_MainBrowse.TabIndex = 4;
+            this.button_MainBrowse.Text = "Browse";
+            this.button_MainBrowse.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(418, 246);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(171, 31);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "Customize";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // button2
             // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(554, 532);
+            this.button2.Location = new System.Drawing.Point(418, 211);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 25);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Cancel";
+            this.button2.Size = new System.Drawing.Size(171, 31);
+            this.button2.TabIndex = 6;
+            this.button2.Text = "Fragment";
             this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(418, 174);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(171, 31);
+            this.button3.TabIndex = 7;
+            this.button3.Text = "Strip minimal";
+            this.button3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(418, 145);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(171, 23);
+            this.button4.TabIndex = 8;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
             // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(640, 565);
-            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button_MainCancel);
             this.Controls.Add(this.progressBar_Main);
             this.Controls.Add(this.textBox_MainStatus);
             this.Controls.Add(this.tabControl_Main);
@@ -382,6 +458,7 @@
             this.Text = "IvHud Toolbox";
             this.tabControl_Main.ResumeLayout(false);
             this.tab_Install.ResumeLayout(false);
+            this.tab_Install.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_HudThumb)).EndInit();
             this.tab_CombineHuds.ResumeLayout(false);
             this.tab_CombineHuds.PerformLayout();
@@ -420,7 +497,7 @@
         private System.Windows.Forms.PictureBox PictureBox_CombineHud1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse_CombineHud1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse_CombineHud2;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button_MainCancel;
         private System.Windows.Forms.Button button_CombineBrowse2;
         private System.Windows.Forms.TextBox textBox_CombineBrowse2;
         private System.Windows.Forms.TextBox textBox_CombineBrowse1;
@@ -428,6 +505,13 @@
         private System.Windows.Forms.Button button_CombineResultBrowseLogo;
         private System.Windows.Forms.PictureBox pictureBox_About_Logo;
         private System.Windows.Forms.TextBox textBox_About;
+        private System.Windows.Forms.Button button_MainBrowse;
+        private System.Windows.Forms.TextBox textBox_MainBrowse;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -9,8 +9,8 @@ namespace hudParse
     public class SubElement
     {
         string m_Name = "";
-        List<KeyValue> m_ValueList = new List<KeyValue>();
-        List<SubElement> m_SubValueList = new List<SubElement>();
+        public List<KeyValue> m_ValueList = new List<KeyValue>();
+        public List<SubElement> m_SubValueList = new List<SubElement>();
 
         public string Name
         {

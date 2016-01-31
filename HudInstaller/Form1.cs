@@ -99,7 +99,8 @@ namespace HudInstaller
                     string s = fbd.SelectedPath.Remove(0,fbd.SelectedPath.LastIndexOf("\\")+1);
                     hud.Resource = new HudResourceFile("hudinfo",fbd.SelectedPath,new List<KeyValue>() { new KeyValue("name",s) });                    
                 }
-                hudName.Text = hud.Resource.FindKeyValue("name").Value;
+                hudName.Text = hud.Resource.FindKeyValue("name").Value;                
+                hud.Path = fbd.SelectedPath;                
             }
 
             var files = Directory.GetFiles(fbd.SelectedPath,"logo.*");
@@ -113,8 +114,15 @@ namespace HudInstaller
                 WriteStatus("Couldn't find logo for " + hud.Resource.FindKeyValue("name").Value + ", using default");
                 pb.Image = HudInstaller.Properties.Resources.logo_default;
             }
+            WriteStatus(hudName.Text + " path is " + hud.Path);
         }
 
+        public Hud CombineHuds(Hud hud1,Hud hud2)
+        {
+            Hud result = new Hud();
+
+            return result;
+        }
 
         public mainForm()
         {
@@ -129,6 +137,18 @@ namespace HudInstaller
         private void button_CombineBrowse2_Click(object sender,EventArgs e)
         {
             CombineHudBrowse(folderBrowse_CombineHud2,textBox_CombineBrowse2,textBox_CombineHudName2,PictureBox_CombineHud2,hud2);
+        }
+
+        private void button_Combine_Click(object sender,EventArgs e)
+        {
+            progressBar_Main.Value = 0;
+            button_MainCancel.Enabled = true;
+            if((hud1 != hud2) && (textBox_CombineBrowse1 != textBox_CombineBrowse2))
+            {
+
+            }
+            else WriteStatus("Can't combine a hud with itself");
+            
         }
     }
 }

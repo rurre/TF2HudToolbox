@@ -102,13 +102,16 @@ namespace hudParse
         public void Remove(KeyValue kv)
         {
             m_ValueList.Remove(kv);
-        }
+        }        
 
-        public bool IsNull()
+        public KeyValue FindKeyValue(string name)
         {
-            if(Name == null)
-                return true;
-            else return false;
+            foreach(KeyValue element in m_ValueList)
+            {
+                if(element.Name.ToLower() == name.ToLower())
+                    return element;
+            }
+            return new KeyValue();
         }
     }
 }

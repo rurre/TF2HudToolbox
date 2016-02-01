@@ -1,0 +1,10 @@
+"HelpInfo"
+{
+	"button_MinimalDefault_desc"		"Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud."
+	"button_StripMinimal_desc"			"This option will remove all Minimal Hud (cl_Hud_minmode 1) values from the selected Hud. This doesn't overwrite the selected Hud, only the one that gets installed."
+	"button_Fragment_desc"		"This option asks you to pick a folder containing a Hud after which it creates a Hud Fragment in the same folder.A Fragment is a cut-down version of a Hud that the ToolBox can work with."
+	"button_Parse_desc"				"This option loads the selected Hud and the Default TF2 Hud into memory. You have to parse a Hud before you can do anything with it."
+	"button_Customize_desc"				"This lets you customize the Hud before installing it."
+	"button_Browse_desc"					"Browse for Hud Fragment."	
+	"button_Install_desc"					"Install the selected Hud with the selected mode and customizations. Available install modes are:-Soft: Overwrites only KeyValues inside Hud Elements. -Hard: Overwrites whole Hud Elements.If unusure select Soft Install. It is less likely to cause crashes after updates when Valve adds new stuff to the default Hud."
+}

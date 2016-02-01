@@ -61,6 +61,18 @@ namespace HudInstaller.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;HelpInfo&quot;
+        ///{
+        ///	&quot;button_MinimalDefault_desc&quot;		&quot;Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud.\nFor example, we have this pair:\n\n&apos;&apos;xpos&apos;&apos;\t\t\t&apos;&apos;10&apos;&apos;\n\t\t\t&apos;&apos;xpos_minmode&apos;&apos;\t\t\t&apos;&apos;20&apos;&apos;\n\nThis option will change &apos;&apos;xpos&apos;&apos; value to &apos;&apos;20&apos;&apos; and remove &apos;&apos;xpos_minmode&apos;&apos; completely.\nSo we are only left with:\n\n&apos;&apos;xpos&apos;&apos;\t\t\t&apos;&apos;20&apos;&apos;\nThis does not overwrite the selected Hud, only the one that gets installed.&quot;
+        ///	&quot;button_StripMin [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string helpinfo {
+            get {
+                return ResourceManager.GetString("helpinfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap logo_default {

@@ -9,74 +9,22 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using hudParse;
+using System.Reflection;
 
 namespace HudInstaller
 {
     public partial class mainForm : Form
     {
         //Variables
-        Hud hud1 = new Hud();
-        Hud hud2 = new Hud();
+        Hud mainHud = new Hud();
+        Hud defaultHud = new Hud();
+
+        Hud combineHud1 = new Hud();
+        Hud combineHud2 = new Hud();
+        Hud combineHudResult = new Hud();
+
+        HudResourceFile helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(HudInstaller.Properties.Resources.helpinfo ?? "")));
                
-
-        public enum readModes { KeyValue, PlatformTag };
-        /// <summary>
-        /// Looks for the first value it can find enclosed in quotes or square brackets.
-        /// </summary>
-        /// <param name="s">Target string to look in.</param>
-        /// <returns>Returns the value enclosed in quotes or square brackets.</returns>
-
-        private static string Rd(string s)
-        {
-            return Rd(ref s,readModes.KeyValue);            
-        }
-        private static string Rd(ref string s,readModes mode)
-        {
-            string result = "";
-            bool openedQuotes = false;
-
-            for(int i = 0; i < s.Length; i++)
-            {
-                if(mode == readModes.KeyValue)
-                {
-                    if(s[i] == '\"')
-                    {
-                        if(!openedQuotes)
-                        {
-                            openedQuotes = true;
-                            continue;
-                        }
-                        else break;
-                    }
-                    else if(openedQuotes)
-                    {
-                        result += s[i];
-                        continue;
-                    }
-                }
-                else if(mode == readModes.PlatformTag)
-                {
-                    if(s[i] == '[')
-                    {
-                        if(!openedQuotes)
-                        {
-                            openedQuotes = true;
-                            continue;
-                        }
-                        else break;
-                    }
-                    else if(openedQuotes)
-                    {
-                        if(s[i] == ']')
-                            break;
-                        result += s[i];
-                    }
-                }
-                else throw new Exception("Error: Something went wrong when trying to Read(). This isn't supposed to be possible. Help!");
-            }
-            return result;
-        }
-
         public void WriteStatus(string s)
         {
             textBox_MainStatus.AppendText("-" + s + "\n");
@@ -105,16 +53,17 @@ namespace HudInstaller
 
             var files = Directory.GetFiles(fbd.SelectedPath,"logo.*");
             if(files.Length > 0)
-            {
-                pb.ImageLocation = files[0];
+            {                
                 WriteStatus("Found logo for " + hud.Resource.FindKeyValue("name").Value);
+                hud.Logo = Image.FromFile(files[0]);                
             }
             else
             {
-                WriteStatus("Couldn't find logo for " + hud.Resource.FindKeyValue("name").Value + ", using default");
-                pb.Image = HudInstaller.Properties.Resources.logo_default;
+                WriteStatus("Couldn't find logo for " + hud.Resource.FindKeyValue("name").Value + ", using default");                
+                hud.Logo = HudInstaller.Properties.Resources.logo_default;
             }
-            WriteStatus(hudName.Text + " path is " + hud.Path);
+            pb.Image = hud.Logo;
+            WriteStatus("Path of " + hudName.Text + " is " + hud.Path);
         }
 
         public Hud CombineHuds(Hud hud1,Hud hud2)
@@ -131,24 +80,66 @@ namespace HudInstaller
 
         private void button_CombineBrowse1_Click(object sender,EventArgs e)
         {
-            CombineHudBrowse(folderBrowse_CombineHud1,textBox_CombineBrowse1,textBox_CombineHudName1,PictureBox_CombineHud1,hud1);
+            CombineHudBrowse(folderBrowse_CombineHud1,textBox_CombineBrowse1,textBox_CombineHudName1,PictureBox_CombineHud1,combineHud1);
         }
 
         private void button_CombineBrowse2_Click(object sender,EventArgs e)
         {
-            CombineHudBrowse(folderBrowse_CombineHud2,textBox_CombineBrowse2,textBox_CombineHudName2,PictureBox_CombineHud2,hud2);
+            CombineHudBrowse(folderBrowse_CombineHud2,textBox_CombineBrowse2,textBox_CombineHudName2,PictureBox_CombineHud2,combineHud2);
         }
 
         private void button_Combine_Click(object sender,EventArgs e)
-        {
-            progressBar_Main.Value = 0;
-            button_MainCancel.Enabled = true;
-            if((hud1 != hud2) && (textBox_CombineBrowse1 != textBox_CombineBrowse2))
+        {            
+            if(textBox_CombineBrowse1.Text != textBox_CombineBrowse2.Text)
             {
-
+                //Combine();
             }
             else WriteStatus("Can't combine a hud with itself");
             
+        }
+
+        private void SetHelpToString(string s)
+        {
+            textBox_MainHelpTitle.Text = button_MinimalDefault.Text;
+            s = helpInfo.FindKeyValue(s).Value;
+            if(s == null)
+                s = "#Empty_string";
+            textBox_MainHelp.Text = s;
+        }
+
+        private void button_MinimalDefault_MouseHover(object sender,EventArgs e)
+        {
+            SetHelpToString("button_MinimalDefault_desc");
+        }
+
+        private void button_Fragment_MouseHover(object sender,EventArgs e)
+        {
+            SetHelpToString("button_Fragment_desc");
+        }
+
+        private void button_StripMinimal_MouseHover(object sender,EventArgs e)
+        {
+            SetHelpToString("button_StripMinimal_desc");
+        }
+
+        private void button_MainBrowse_MouseHover(object sender,EventArgs e)
+        {
+            SetHelpToString("button_browse_desc");
+        }
+
+        private void button_Customize_MouseHover(object sender,EventArgs e)
+        {
+            SetHelpToString("button_customize_desc");
+        }
+
+        private void button_Install_MouseHover(object sender,EventArgs e)
+        {
+            SetHelpToString("button_install_desc");
+        }
+
+        private void button_Parse_MouseHover(object sender,EventArgs e)
+        {
+            SetHelpToString("button_parse_desc");
         }
     }
 }

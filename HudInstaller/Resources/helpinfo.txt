@@ -1,10 +1,41 @@
 "HelpInfo"
 {
-	"button_MinimalDefault_desc"		"Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud."
-	"button_StripMinimal_desc"			"This option will remove all Minimal Hud (cl_Hud_minmode 1) values from the selected Hud. This doesn't overwrite the selected Hud, only the one that gets installed."
-	"button_Fragment_desc"		"This option asks you to pick a folder containing a Hud after which it creates a Hud Fragment in the same folder.A Fragment is a cut-down version of a Hud that the ToolBox can work with."
+	"button_MinimalDefault_name"	"Minimal to Default"
+	"button_MinimalDefault_desc"	"Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud."
+	
+	"button_StripMinimal_name"		"Strip Minimal Hud"
+	"button_StripMinimal_desc"		"This option will remove all Minimal Hud (cl_Hud_minmode 1) values from the selected Hud. This doesn't overwrite the selected Hud, only the one that gets installed."
+	
+	"button_fragment_name"			"Create Hud Fragment file"
+	"button_Fragment_desc"			"This option asks you to pick a folder containing a Hud after which it creates a Hud Fragment in the same folder.A Fragment is a cut-down version of a Hud that the ToolBox can work with."
+	
+	"button_Parse_name"				"Parse Hud"
 	"button_Parse_desc"				"This option loads the selected Hud and the Default TF2 Hud into memory. You have to parse a Hud before you can do anything with it."
-	"button_Customize_desc"				"This lets you customize the Hud before installing it."
-	"button_Browse_desc"					"Browse for Hud Fragment."	
-	"button_Install_desc"					"Install the selected Hud with the selected mode and customizations. Available install modes are:-Soft: Overwrites only KeyValues inside Hud Elements. -Hard: Overwrites whole Hud Elements.If unusure select Soft Install. It is less likely to cause crashes after updates when Valve adds new stuff to the default Hud."
+	
+	"button_Customize_name"			"Customize Hud"
+	"button_Customize_desc"			"This lets you customize the Hud before installing it."
+	
+	"button_Browse_name"			"Browse"
+	"button_Browse_desc"			"Browse for Hud Fragment."	
+
+	"button_ToggleHelp_name"		"Toggle Help"
+	"button_ToggleHelp_desc"		"This button toggles the help window on and off. You probably figured that out already."
+	
+	"button_Install_name"			"Install Hud"
+	"button_Install_desc"			"Install the selected Hud with the selected mode and customizations. Available install modes are:-Soft: Overwrites only KeyValues inside Hud Elements. -Hard: Overwrites whole Hud Elements.If unusure select Soft Install. It is less likely to cause crashes after updates when Valve adds new stuff to the default Hud."
+
+	"tab_InstallHud_name"			"Install Hud"
+	"tab_InstallHud_desc"			"Lets you customize and install a Hud from a Fragment, as well as a few other options."
+
+	"tab_CombineHuds_name"			"Combine Huds"
+	"tab_CombineHuds_desc"			"Lets you combine 2 Huds into 1 that you can toggle between by switching to Minimal Hud (cl_hud_minmode 1) and back to Default Hud (cl_hud_minmode 0)"
+
+	"tab_Fragment_name"				"Fragment Hud"
+	"tab_Fragment_desc"				"Lets you create a Fragment file from an existing Hud, as well as set it's resource info and logo."
+
+	"tab_About_name"				"About"
+	"tab_About_desc"				"Extra info."
+
+	"info_Help_Name"				"Item title will be displayed here"
+	"info_Help_desc"				"Detailed information will be displayed here. To receive detailed information for a Button move your mouse over it. For help with a Tab - click it."
 }

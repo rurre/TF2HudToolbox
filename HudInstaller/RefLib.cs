@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 class RefLib
 {
+    /// <summary>
+    /// Removes symbols disallowed in file names by Windows (   / \ : ? < > |   ) from string.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
     public static string StripAndTrim(ref string s)
     {            
         s = s.Replace("/","");
@@ -18,7 +23,11 @@ class RefLib
         s = s.Replace("|","");
         return s;
     }
-
+    /// <summary>
+    /// Removes spaces, tabs, new lines and carriage returns from the beginning of a string up until a character that isn't either of these.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
     public static string Seek(ref string s)
     {
         if(s.Length > 0)
@@ -34,7 +43,11 @@ class RefLib
         }
         return s;
     }
-
+    /// <summary>
+    /// Removes all new lines, tabs, spaces and carriage returns from string.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns></returns>
     public static string Condense(ref string s)       
     {
         s = s.Replace("\n","");
@@ -43,7 +56,11 @@ class RefLib
         s = s.Replace(" ","");
         return s;
     }
-
+    /// <summary>
+    /// Takes a string and removes a line from it.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns>Returns the removed line.</returns>
     public static string GetLine(ref string s)
     {
         string result = "";

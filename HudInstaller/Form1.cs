@@ -21,7 +21,7 @@ namespace HudInstaller
         Hud combineHud1 = new Hud();
         Hud combineHud2 = new Hud();
         Hud combineHudResult = new Hud();
-        Hud FragmentHud = new Hud();
+        Hud fragmentHud = new Hud();
 
         HudResourceFile helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(HudInstaller.Properties.Resources.helpinfo ?? "")));
 
@@ -183,7 +183,7 @@ namespace HudInstaller
 
         private void button_FragmentHudBrowse_Click(object sender,EventArgs e)
         {
-            FragmentHudBrowse(folderBrowse_Fragment,textBox_FragmentHudBrowse,textBox_FragmentHudMain,pictureBox_FragmentHudMain,FragmentHud,textBox_Fragment_Name,textBox_Fragment_Version,textBox_Fragment_Author,textBox_Fragment_Website);
+            FragmentHudBrowse(folderBrowse_Fragment,textBox_FragmentHudBrowse,textBox_FragmentHudMain,pictureBox_FragmentHudMain,fragmentHud,textBox_Fragment_Name,textBox_Fragment_Version,textBox_Fragment_Author,textBox_Fragment_Website);
         }
 
         private void BrowseLogo(OpenFileDialog ofd, PictureBox pb)
@@ -263,6 +263,18 @@ namespace HudInstaller
         private void button_ToggleHelp_MouseHover(object sender,EventArgs e)
         {
 
+        }
+
+        private void button_Parse_Click(object sender,EventArgs e)
+        {            
+            
+        }
+
+        private void button_FragmentMain_Click(object sender,EventArgs e)
+        {
+            WriteStatus("Parsing Hud");
+            fragmentHud = hudParse.HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
+            WriteStatus("Successfully Parsed Hud " + fragmentHud.Name);
         }
     }
 }

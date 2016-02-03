@@ -7,7 +7,7 @@ using System.IO;
 
 namespace hudParse
 {
-    class HudFile
+    public class HudFile
     {
         public List<HudElement> m_ElementList = new List<HudElement>();
         string m_Name;
@@ -32,16 +32,31 @@ namespace hudParse
 
             set
             {
-                value.Replace("\\","/");                
-                if(value.LastIndexOf('/') != -1)
+                if(value.IndexOf("\\") != -1)
                 {
-                    string s = value;
-                    s = s.Remove(value.LastIndexOf('/')+1);
-                    m_Path = s;
-                    value = value.Remove(0,s.Length);
+                    m_Name = value.Remove(0,value.LastIndexOf("\\") + 1);
+                    m_Path = value.Remove(value.Length - m_Name.Length);
                 }
-                RefLib.StripAndTrim(ref value);
-                m_Name = value.Remove(value.IndexOf('.'));                
+                else
+                {
+                    RefLib.StripAndTrim(ref value);
+                    m_Name = value;
+                }
+                if(m_Name.IndexOf('.') != -1)
+                    m_Name = m_Name.Remove(m_Name.IndexOf('.'));                
+            }
+        }
+
+        public string Path
+        {
+            get
+            {
+                return m_Path;
+            }
+
+            set
+            {
+                m_Path = value;
             }
         }
 
@@ -76,6 +91,14 @@ namespace hudParse
                 sr.Close();
             }
             else throw new Exception("Filepath is empty");
+        }
+
+        public string FullName
+        {
+            get
+            {
+                return m_Path + m_Name + "." + m_FileType;
+            }
         }
 
         public override string ToString()

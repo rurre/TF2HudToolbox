@@ -15,7 +15,16 @@ namespace hudParse
             hud.Resource = ParseHudResource(path);
             hud.ApplyResource();
 
+            var Hud_Subfolders = Directory.GetDirectories(path);
+            for(int i = 0; i < Hud_Subfolders.Length; i++)
+            {
+                HudFolder folder = new HudFolder();
+                folder.FolderName = Hud_Subfolders[i];
 
+                folder = ParseHudFolder(folder.FullName);
+                if(!folder.IsEmpty())
+                    hud.Add(folder);
+            }            
 
             return hud;
         }
@@ -126,7 +135,7 @@ namespace hudParse
         }
 
         static KeyValue ParseKeyValue(string s)
-        {
+        {            
             KeyValue kv = new KeyValue();
 
             string ss;
@@ -214,19 +223,70 @@ namespace hudParse
             }
             return he;
         }
-
+        
+        //Currently uses almost the same code as ParseHudElement. 
+        //TODO: Derive SubElement from HudElement and share code.
+        //TODO: Check if it's a .res file before parsing and return null if it's not as a flag to copy the file over when installing.
+        //TODO: Set folder check to Hud's path + folder name, or whatever, so it ignores the parsing ONLY if we're in the root hud folder.
         static SubElement ParseSubElement(string s)
         {
+            SubElement ssb = new SubElement();
             SubElement sb = new SubElement();
 
+            RefLib.Seek(ref s);
+            ssb = ParseSubElement(s);
+            if(ssb != new SubElement())
+                sb.Add(ssb);            
+                        
+            RefLib.Seek(ref s);
+            string ss = Read(s);
+            sb.Name = ss;
+
+            s = s.Remove(ss.Length + 2);
+            RefLib.Seek(ref s);
+            if(s.First() == '{')
+            {
+                while(s.First() != '}')
+                {
+                    KeyValue kv = new KeyValue();
+                    kv = ParseKeyValue(s);
+                    if(kv != new KeyValue())
+                    {
+                        sb.Add(kv);
+                    }
+                    else break;
+                }
+            }            
             return sb;
         }
 
-        static HudFolder ParseHudFolder(string s)
+        static HudFolder ParseHudFolder(string path)
         {
-            HudFolder hf = new HudFolder();
+            HudFolder folder = new HudFolder();            
+            var hudFiles = Directory.GetFiles(path, "*.res");
+            var folders = Directory.GetDirectories(path);
 
-            return hf;
+            for(int i = 0; i < folders.Length; i++)
+            {
+                HudFolder subFolder = new HudFolder();                
+                subFolder.FolderName = folders[i];
+                if(!(subFolder.FolderName.ToLower() == "materials") || (subFolder.FolderName.ToLower() == "sounds")) //|| (subFolder.FolderName.ToLower() == "scripts"))
+                    subFolder = ParseHudFolder(subFolder.FolderPath+subFolder.FolderName);
+                folder.Add(subFolder);
+            }            
+
+            for(int i = 0; i < hudFiles.Length; i++)
+            {
+                HudFile file = new HudFile();
+                file.Name = hudFiles[i];
+                if(!(file.Path.Contains("\\materials\\") || file.Path.Contains("\\sounds\\")))
+                {
+                    file = ParseHudFile(file.FullName);
+                    if(file != new HudFile())
+                        folder.Add(file);
+                }
+            }            
+            return folder;
         }
 
         public enum readModes { KeyValue, PlatformTag };

@@ -387,6 +387,7 @@
             this.button_Parse.TabIndex = 0;
             this.button_Parse.Text = "Parse";
             this.button_Parse.UseVisualStyleBackColor = true;
+            this.button_Parse.Click += new System.EventHandler(this.button_Parse_Click);
             this.button_Parse.MouseHover += new System.EventHandler(this.button_Parse_MouseHover);
             // 
             // tab_Fragment
@@ -584,6 +585,7 @@
             this.button_FragmentMain.TabIndex = 12;
             this.button_FragmentMain.Text = "Create Fragment";
             this.button_FragmentMain.UseVisualStyleBackColor = true;
+            this.button_FragmentMain.Click += new System.EventHandler(this.button_FragmentMain_Click);
             // 
             // tab_CombineHuds
             // 

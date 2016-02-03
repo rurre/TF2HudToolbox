@@ -87,5 +87,10 @@ namespace hudParse
             if(m_Resource.FindKeyValue("link") != new KeyValue())
                 m_Link = m_Resource.FindKeyValue("link").Value;            
         }
+
+        public void Add(HudFolder folder)
+        {
+            m_FolderList.Add(folder);
+        }
     }
 }

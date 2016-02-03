@@ -9,9 +9,10 @@ namespace hudParse
     public class HudFolder
     {
         string m_FolderName = "";
-        string m_FolderPath = "";
+        string m_FolderPath = "";        
         List<HudFile> m_FileList = new List<HudFile>();
         List<HudFolder> m_SubFolderList = new List<HudFolder>();
+        public bool CopyNoParse = false;
 
         public string FolderName
         {

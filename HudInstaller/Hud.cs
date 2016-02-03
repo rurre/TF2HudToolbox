@@ -15,16 +15,18 @@ namespace hudParse
         string  m_Author;
         string  m_Link;
         HudResourceFile m_Resource;
+        bool m_HasDefaultLogo;
+
+        public List<HudFolder> m_FolderList = new List<HudFolder>();
 
         public Hud()
         {
             m_Name      = "Unknown";
             m_Author    = "Unknown";
             m_Link      = "Unknown";
+            m_HasDefaultLogo = true;
         }
-
-        List<HudFolder> m_FolderList = new List<HudFolder>();
-
+        
         public string Name
         {
             get
@@ -71,11 +73,26 @@ namespace hudParse
             {
                 return m_Logo;
             }
+        }
 
-            set
+        public bool HasDefaultLogo
+        {
+            get
             {
-                m_Logo = value;
+                return m_HasDefaultLogo;
             }
+        }
+
+        public void SetLogo(Image logo)
+        {
+            m_Logo = logo;
+            m_HasDefaultLogo = false;
+        }
+
+        public void SetDeafaultLogo()
+        {
+            m_Logo = HudInstaller.Properties.Resources.logo_default;
+            m_HasDefaultLogo = true;
         }
 
         public void ApplyResource()

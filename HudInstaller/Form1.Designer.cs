@@ -54,9 +54,9 @@
             this.button_Parse = new System.Windows.Forms.Button();
             this.tab_Fragment = new System.Windows.Forms.TabPage();
             this.group_FragmentHudInfo = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button_FragmentClearLogo = new System.Windows.Forms.Button();
             this.button_FragmentLogoBrowse = new System.Windows.Forms.Button();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.textBox_Fragment_LogoBrowse = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.textBox_Fragment_Website = new System.Windows.Forms.TextBox();
@@ -409,9 +409,9 @@
             // 
             // group_FragmentHudInfo
             // 
-            this.group_FragmentHudInfo.Controls.Add(this.button1);
+            this.group_FragmentHudInfo.Controls.Add(this.button_FragmentClearLogo);
             this.group_FragmentHudInfo.Controls.Add(this.button_FragmentLogoBrowse);
-            this.group_FragmentHudInfo.Controls.Add(this.textBox5);
+            this.group_FragmentHudInfo.Controls.Add(this.textBox_Fragment_LogoBrowse);
             this.group_FragmentHudInfo.Controls.Add(this.label7);
             this.group_FragmentHudInfo.Controls.Add(this.label5);
             this.group_FragmentHudInfo.Controls.Add(this.textBox_Fragment_Website);
@@ -428,15 +428,16 @@
             this.group_FragmentHudInfo.TabStop = false;
             this.group_FragmentHudInfo.Text = "Hud Info";
             // 
-            // button1
+            // button_FragmentClearLogo
             // 
-            this.button1.Location = new System.Drawing.Point(222, 261);
-            this.button1.Name = "button1";
-            this.button1.Padding = new System.Windows.Forms.Padding(2, 0, 0, 0);
-            this.button1.Size = new System.Drawing.Size(27, 27);
-            this.button1.TabIndex = 18;
-            this.button1.Text = "x";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button_FragmentClearLogo.Location = new System.Drawing.Point(222, 261);
+            this.button_FragmentClearLogo.Name = "button_FragmentClearLogo";
+            this.button_FragmentClearLogo.Padding = new System.Windows.Forms.Padding(2, 0, 0, 0);
+            this.button_FragmentClearLogo.Size = new System.Drawing.Size(27, 27);
+            this.button_FragmentClearLogo.TabIndex = 18;
+            this.button_FragmentClearLogo.Text = "x";
+            this.button_FragmentClearLogo.UseVisualStyleBackColor = true;
+            this.button_FragmentClearLogo.Click += new System.EventHandler(this.button_FragmentClearLogo_Click);
             // 
             // button_FragmentLogoBrowse
             // 
@@ -446,14 +447,16 @@
             this.button_FragmentLogoBrowse.TabIndex = 10;
             this.button_FragmentLogoBrowse.Text = "Browse";
             this.button_FragmentLogoBrowse.UseVisualStyleBackColor = true;
+            this.button_FragmentLogoBrowse.Click += new System.EventHandler(this.button_FragmentLogoBrowse_Click);
             // 
-            // textBox5
+            // textBox_Fragment_LogoBrowse
             // 
-            this.textBox5.Location = new System.Drawing.Point(19, 262);
-            this.textBox5.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(202, 22);
-            this.textBox5.TabIndex = 9;
+            this.textBox_Fragment_LogoBrowse.Location = new System.Drawing.Point(19, 262);
+            this.textBox_Fragment_LogoBrowse.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+            this.textBox_Fragment_LogoBrowse.Name = "textBox_Fragment_LogoBrowse";
+            this.textBox_Fragment_LogoBrowse.Size = new System.Drawing.Size(202, 22);
+            this.textBox_Fragment_LogoBrowse.TabIndex = 9;
+            this.textBox_Fragment_LogoBrowse.TextChanged += new System.EventHandler(this.textBox_Fragment_LogoBrowse_TextChanged);
             // 
             // label7
             // 
@@ -1019,9 +1022,9 @@
         private System.Windows.Forms.PictureBox pictureBox_FragmentHudMain;
         private System.Windows.Forms.Button button_FragmentMain;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse_Fragment;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button_FragmentClearLogo;
         private System.Windows.Forms.Button button_FragmentLogoBrowse;
-        private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.TextBox textBox_Fragment_LogoBrowse;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox textBox_Fragment_Website;

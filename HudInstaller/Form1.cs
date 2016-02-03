@@ -28,33 +28,57 @@ namespace HudInstaller
         bool helpEnabled = false;
         int formWidth = 0;
         
+        public mainForm()
+        {
+            InitializeComponent();
+        }
+
         public void WriteStatus(string s)
         {
             textBox_MainStatus.AppendText("-" + s + "\n");
         }
 
-        void CombineHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb,Hud hud)
+        #region Browse
+
+        private void BrowseLogo(OpenFileDialog ofd,PictureBox pb,TextBox tb)
         {
-            FragmentHudBrowse(fbd,tb,hudName,pb,hud,null,null,null,null);
+            if(ofd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    pb.ImageLocation = ofd.FileName;
+                    tb.Text = ofd.FileName;
+
+                }
+                catch(Exception e)
+                {
+                    WriteStatus(e.Message);
+                }
+            }
         }
 
-        void FragmentHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb, Hud hud,TextBox resName,TextBox resVersion,TextBox resAuthor,TextBox resWebsite)
+        void CombineHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb,Hud hud)
+        {
+            FragmentHudBrowse(fbd,tb,hudName,pb,hud,null,null,null,null,null);
+        }
+
+        void FragmentHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb, Hud hud,TextBox resName,TextBox resVersion,TextBox resAuthor,TextBox resWebsite, TextBox resLogo)
         {
             if(fbd.ShowDialog() == DialogResult.OK)
             {
                 tb.Text = fbd.SelectedPath;
 
-                if(File.Exists(fbd.SelectedPath + "\\hudinfo.res"))
+                if(File.Exists(fbd.SelectedPath + "\\hudinfo.txt"))
                 {
                     WriteStatus("Found hudinfo.res");
-                    hud.Resource = HudParse.ParseHudResource(fbd.SelectedPath + "\\hudinfo.res");                    
+                    hud.Resource = HudParse.ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");                    
                 }
                 else
                 {
                     WriteStatus("Couldn't find hudinfo.res, using folder name for hud name");
                     string s = fbd.SelectedPath.Remove(0,fbd.SelectedPath.LastIndexOf("\\")+1);
 
-                    hud.Resource = new HudResourceFile("hudinfo",fbd.SelectedPath,new List<KeyValue>()
+                    hud.Resource = new HudResourceFile("hudinfo","txt",fbd.SelectedPath,new List<KeyValue>()
                     {
                         new KeyValue("name",s),
                         new KeyValue("author","Unknown"),
@@ -69,12 +93,12 @@ namespace HudInstaller
                 if(files.Length > 0)
                 {
                     WriteStatus("Found logo for " + hud.Resource.FindKeyValue("name").Value);
-                    hud.Logo = Image.FromFile(files[0]);
+                    hud.SetLogo(Image.FromFile(files[0]));                    
                 }
                 else
                 {
                     WriteStatus("Couldn't find logo for " + hud.Resource.FindKeyValue("name").Value + ", using default");
-                    hud.Logo = HudInstaller.Properties.Resources.logo_default;
+                    hud.SetDeafaultLogo();
                 }
                 pb.Image = hud.Logo;
                 WriteStatus("Path of " + hudName.Text + " is " + hud.Path);
@@ -87,19 +111,9 @@ namespace HudInstaller
                     resVersion.Text = hud.Resource.FindKeyValue("version").Value;
                 if(resWebsite != null)
                     resWebsite.Text = hud.Resource.FindKeyValue("website").Value;
+                if(resLogo != null)
+                    resLogo.Text = files[0];
             }            
-        }
-
-        public Hud CombineHuds(Hud hud1,Hud hud2)
-        {
-            Hud result = new Hud();
-
-            return result;
-        }
-
-        public mainForm()
-        {
-            InitializeComponent();
         }
 
         private void button_CombineBrowse1_Click(object sender,EventArgs e)
@@ -112,6 +126,46 @@ namespace HudInstaller
             CombineHudBrowse(folderBrowse_CombineHud2,textBox_CombineBrowse2,textBox_CombineHudName2,PictureBox_CombineHud2,combineHud2);
         }
 
+        private void button_FragmentLogoBrowse_Click(object sender,EventArgs e)
+        {
+            BrowseLogo(openFile_FragmentLogoBrowse,pictureBox_FragmentHudMain,textBox_Fragment_LogoBrowse);
+        }
+
+        #endregion
+
+        private void button_Parse_Click(object sender,EventArgs e)
+        {
+
+        }
+
+        private void button_FragmentMain_Click(object sender,EventArgs e)
+        {
+            WriteStatus("Parsing Hud...");
+            fragmentHud.Resource = new HudResourceFile("hudinfo","txt",fragmentHud.Path,new List<KeyValue>()
+            {
+                new KeyValue("name",textBox_Fragment_Name.Text),
+                new KeyValue("version",textBox_Fragment_Version.Text),
+                new KeyValue("author",textBox_Fragment_Author.Text),
+                new KeyValue("website",textBox_Fragment_Website.Text)
+            });
+                        
+            Hud tempHud = hudParse.HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
+            if(tempHud != null)
+                fragmentHud.m_FolderList = tempHud.m_FolderList;
+            else WriteStatus("Failed to parse Hud");
+            
+
+            //WriteStatus("Successfully Parsed Hud " + fragmentHud.Name);
+        }        
+
+        private void button_FragmentClearLogo_Click(object sender,EventArgs e)
+        {
+            textBox_Fragment_LogoBrowse.Text = "";
+            openFile_FragmentLogoBrowse.FileName = null;
+            fragmentHud.SetDeafaultLogo();
+            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;
+        }
+
         private void button_Combine_Click(object sender,EventArgs e)
         {            
             if(textBox_CombineBrowse1.Text != textBox_CombineBrowse2.Text)
@@ -122,6 +176,7 @@ namespace HudInstaller
             
         }
 
+        #region Help - Sets help strings and stuff
         private void SetHelpToString(string s)
         {
             if(s != null)
@@ -183,32 +238,13 @@ namespace HudInstaller
 
         private void button_FragmentHudBrowse_Click(object sender,EventArgs e)
         {
-            FragmentHudBrowse(folderBrowse_Fragment,textBox_FragmentHudBrowse,textBox_FragmentHudMain,pictureBox_FragmentHudMain,fragmentHud,textBox_Fragment_Name,textBox_Fragment_Version,textBox_Fragment_Author,textBox_Fragment_Website);
-        }
-
-        private void BrowseLogo(OpenFileDialog ofd, PictureBox pb)
-        {
-
-        }
-
-        private void textBox_CombineBrowse2_TextChanged(object sender,EventArgs e)
-        {
-            folderBrowse_CombineHud2.SelectedPath = textBox_CombineBrowse2.Text;
-        }
-
-        private void textBox_CombineBrowse1_TextChanged(object sender,EventArgs e)
-        {
-            folderBrowse_CombineHud1.SelectedPath = textBox_CombineBrowse1.Text;
-        }
-
-        private void textBox_FragmentHudBrowse_TextChanged(object sender,EventArgs e)
-        {
-            folderBrowse_Fragment.SelectedPath = textBox_FragmentHudBrowse.Text;
-        }
-
-        private void textBox_MainBrowse_TextChanged(object sender,EventArgs e)
-        {
-            
+            FragmentHudBrowse(folderBrowse_Fragment,textBox_FragmentHudBrowse,textBox_FragmentHudMain,pictureBox_FragmentHudMain,fragmentHud,textBox_Fragment_Name,textBox_Fragment_Version,textBox_Fragment_Author,textBox_Fragment_Website,textBox_Fragment_LogoBrowse);
+            if(fragmentHud.HasDefaultLogo)
+            {
+                textBox_Fragment_LogoBrowse.Text = "";
+                openFile_FragmentLogoBrowse.FileName = "";
+            }
+            else textBox_Fragment_LogoBrowse.Text = openFile_FragmentLogoBrowse.FileName;
         }
 
         private void button_ToggleHelp_Click(object sender,EventArgs e)
@@ -218,7 +254,7 @@ namespace HudInstaller
             SetHelpToString("info_help");
 
             if(!helpEnabled)
-            {                
+            {
                 this.Width = formWidth + textBox_MainHelp.Width + 13;
                 label_Help.Visible = true;
                 textBox_MainHelp.Visible = true;
@@ -256,7 +292,7 @@ namespace HudInstaller
                     default:
                         SetHelpToString(null);
                         break;
-                }            
+                }
             }
         }
 
@@ -265,16 +301,36 @@ namespace HudInstaller
 
         }
 
-        private void button_Parse_Click(object sender,EventArgs e)
-        {            
+        #endregion
+
+        #region UpdateFilePaths - Updates file paths when text boxes' text change
+
+        private void textBox_CombineBrowse2_TextChanged(object sender,EventArgs e)
+        {
+            folderBrowse_CombineHud2.SelectedPath = textBox_CombineBrowse2.Text;
+        }
+
+        private void textBox_CombineBrowse1_TextChanged(object sender,EventArgs e)
+        {
+            folderBrowse_CombineHud1.SelectedPath = textBox_CombineBrowse1.Text;
+        }
+
+        private void textBox_FragmentHudBrowse_TextChanged(object sender,EventArgs e)
+        {
+            folderBrowse_Fragment.SelectedPath = textBox_FragmentHudBrowse.Text;
+        }
+
+        private void textBox_Fragment_LogoBrowse_TextChanged(object sender,EventArgs e)
+        {
+            openFile_FragmentLogoBrowse.FileName = textBox_Fragment_LogoBrowse.Text;
+        }
+
+        private void textBox_MainBrowse_TextChanged(object sender,EventArgs e)
+        {
             
         }
 
-        private void button_FragmentMain_Click(object sender,EventArgs e)
-        {
-            WriteStatus("Parsing Hud");
-            fragmentHud = hudParse.HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
-            WriteStatus("Successfully Parsed Hud " + fragmentHud.Name);
-        }
+        #endregion
+    
     }
 }

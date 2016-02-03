@@ -12,8 +12,14 @@ namespace hudParse
         public static Hud ParseHud(string path)
         {
             Hud hud = new Hud();
-            hud.Resource = ParseHudResource(path);
-            hud.ApplyResource();
+            HudResourceFile tempRes;
+            tempRes = ParseHudResource(path);
+            if(tempRes != new HudResourceFile())
+            {
+                hud.Resource = tempRes;
+                hud.ApplyResource();
+            }
+            else return null;            
 
             var Hud_Subfolders = Directory.GetDirectories(path);
             for(int i = 0; i < Hud_Subfolders.Length; i++)
@@ -66,12 +72,12 @@ namespace hudParse
 
         public static HudResourceFile ParseHudResource(string path)
         {            
-            if(!path.EndsWith("\\hudinfo.res"))
-                path += "\\hudinfo.res";            
-            
-            if(File.Exists(path))            
-                return ParseHudResource(new StreamReader(path).BaseStream);                           
-            else throw new Exception("Can't parse file, it doesn't exist.");                        
+            if(!path.EndsWith("\\hudinfo.txt"))
+                path += "\\hudinfo.txt";
+
+            if(File.Exists(path))
+                return ParseHudResource(new StreamReader(path).BaseStream);
+            else return new HudResourceFile();
         }
 
         static HudFile ParseHudFile(string path)
@@ -223,7 +229,14 @@ namespace hudParse
             }
             return he;
         }
-        
+
+        public Hud CombineHuds(Hud hud1,Hud hud2)
+        {
+            Hud result = new Hud();
+
+            return result;
+        }
+
         //Currently uses almost the same code as ParseHudElement. 
         //TODO: Derive SubElement from HudElement and share code.
         //TODO: Check if it's a .res file before parsing and return null if it's not as a flag to copy the file over when installing.
@@ -270,20 +283,21 @@ namespace hudParse
             {
                 HudFolder subFolder = new HudFolder();                
                 subFolder.FolderName = folders[i];
-                if(!(subFolder.FolderName.ToLower() == "materials") || (subFolder.FolderName.ToLower() == "sounds")) //|| (subFolder.FolderName.ToLower() == "scripts"))
+                if(!subFolder.CopyNoParse)
                     subFolder = ParseHudFolder(subFolder.FolderPath+subFolder.FolderName);
                 folder.Add(subFolder);
-            }            
-
-            for(int i = 0; i < hudFiles.Length; i++)
+            }
+            if(hudFiles.Length > 0)
             {
-                HudFile file = new HudFile();
-                file.Name = hudFiles[i];
-                if(!(file.Path.Contains("\\materials\\") || file.Path.Contains("\\sounds\\")))
+                for(int i = 0; i < hudFiles.Length; i++)
                 {
+                    HudFile file = new HudFile();
+                    file.Name = hudFiles[i];
+
                     file = ParseHudFile(file.FullName);
                     if(file != new HudFile())
                         folder.Add(file);
+
                 }
             }            
             return folder;

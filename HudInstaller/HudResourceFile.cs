@@ -19,14 +19,24 @@ namespace hudParse
         public HudResourceFile()
         {
             m_Name = "";
-            m_FileType = "res";            
         }
 
-        public HudResourceFile(string name,string path, List<KeyValue> kvList) : base()
+        public HudResourceFile(string fileType) : base()
+        {            
+            if(fileType.IndexOf('.') != -1)
+                fileType = fileType.Remove(fileType.IndexOf('.'));
+            m_FileType = fileType;            
+        }
+
+        public HudResourceFile(string name,string fileType,string path, List<KeyValue> kvList) : base()
         {            
             m_Name = name;
             m_Path = path;
             m_ValueList = kvList;
+
+            if(fileType.IndexOf('.') != -1)
+                fileType = fileType.Remove(fileType.IndexOf('.'));
+            m_FileType = fileType;
         }
 
         public string Name

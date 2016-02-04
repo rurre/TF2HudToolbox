@@ -1,0 +1,32 @@
+"Toolbox"
+{
+	"tab_InstallHud"				"Install Hud"
+	"tab_FragmentHud"				"Create Blueprint"
+	"tab_CombineHuds"				"Combine Huds"
+	"tab_About"						"About"
+
+	"button_Parse"					"Parse"
+	"button_Install"				"Install"
+	"button_Browse"					"Browse"
+	"button_Clear"					"Clear"
+	"button_Customize"				"Customize"
+	"button_MinimalToDefault"		"Minimal to Default"
+	"button_StripMinimal"			"Strip Minimal"
+	"button_CreateFragment"			"Create Blueprint"
+	"button_ToggleHelp"				"Toggle Help"
+	"button_PickLogo"				"Pick Logo"
+	"button_Combine"				"Combine"
+	
+	"check_UseMinMode"				"Use Minmode Values"
+	"check_UseDefaultHud"			"Use Default TF2 Hud"
+	
+	"radio_Soft"					"Soft"
+	"radio_Hard"					"Hard"
+
+	"label_Recommended"				"(Recommended)"
+	"label_Result"					"Result"
+	"label_Help"					"Help"
+	"label_Name"					"Name"
+	"label_Version"					"Version"
+	"label_Website"					"Website"
+}

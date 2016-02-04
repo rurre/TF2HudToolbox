@@ -63,12 +63,27 @@ namespace HudInstaller.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &quot;HelpInfo&quot;
         ///{
-        ///	&quot;button_MinimalDefault_desc&quot;		&quot;Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud.\nFor example, we have this pair:\n\n&apos;&apos;xpos&apos;&apos;\t\t\t&apos;&apos;10&apos;&apos;\n\t\t\t&apos;&apos;xpos_minmode&apos;&apos;\t\t\t&apos;&apos;20&apos;&apos;\n\nThis option will change &apos;&apos;xpos&apos;&apos; value to &apos;&apos;20&apos;&apos; and remove &apos;&apos;xpos_minmode&apos;&apos; completely.\nSo we are only left with:\n\n&apos;&apos;xpos&apos;&apos;\t\t\t&apos;&apos;20&apos;&apos;\nThis does not overwrite the selected Hud, only the one that gets installed.&quot;
-        ///	&quot;button_StripMin [rest of string was truncated]&quot;;.
+        ///	&quot;button_MinimalDefault_name&quot;	&quot;Minimal to Default&quot;
+        ///	&quot;button_MinimalDefault_desc&quot;	&quot;Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud.&quot;
+        ///	
+        ///	&quot;button_StripMinimal_name&quot;		&quot;Strip Minimal Hud&quot;
+        ///	&quot;button_StripMinimal_desc&quot;		&quot;This option will remove all Minimal Hud (cl_Hud_minmode 1) values from the selected Hud. This doesn&apos;t overwrite the selected Hud, only the one that gets installed.&quot;
+        ///	
+        ///	&quot;button_fragment_name&quot;			&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string helpinfo {
             get {
                 return ResourceManager.GetString("helpinfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon icon {
+            get {
+                object obj = ResourceManager.GetObject("icon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
@@ -85,10 +100,55 @@ namespace HudInstaller.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap logo_default_old {
+            get {
+                object obj = ResourceManager.GetObject("logo_default_old", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logo_main {
             get {
                 object obj = ResourceManager.GetObject("logo_main", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap logo_main_transparent {
+            get {
+                object obj = ResourceManager.GetObject("logo_main_transparent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Toolbox&quot;
+        ///{
+        ///	&quot;tab_InstallHud&quot;				&quot;Install Hud&quot;
+        ///	&quot;tab_FragmentHud&quot;				&quot;Create Blueprint&quot;
+        ///	&quot;tab_CombineHuds&quot;				&quot;Combine Huds&quot;
+        ///	&quot;tab_About&quot;						&quot;About&quot;
+        ///
+        ///	&quot;button_Parse&quot;					&quot;Parse&quot;
+        ///	&quot;button_Install&quot;				&quot;Install&quot;
+        ///	&quot;button_Browse&quot;					&quot;Browse&quot;
+        ///	&quot;button_Clear&quot;					&quot;Clear&quot;
+        ///	&quot;button_Customize&quot;				&quot;Customize&quot;
+        ///	&quot;button_MinimalToDefault&quot;		&quot;Minimal to Default&quot;
+        ///	&quot;button_StripMinimal&quot;			&quot;Strip Minimal&quot;
+        ///	&quot;button_CreateFragment&quot;			&quot;Create Blueprint&quot;
+        ///	&quot;button_ToggleHelp&quot;				&quot;Toggle Help&quot;
+        ///	&quot;button_PickLogo&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string toolbox {
+            get {
+                return ResourceManager.GetString("toolbox", resourceCulture);
             }
         }
     }

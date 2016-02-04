@@ -10,6 +10,7 @@ using System.IO;
 using System.Windows.Forms;
 using hudParse;
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace HudInstaller
 {
@@ -24,19 +25,87 @@ namespace HudInstaller
         Hud fragmentHud = new Hud();
 
         HudResourceFile helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(HudInstaller.Properties.Resources.helpinfo ?? "")));
-
+        
         bool helpEnabled = false;
-        int formWidth = 0;
+        static Point formSize = new Point(497, 500);    //Different from designer value!!
+
+        string gamePath;
+        string installPath;
         
         public mainForm()
         {
             InitializeComponent();
         }
 
+        private void mainForm_Load(object sender,EventArgs e)
+        {
+            GetInstallPaths(folderBrowse_MainInstallPath,textBox_MainInstallPath);
+            Width = formSize.X;
+            Height = formSize.Y;
+            CenterForm(this);
+            ClearLabel(ref label_HudName);
+            ClearLabel(ref label_HudAuthor);
+            ClearLabel(ref label_HudVersion);
+            ClearLabel(ref linkLabel_HudWebsite);
+        }
+
+        void ClearLabel(ref Label label)
+        {
+            label.Text = "";
+        }
+
+        void ClearLabel(ref LinkLabel label)
+        {
+            label.Text = "";
+        }
+
+        protected void CenterForm(Form form)
+        {
+            Screen screen = Screen.FromControl(this);
+
+            Rectangle workingArea = screen.WorkingArea;
+            form.Location = new Point()
+            {
+                X = Math.Max(workingArea.X,workingArea.X + (workingArea.Width - this.Width) / 2),
+                Y = Math.Max(workingArea.Y,workingArea.Y + (workingArea.Height - this.Height) / 2)
+            };
+        }
+
+        public void GetInstallPaths(FolderBrowserDialog fbd,TextBox tb)
+        {
+            var steamPath = Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam","SteamPath",null);
+            if(steamPath != null)
+            {
+                if(Directory.Exists(steamPath + "\\steamapps\\common\\team Fortress 2"))
+                {
+                    gamePath = steamPath + "\\steamapps\\common\\team Fortress 2";
+                    gamePath = RefLib.PathToForwardSlashes(ref gamePath);
+                    WriteStatus("Found TF2 at " + gamePath);
+                    tb.Text = gamePath;
+                    installPath = gamePath + "\\tf\\custom\\";
+                    fbd.SelectedPath = gamePath;
+                }
+                else WriteStatus("Couldn't find TF2 install path, select an install folder manually");
+            }                
+        }
+
         public void WriteStatus(string s)
         {
             textBox_MainStatus.AppendText("-" + s + "\n");
         }
+
+        enum Languages { English };
+
+        void SetLanguage()
+        {
+            SetLanguage(Languages.English);
+        }
+
+        void SetLanguage(Languages lang)
+        {
+
+        }
+
 
         #region Browse
 
@@ -70,12 +139,12 @@ namespace HudInstaller
 
                 if(File.Exists(fbd.SelectedPath + "\\hudinfo.txt"))
                 {
-                    WriteStatus("Found hudinfo.res");
+                    WriteStatus("Found hudinfo.txt for " + hud.Name);
                     hud.Resource = HudParse.ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");                    
                 }
                 else
                 {
-                    WriteStatus("Couldn't find hudinfo.res, using folder name for hud name");
+                    WriteStatus("Couldn't find hudinfo.txt, using folder name for Hud name");
                     string s = fbd.SelectedPath.Remove(0,fbd.SelectedPath.LastIndexOf("\\")+1);
 
                     hud.Resource = new HudResourceFile("hudinfo","txt",fbd.SelectedPath,new List<KeyValue>()
@@ -249,25 +318,25 @@ namespace HudInstaller
 
         private void button_ToggleHelp_Click(object sender,EventArgs e)
         {
-            if(formWidth == 0)
-                formWidth = this.Width;
             SetHelpToString("info_help");
 
             if(!helpEnabled)
             {
-                this.Width = formWidth + textBox_MainHelp.Width + 13;
+                Width = formSize.X + textBox_MainHelp.Width + 13;
                 label_Help.Visible = true;
                 textBox_MainHelp.Visible = true;
                 textBox_MainHelpTitle.Visible = true;
                 helpEnabled = true;
+                CenterForm(this);                
             }
             else
             {
-                this.Width = formWidth;
+                Width = formSize.X;
                 label_Help.Visible = false;
                 textBox_MainHelp.Visible = false;
                 textBox_MainHelpTitle.Visible = false;
                 helpEnabled = false;
+                CenterForm(this);
             }
         }
 
@@ -330,7 +399,27 @@ namespace HudInstaller
             
         }
 
+        private void textBox_MainInstallPath_TextChanged(object sender,EventArgs e)
+        {
+            folderBrowse_MainInstallPath.SelectedPath = textBox_MainInstallPath.Text;
+        }
+
         #endregion
-    
+
+        private void button_MainInstallBrowseClear_Click(object sender,EventArgs e)
+        {
+            folderBrowse_MainInstallPath.SelectedPath = null;
+            textBox_MainInstallPath.Text = "";
+        }
+
+        private void button_MainInstallBrowse_Click(object sender,EventArgs e)
+        {
+            if(folderBrowse_MainInstallPath.ShowDialog() == DialogResult.OK)
+            {                
+                gamePath = folderBrowse_MainInstallPath.SelectedPath;
+                textBox_MainInstallPath.Text = gamePath;
+            }
+        }
+
     }
 }

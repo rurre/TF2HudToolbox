@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 class RefLib
 {
+    public static string PathToForwardSlashes(ref string s)
+    {                
+        return s.Replace('\\','/');
+    }
     /// <summary>
     /// Removes symbols disallowed in file names by Windows (   / \ : ? < > |   ) from string.
     /// </summary>

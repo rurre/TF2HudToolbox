@@ -90,13 +90,31 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\logo_default.png" />
+    <None Include="Resources\helpinfo.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\logo_main.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\helpinfo.txt" />
+    <None Include="Resources\logo_main_transparent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_default.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_default_notext.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo_default_text.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toolbox_english.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toolbox.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

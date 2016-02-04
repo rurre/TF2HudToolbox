@@ -28,21 +28,27 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainForm));
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tab_Install = new System.Windows.Forms.TabPage();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label8 = new System.Windows.Forms.Label();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.groupBox_HudInfo = new System.Windows.Forms.GroupBox();
+            this.label_HudAuthor = new System.Windows.Forms.Label();
             this.linkLabel_HudWebsite = new System.Windows.Forms.LinkLabel();
             this.label_HudVersion = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.label_HudName = new System.Windows.Forms.Label();
+            this.label_Static_HudWebsite = new System.Windows.Forms.Label();
+            this.label_Static_HudAuthor = new System.Windows.Forms.Label();
+            this.label_Static_HudVersion = new System.Windows.Forms.Label();
+            this.label_Static_HudName = new System.Windows.Forms.Label();
             this.groupBox_InstallMode = new System.Windows.Forms.GroupBox();
+            this.button_MainInstallBrowseClear = new System.Windows.Forms.Button();
+            this.button_MainInstallBrowse = new System.Windows.Forms.Button();
+            this.textBox_MainInstallPath = new System.Windows.Forms.TextBox();
+            this.label13 = new System.Windows.Forms.Label();
             this.radio_InstallMode_Hard = new System.Windows.Forms.RadioButton();
             this.radio_InstallMode_Soft = new System.Windows.Forms.RadioButton();
-            this.label_Hud = new System.Windows.Forms.Label();
+            this.label_Static_Hud = new System.Windows.Forms.Label();
             this.button_Install = new System.Windows.Forms.Button();
             this.button_MinimalDefault = new System.Windows.Forms.Button();
             this.button_StripMinimal = new System.Windows.Forms.Button();
@@ -107,9 +113,11 @@
             this.button_MainCancel = new System.Windows.Forms.Button();
             this.folderBrowse_Fragment = new System.Windows.Forms.FolderBrowserDialog();
             this.openFile_FragmentLogoBrowse = new System.Windows.Forms.OpenFileDialog();
+            this.folderBrowse_MainInstallPath = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl_Main.SuspendLayout();
             this.tab_Install.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.groupBox_HudInfo.SuspendLayout();
             this.groupBox_InstallMode.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_HudThumb)).BeginInit();
             this.tab_Fragment.SuspendLayout();
@@ -139,9 +147,10 @@
             // tab_Install
             // 
             this.tab_Install.BackColor = System.Drawing.Color.Transparent;
-            this.tab_Install.Controls.Add(this.groupBox1);
+            this.tab_Install.Controls.Add(this.pictureBox2);
+            this.tab_Install.Controls.Add(this.groupBox_HudInfo);
             this.tab_Install.Controls.Add(this.groupBox_InstallMode);
-            this.tab_Install.Controls.Add(this.label_Hud);
+            this.tab_Install.Controls.Add(this.label_Static_Hud);
             this.tab_Install.Controls.Add(this.button_Install);
             this.tab_Install.Controls.Add(this.button_MinimalDefault);
             this.tab_Install.Controls.Add(this.button_StripMinimal);
@@ -158,32 +167,43 @@
             this.tab_Install.TabIndex = 0;
             this.tab_Install.Text = "Install Hud";
             // 
-            // groupBox1
+            // pictureBox2
             // 
-            this.groupBox1.Controls.Add(this.label8);
-            this.groupBox1.Controls.Add(this.linkLabel_HudWebsite);
-            this.groupBox1.Controls.Add(this.label_HudVersion);
-            this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.label10);
-            this.groupBox1.Controls.Add(this.label9);
-            this.groupBox1.Controls.Add(this.label_HudName);
-            this.groupBox1.Location = new System.Drawing.Point(219, 29);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 227);
-            this.groupBox1.TabIndex = 19;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Hud Info";
+            this.pictureBox2.BackgroundImage = global::HudInstaller.Properties.Resources.logo_main_transparent;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox2.Location = new System.Drawing.Point(243, 264);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(152, 84);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 20;
+            this.pictureBox2.TabStop = false;
             // 
-            // label8
+            // groupBox_HudInfo
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 145);
-            this.label8.Name = "label8";
-            this.label8.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.label8.Size = new System.Drawing.Size(114, 21);
-            this.label8.TabIndex = 7;
-            this.label8.Text = "label_HudAuthor";
+            this.groupBox_HudInfo.Controls.Add(this.label_HudAuthor);
+            this.groupBox_HudInfo.Controls.Add(this.linkLabel_HudWebsite);
+            this.groupBox_HudInfo.Controls.Add(this.label_HudVersion);
+            this.groupBox_HudInfo.Controls.Add(this.label_HudName);
+            this.groupBox_HudInfo.Controls.Add(this.label_Static_HudWebsite);
+            this.groupBox_HudInfo.Controls.Add(this.label_Static_HudAuthor);
+            this.groupBox_HudInfo.Controls.Add(this.label_Static_HudVersion);
+            this.groupBox_HudInfo.Controls.Add(this.label_Static_HudName);
+            this.groupBox_HudInfo.Location = new System.Drawing.Point(219, 28);
+            this.groupBox_HudInfo.Name = "groupBox_HudInfo";
+            this.groupBox_HudInfo.Size = new System.Drawing.Size(200, 231);
+            this.groupBox_HudInfo.TabIndex = 19;
+            this.groupBox_HudInfo.TabStop = false;
+            this.groupBox_HudInfo.Text = "Hud Info";
+            // 
+            // label_HudAuthor
+            // 
+            this.label_HudAuthor.AutoSize = true;
+            this.label_HudAuthor.Location = new System.Drawing.Point(6, 145);
+            this.label_HudAuthor.Name = "label_HudAuthor";
+            this.label_HudAuthor.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.label_HudAuthor.Size = new System.Drawing.Size(114, 21);
+            this.label_HudAuthor.TabIndex = 7;
+            this.label_HudAuthor.Text = "label_HudAuthor";
             // 
             // linkLabel_HudWebsite
             // 
@@ -206,75 +226,116 @@
             this.label_HudVersion.TabIndex = 5;
             this.label_HudVersion.Text = "label_HudVersion";
             // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(6, 51);
-            this.label12.Name = "label12";
-            this.label12.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-            this.label12.Size = new System.Drawing.Size(109, 21);
-            this.label12.TabIndex = 4;
-            this.label12.Text = "label_HudName";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label11.Location = new System.Drawing.Point(6, 165);
-            this.label11.Name = "label11";
-            this.label11.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
-            this.label11.Size = new System.Drawing.Size(63, 29);
-            this.label11.TabIndex = 3;
-            this.label11.Text = "Website:";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label10.Location = new System.Drawing.Point(6, 116);
-            this.label10.Name = "label10";
-            this.label10.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
-            this.label10.Size = new System.Drawing.Size(54, 29);
-            this.label10.TabIndex = 2;
-            this.label10.Text = "Author:";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label9.Location = new System.Drawing.Point(6, 69);
-            this.label9.Name = "label9";
-            this.label9.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
-            this.label9.Size = new System.Drawing.Size(60, 29);
-            this.label9.TabIndex = 1;
-            this.label9.Text = "Version:";
-            // 
             // label_HudName
             // 
             this.label_HudName.AutoSize = true;
-            this.label_HudName.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.label_HudName.Location = new System.Drawing.Point(6, 22);
+            this.label_HudName.Location = new System.Drawing.Point(6, 51);
             this.label_HudName.Name = "label_HudName";
-            this.label_HudName.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
-            this.label_HudName.Size = new System.Drawing.Size(49, 29);
-            this.label_HudName.TabIndex = 0;
-            this.label_HudName.Text = "Name:";
+            this.label_HudName.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.label_HudName.Size = new System.Drawing.Size(109, 21);
+            this.label_HudName.TabIndex = 4;
+            this.label_HudName.Text = "label_HudName";
+            // 
+            // label_Static_HudWebsite
+            // 
+            this.label_Static_HudWebsite.AutoSize = true;
+            this.label_Static_HudWebsite.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.label_Static_HudWebsite.Location = new System.Drawing.Point(6, 165);
+            this.label_Static_HudWebsite.Name = "label_Static_HudWebsite";
+            this.label_Static_HudWebsite.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
+            this.label_Static_HudWebsite.Size = new System.Drawing.Size(63, 29);
+            this.label_Static_HudWebsite.TabIndex = 3;
+            this.label_Static_HudWebsite.Text = "Website:";
+            // 
+            // label_Static_HudAuthor
+            // 
+            this.label_Static_HudAuthor.AutoSize = true;
+            this.label_Static_HudAuthor.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.label_Static_HudAuthor.Location = new System.Drawing.Point(6, 116);
+            this.label_Static_HudAuthor.Name = "label_Static_HudAuthor";
+            this.label_Static_HudAuthor.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
+            this.label_Static_HudAuthor.Size = new System.Drawing.Size(54, 29);
+            this.label_Static_HudAuthor.TabIndex = 2;
+            this.label_Static_HudAuthor.Text = "Author:";
+            // 
+            // label_Static_HudVersion
+            // 
+            this.label_Static_HudVersion.AutoSize = true;
+            this.label_Static_HudVersion.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.label_Static_HudVersion.Location = new System.Drawing.Point(6, 69);
+            this.label_Static_HudVersion.Name = "label_Static_HudVersion";
+            this.label_Static_HudVersion.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
+            this.label_Static_HudVersion.Size = new System.Drawing.Size(60, 29);
+            this.label_Static_HudVersion.TabIndex = 1;
+            this.label_Static_HudVersion.Text = "Version:";
+            // 
+            // label_Static_HudName
+            // 
+            this.label_Static_HudName.AutoSize = true;
+            this.label_Static_HudName.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.label_Static_HudName.Location = new System.Drawing.Point(6, 22);
+            this.label_Static_HudName.Name = "label_Static_HudName";
+            this.label_Static_HudName.Padding = new System.Windows.Forms.Padding(0, 12, 0, 0);
+            this.label_Static_HudName.Size = new System.Drawing.Size(49, 29);
+            this.label_Static_HudName.TabIndex = 0;
+            this.label_Static_HudName.Text = "Name:";
             // 
             // groupBox_InstallMode
             // 
+            this.groupBox_InstallMode.Controls.Add(this.button_MainInstallBrowseClear);
+            this.groupBox_InstallMode.Controls.Add(this.button_MainInstallBrowse);
+            this.groupBox_InstallMode.Controls.Add(this.textBox_MainInstallPath);
+            this.groupBox_InstallMode.Controls.Add(this.label13);
             this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Hard);
             this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Soft);
-            this.groupBox_InstallMode.Location = new System.Drawing.Point(425, 174);
+            this.groupBox_InstallMode.Location = new System.Drawing.Point(425, 108);
             this.groupBox_InstallMode.Name = "groupBox_InstallMode";
-            this.groupBox_InstallMode.Size = new System.Drawing.Size(170, 82);
+            this.groupBox_InstallMode.Size = new System.Drawing.Size(170, 151);
             this.groupBox_InstallMode.TabIndex = 18;
             this.groupBox_InstallMode.TabStop = false;
             this.groupBox_InstallMode.Text = "Install Mode";
             // 
+            // button_MainInstallBrowseClear
+            // 
+            this.button_MainInstallBrowseClear.Location = new System.Drawing.Point(6, 122);
+            this.button_MainInstallBrowseClear.Name = "button_MainInstallBrowseClear";
+            this.button_MainInstallBrowseClear.Size = new System.Drawing.Size(77, 23);
+            this.button_MainInstallBrowseClear.TabIndex = 20;
+            this.button_MainInstallBrowseClear.Text = "Clear";
+            this.button_MainInstallBrowseClear.UseVisualStyleBackColor = true;
+            this.button_MainInstallBrowseClear.Click += new System.EventHandler(this.button_MainInstallBrowseClear_Click);
+            // 
+            // button_MainInstallBrowse
+            // 
+            this.button_MainInstallBrowse.Location = new System.Drawing.Point(87, 122);
+            this.button_MainInstallBrowse.Name = "button_MainInstallBrowse";
+            this.button_MainInstallBrowse.Size = new System.Drawing.Size(79, 23);
+            this.button_MainInstallBrowse.TabIndex = 19;
+            this.button_MainInstallBrowse.Text = "Browse";
+            this.button_MainInstallBrowse.UseVisualStyleBackColor = true;
+            this.button_MainInstallBrowse.Click += new System.EventHandler(this.button_MainInstallBrowse_Click);
+            // 
+            // textBox_MainInstallPath
+            // 
+            this.textBox_MainInstallPath.Location = new System.Drawing.Point(7, 94);
+            this.textBox_MainInstallPath.Name = "textBox_MainInstallPath";
+            this.textBox_MainInstallPath.Size = new System.Drawing.Size(156, 22);
+            this.textBox_MainInstallPath.TabIndex = 18;
+            this.textBox_MainInstallPath.TextChanged += new System.EventHandler(this.textBox_MainInstallPath_TextChanged);
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(4, 74);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(77, 17);
+            this.label13.TabIndex = 17;
+            this.label13.Text = "TF2 folder:";
+            // 
             // radio_InstallMode_Hard
             // 
             this.radio_InstallMode_Hard.AutoSize = true;
-            this.radio_InstallMode_Hard.Location = new System.Drawing.Point(6, 25);
+            this.radio_InstallMode_Hard.Location = new System.Drawing.Point(6, 22);
             this.radio_InstallMode_Hard.Name = "radio_InstallMode_Hard";
             this.radio_InstallMode_Hard.Size = new System.Drawing.Size(60, 21);
             this.radio_InstallMode_Hard.TabIndex = 16;
@@ -285,7 +346,7 @@
             // 
             this.radio_InstallMode_Soft.AutoSize = true;
             this.radio_InstallMode_Soft.Checked = true;
-            this.radio_InstallMode_Soft.Location = new System.Drawing.Point(6, 52);
+            this.radio_InstallMode_Soft.Location = new System.Drawing.Point(6, 48);
             this.radio_InstallMode_Soft.Name = "radio_InstallMode_Soft";
             this.radio_InstallMode_Soft.Size = new System.Drawing.Size(163, 21);
             this.radio_InstallMode_Soft.TabIndex = 15;
@@ -293,14 +354,14 @@
             this.radio_InstallMode_Soft.Text = "Soft (Recommended)";
             this.radio_InstallMode_Soft.UseVisualStyleBackColor = true;
             // 
-            // label_Hud
+            // label_Static_Hud
             // 
-            this.label_Hud.AutoSize = true;
-            this.label_Hud.Location = new System.Drawing.Point(16, 16);
-            this.label_Hud.Name = "label_Hud";
-            this.label_Hud.Size = new System.Drawing.Size(34, 17);
-            this.label_Hud.TabIndex = 11;
-            this.label_Hud.Text = "Hud";
+            this.label_Static_Hud.AutoSize = true;
+            this.label_Static_Hud.Location = new System.Drawing.Point(16, 16);
+            this.label_Static_Hud.Name = "label_Static_Hud";
+            this.label_Static_Hud.Size = new System.Drawing.Size(34, 17);
+            this.label_Static_Hud.TabIndex = 11;
+            this.label_Static_Hud.Text = "Hud";
             // 
             // button_Install
             // 
@@ -314,7 +375,7 @@
             // 
             // button_MinimalDefault
             // 
-            this.button_MinimalDefault.Location = new System.Drawing.Point(425, 100);
+            this.button_MinimalDefault.Location = new System.Drawing.Point(424, 36);
             this.button_MinimalDefault.Margin = new System.Windows.Forms.Padding(12, 3, 12, 3);
             this.button_MinimalDefault.Name = "button_MinimalDefault";
             this.button_MinimalDefault.Size = new System.Drawing.Size(170, 31);
@@ -325,7 +386,7 @@
             // 
             // button_StripMinimal
             // 
-            this.button_StripMinimal.Location = new System.Drawing.Point(425, 137);
+            this.button_StripMinimal.Location = new System.Drawing.Point(424, 71);
             this.button_StripMinimal.Name = "button_StripMinimal";
             this.button_StripMinimal.Size = new System.Drawing.Size(170, 31);
             this.button_StripMinimal.TabIndex = 7;
@@ -373,9 +434,11 @@
             // PictureBox_HudThumb
             // 
             this.PictureBox_HudThumb.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PictureBox_HudThumb.Location = new System.Drawing.Point(19, 65);
+            this.PictureBox_HudThumb.Image = ((System.Drawing.Image)(resources.GetObject("PictureBox_HudThumb.Image")));
+            this.PictureBox_HudThumb.Location = new System.Drawing.Point(19, 66);
             this.PictureBox_HudThumb.Name = "PictureBox_HudThumb";
             this.PictureBox_HudThumb.Size = new System.Drawing.Size(194, 191);
+            this.PictureBox_HudThumb.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureBox_HudThumb.TabIndex = 1;
             this.PictureBox_HudThumb.TabStop = false;
             // 
@@ -573,10 +636,11 @@
             // pictureBox_FragmentHudMain
             // 
             this.pictureBox_FragmentHudMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox_FragmentHudMain.Location = new System.Drawing.Point(19, 65);
+            this.pictureBox_FragmentHudMain.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox_FragmentHudMain.Image")));
+            this.pictureBox_FragmentHudMain.Location = new System.Drawing.Point(19, 66);
             this.pictureBox_FragmentHudMain.Name = "pictureBox_FragmentHudMain";
             this.pictureBox_FragmentHudMain.Size = new System.Drawing.Size(194, 191);
-            this.pictureBox_FragmentHudMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_FragmentHudMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_FragmentHudMain.TabIndex = 13;
             this.pictureBox_FragmentHudMain.TabStop = false;
             // 
@@ -782,33 +846,33 @@
             // pictureBox1
             // 
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Image = global::HudInstaller.Properties.Resources.logo_default;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(217, 79);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(178, 178);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
             // 
             // PictureBox_CombineHud2
             // 
             this.PictureBox_CombineHud2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PictureBox_CombineHud2.Image = global::HudInstaller.Properties.Resources.logo_default;
+            this.PictureBox_CombineHud2.Image = ((System.Drawing.Image)(resources.GetObject("PictureBox_CombineHud2.Image")));
             this.PictureBox_CombineHud2.Location = new System.Drawing.Point(418, 79);
             this.PictureBox_CombineHud2.Name = "PictureBox_CombineHud2";
             this.PictureBox_CombineHud2.Size = new System.Drawing.Size(178, 178);
-            this.PictureBox_CombineHud2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.PictureBox_CombineHud2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureBox_CombineHud2.TabIndex = 1;
             this.PictureBox_CombineHud2.TabStop = false;
             // 
             // PictureBox_CombineHud1
             // 
             this.PictureBox_CombineHud1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PictureBox_CombineHud1.Image = global::HudInstaller.Properties.Resources.logo_default;
+            this.PictureBox_CombineHud1.Image = ((System.Drawing.Image)(resources.GetObject("PictureBox_CombineHud1.Image")));
             this.PictureBox_CombineHud1.Location = new System.Drawing.Point(16, 79);
             this.PictureBox_CombineHud1.Name = "PictureBox_CombineHud1";
             this.PictureBox_CombineHud1.Size = new System.Drawing.Size(178, 178);
-            this.PictureBox_CombineHud1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.PictureBox_CombineHud1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureBox_CombineHud1.TabIndex = 0;
             this.PictureBox_CombineHud1.TabStop = false;
             // 
@@ -828,7 +892,6 @@
             this.textBox_About.AcceptsReturn = true;
             this.textBox_About.AcceptsTab = true;
             this.textBox_About.CausesValidation = false;
-            this.textBox_About.Enabled = false;
             this.textBox_About.Location = new System.Drawing.Point(251, 28);
             this.textBox_About.Multiline = true;
             this.textBox_About.Name = "textBox_About";
@@ -844,7 +907,7 @@
             this.pictureBox_About_Logo.Location = new System.Drawing.Point(15, 28);
             this.pictureBox_About_Logo.Name = "pictureBox_About_Logo";
             this.pictureBox_About_Logo.Size = new System.Drawing.Size(230, 230);
-            this.pictureBox_About_Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_About_Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_About_Logo.TabIndex = 0;
             this.pictureBox_About_Logo.TabStop = false;
             // 
@@ -909,6 +972,14 @@
             this.progressBar_Main.Size = new System.Drawing.Size(539, 23);
             this.progressBar_Main.TabIndex = 2;
             // 
+            // folderBrowse_CombineHud1
+            // 
+            this.folderBrowse_CombineHud1.Description = "Browse for a Hud folder";
+            // 
+            // folderBrowse_CombineHud2
+            // 
+            this.folderBrowse_CombineHud2.Description = "Browse for a Hud folder";
+            // 
             // button_MainCancel
             // 
             this.button_MainCancel.Enabled = false;
@@ -919,11 +990,19 @@
             this.button_MainCancel.Text = "Cancel";
             this.button_MainCancel.UseVisualStyleBackColor = true;
             // 
+            // folderBrowse_Fragment
+            // 
+            this.folderBrowse_Fragment.Description = "Browse for a Hud Fragment";
+            // 
+            // folderBrowse_MainInstallPath
+            // 
+            this.folderBrowse_MainInstallPath.Description = "Browse for TF2 Game Path or any other place you want to Install the Hud";
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(642, 568);
+            this.ClientSize = new System.Drawing.Size(1131, 568);
             this.Controls.Add(this.button_MainCancel);
             this.Controls.Add(this.textBox_MainHelpTitle);
             this.Controls.Add(this.progressBar_Main);
@@ -933,16 +1012,19 @@
             this.Controls.Add(this.button_ToggleHelp);
             this.Controls.Add(this.tabControl_Main);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "mainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hud ToolBox";
+            this.Load += new System.EventHandler(this.mainForm_Load);
             this.tabControl_Main.ResumeLayout(false);
             this.tab_Install.ResumeLayout(false);
             this.tab_Install.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.groupBox_HudInfo.ResumeLayout(false);
+            this.groupBox_HudInfo.PerformLayout();
             this.groupBox_InstallMode.ResumeLayout(false);
             this.groupBox_InstallMode.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_HudThumb)).EndInit();
@@ -1007,7 +1089,7 @@
         private System.Windows.Forms.TextBox textBox_MainHelpTitle;
         private System.Windows.Forms.TextBox textBox_MainHelp;
         private System.Windows.Forms.Label label_Help;
-        private System.Windows.Forms.Label label_Hud;
+        private System.Windows.Forms.Label label_Static_Hud;
         private System.Windows.Forms.CheckBox checkBox_CombineHud2UseDefault;
         private System.Windows.Forms.CheckBox checkBox_CombineHud1UseDefault;
         private System.Windows.Forms.GroupBox groupBox_InstallMode;
@@ -1036,15 +1118,21 @@
         private System.Windows.Forms.TextBox textBox_Fragment_Name;
         private System.Windows.Forms.OpenFileDialog openFile_FragmentLogoBrowse;
         private System.Windows.Forms.Button button_CombineResultClearLogo;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.GroupBox groupBox_HudInfo;
+        private System.Windows.Forms.Label label_HudAuthor;
         private System.Windows.Forms.LinkLabel linkLabel_HudWebsite;
         private System.Windows.Forms.Label label_HudVersion;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label_HudName;
+        private System.Windows.Forms.Label label_Static_HudWebsite;
+        private System.Windows.Forms.Label label_Static_HudAuthor;
+        private System.Windows.Forms.Label label_Static_HudVersion;
+        private System.Windows.Forms.Label label_Static_HudName;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Button button_MainInstallBrowseClear;
+        private System.Windows.Forms.Button button_MainInstallBrowse;
+        private System.Windows.Forms.TextBox textBox_MainInstallPath;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowse_MainInstallPath;
     }
 }
 

@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Windows.Forms;
 using hudParse;
-using System.Reflection;
 using Microsoft.Win32;
 using System.Resources;
-using System.Threading;
 
 namespace HudInstaller
 {
-    public partial class mainForm : Form
+    public partial class MainForm : Form
     {
         //Variables
         Hud mainHud = new Hud();
@@ -29,16 +24,35 @@ namespace HudInstaller
         bool helpEnabled = false;
         static Point formSize = new Point(497, 500);    //Different from designer value!!
 
+        SettingsForm Settings = new SettingsForm();
+
         ResourceManager resourceManager = HudInstaller.Properties.Resources.ResourceManager;
         HudResourceFile localizationFile;
         HudResourceFile helpInfo;
 
+        Languages language;
+
         string gamePath;
         string installPath;
 
-        public mainForm()
+        public Languages Language
+        {
+            get
+            {
+                return language;
+            }
+
+            set
+            {
+                language = value;
+            }
+        }
+        
+        public MainForm()
         {
             InitializeComponent();
+            localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
+            helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_English").ToString() ?? "")));
         }
 
         private void mainForm_Load(object sender,EventArgs e)
@@ -55,7 +69,7 @@ namespace HudInstaller
             ClearLabel(ref label_HudVersion);
             ClearLabel(ref linkLabel_HudWebsite);
 
-            SetLanguage(Languages.English);
+            SetLanguage(Language);
         }
 
         void ClearLabel(ref Label label)
@@ -68,103 +82,96 @@ namespace HudInstaller
             label.Text = "";
         }
 
-        
+        void UpdateLocalizationText()
+        {
+            /*string s = localizationFile.ToString();
+            int count = 0;
+            foreach(char c in s)
+            {
+                if(c == '\"')
+                    count++;
+            }
+            try
+            {
+                if(count % 2 == 0)
+                {
+                    count = count / 4;
+                }
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }*/
+            UpdateLabels();
+            UpdateButtons();
+            UpdateCheckBoxes();
+            UpdateRadioButtons();
+            UpdateTabs();
+        }
         void UpdateLabels()
         {               
-            var labels = RefLib.GetAll(this,typeof(Label));
-                        
-            foreach(Label l in labels)
-            {
-                for(int i = 0; i < localizationFile.ToString().Length; i++)
-                {
-                    string s = l.Name;
-                    if(i > 0)
-                        s += i;
-                    KeyValue kv = localizationFile.FindKeyValue(s);
-                    if(kv != null)
-                        l.Text = kv.Value;
-                    else continue;                    
-                }
+            var all = RefLib.GetAll(this,typeof(Label));            
+            foreach(Label x in all)
+            {               
+                string ss = x.Name;                    
+                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
+                if(kv != null)                
+                    x.Text = kv.Value;                                                                  
             }
         }
 
         //Same code as UpdateLabels(). Figure out how to condense into 1 function.
         void UpdateButtons()
         {
-            var buttons = RefLib.GetAll(this,typeof(Button));
-
-            foreach(Button b in buttons)
+            var all = RefLib.GetAll(this,typeof(Button));
+            foreach(Button x in all)
             {
-                for(int i = 0; i < localizationFile.ToString().Length; i++)
-                {
-                    string s = b.Name;
-                    if(i > 0)
-                        s += i;
-                    KeyValue kv = localizationFile.FindKeyValue(s);
-                    if(kv != null)
-                        b.Text = kv.Value;
-                    else continue;
-                }
+                string ss = x.Name;
+                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
+                if(kv != null)
+                    x.Text = kv.Value;
             }
         }
+
         //Same code as UpdateLabels(). Figure out how to condense into 1 function.
         void UpdateRadioButtons()
         {
             var all = RefLib.GetAll(this,typeof(RadioButton));
-
             foreach(RadioButton x in all)
             {
-                for(int i = 0; i < localizationFile.ToString().Length; i++)
-                {
-                    string s = x.Name;
-                    if(i > 0)
-                        s += i;
-                    KeyValue kv = localizationFile.FindKeyValue(s);
-                    if(kv != null)
-                        x.Text = kv.Value;
-                    else continue;
-                }
+                string ss = x.Name;
+                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
+                if(kv != null)
+                    x.Text = kv.Value;
             }
         }
+
         //Same code as UpdateLabels(). Figure out how to condense into 1 function.
         void UpdateCheckBoxes()
         {
             var all = RefLib.GetAll(this,typeof(CheckBox));
-
             foreach(CheckBox x in all)
             {
-                for(int i = 0; i < localizationFile.ToString().Length; i++)
-                {
-                    string s = x.Name;
-                    if(i > 0)
-                        s += i;
-                    KeyValue kv = localizationFile.FindKeyValue(s);
-                    if(kv != null)
-                        x.Text = kv.Value;
-                    else continue;
-                }
+                string ss = x.Name;
+                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
+                if(kv != null)
+                    x.Text = kv.Value;
             }
         }
+
         //Same code as UpdateLabels(). Figure out how to condense into 1 function.
         void UpdateGroupBoxes()
         {
             var all = RefLib.GetAll(this,typeof(GroupBox));
-
             foreach(GroupBox x in all)
             {
-                for(int i = 0; i < localizationFile.ToString().Length; i++)
-                {
-                    string s = x.Name;
-                    if(i > 0)
-                        s += i;
-                    KeyValue kv = localizationFile.FindKeyValue(s);
-                    if(kv != null)
-                        x.Text = kv.Value;
-                    else continue;
-                }
+                string ss = x.Name;
+                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
+                if(kv != null)
+                    x.Text = kv.Value;
             }
         }
-
+        
         void UpdateTabs()
         {
             var all = RefLib.GetAll(this,typeof(TabControl));
@@ -191,6 +198,18 @@ namespace HudInstaller
             {
                 X = Math.Max(workingArea.X,workingArea.X + (workingArea.Width - this.Width) / 2),
                 Y = Math.Max(workingArea.Y,workingArea.Y + (workingArea.Height - this.Height) / 2)
+            };
+        }
+        protected void CenterFormHorizontally(Form form)
+        {
+            Screen screen = Screen.FromControl(this);
+
+            Rectangle workingArea = screen.WorkingArea;
+            int temp = form.Location.Y;
+            form.Location = new Point()
+            {
+                X = Math.Max(workingArea.X,workingArea.X + (workingArea.Width - this.Width) / 2),
+                Y = temp
             };
         }
 
@@ -224,38 +243,37 @@ namespace HudInstaller
             else return false;
         }
 
-        enum Languages { English, Russian };
+        public enum Languages { English, Russian };
 
         void SetLanguage()
-        {
+        {            
             SetLanguage(Languages.English);
         }
 
         void SetLanguage(Languages lang)
         {            
-            try
-            {                
-                if(ResourceExists("toolbox_" + lang))                
-                    localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_" + lang).ToString() ?? "")));                
-                else                
-                    localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));                    
-                
-                if(ResourceExists("helpInfo_" + lang))                
-                    helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_" + lang).ToString() ?? "")));                
-                else
-                    helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));                
-            }
-            catch(Exception e)
+            if(lang != Language)
             {
-                throw e;
-            }
+                try
+                {
+                    if(ResourceExists("toolbox_" + lang))
+                        localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_" + lang).ToString() ?? "")));
+                    else
+                        localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
 
-            UpdateLabels();
-            UpdateButtons();
-            UpdateRadioButtons();
-            UpdateGroupBoxes();
-            UpdateCheckBoxes();
-            UpdateTabs();      
+                    if(ResourceExists("helpInfo_" + lang))
+                        helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_" + lang).ToString() ?? "")));
+                    else
+                        helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
+                }
+                catch(Exception e)
+                {
+                    throw e;
+                }
+                UpdateLocalizationText();
+
+                Language = lang;
+            }
         }
 
         #region Browse
@@ -281,7 +299,6 @@ namespace HudInstaller
         {
             FragmentHudBrowse(fbd,tb,hudName,pb,hud,null,null,null,null,null);
         }
-
         void FragmentHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb, Hud hud,TextBox resName,TextBox resVersion,TextBox resAuthor,TextBox resWebsite, TextBox resLogo)
         {
             if(fbd.ShowDialog() == DialogResult.OK)
@@ -353,48 +370,6 @@ namespace HudInstaller
 
         #endregion
 
-        private void button_Parse_Click(object sender,EventArgs e)
-        {
-
-        }
-
-        private void button_FragmentMain_Click(object sender,EventArgs e)
-        {
-            WriteStatus("Parsing Hud...");
-            fragmentHud.Resource = new HudResourceFile("hudinfo","txt",fragmentHud.Path,new List<KeyValue>()
-            {
-                new KeyValue("name",textBox_Fragment_Name.Text),
-                new KeyValue("version",textBox_Fragment_Version.Text),
-                new KeyValue("author",textBox_Fragment_Author.Text),
-                new KeyValue("website",textBox_Fragment_Website.Text)
-            });
-                        
-            Hud tempHud = hudParse.HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
-            if(tempHud != null)
-                fragmentHud.m_FolderList = tempHud.m_FolderList;
-            else WriteStatus("Failed to parse Hud");
-            
-
-            //WriteStatus("Successfully Parsed Hud " + fragmentHud.Name);
-        }        
-
-        private void button_FragmentClearLogo_Click(object sender,EventArgs e)
-        {
-            textBox_Fragment_LogoBrowse.Text = "";
-            openFile_FragmentLogoBrowse.FileName = null;
-            fragmentHud.SetDeafaultLogo();
-            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;
-        }
-
-        private void button_Combine_Click(object sender,EventArgs e)
-        {            
-            if(textBox_CombineBrowse1.Text != textBox_CombineBrowse2.Text)
-            {
-                //Combine();
-            }
-            else WriteStatus("Can't combine a hud with itself");
-            
-        }
 
         #region Help - Sets help strings and stuff
         private void SetHelpToString(string s)
@@ -478,7 +453,7 @@ namespace HudInstaller
                 textBox_MainHelp.Visible = true;
                 textBox_MainHelpTitle.Visible = true;
                 helpEnabled = true;
-                CenterForm(this);                
+                CenterFormHorizontally(this);                
             }
             else
             {
@@ -487,7 +462,7 @@ namespace HudInstaller
                 textBox_MainHelp.Visible = false;
                 textBox_MainHelpTitle.Visible = false;
                 helpEnabled = false;
-                CenterForm(this);
+                CenterFormHorizontally(this);
             }
         }
 
@@ -557,6 +532,7 @@ namespace HudInstaller
 
         #endregion
 
+        #region Buttons - Click events
         private void button_MainInstallBrowseClear_Click(object sender,EventArgs e)
         {
             folderBrowse_MainInstallPath.SelectedPath = null;
@@ -572,5 +548,58 @@ namespace HudInstaller
             }
         }
 
+        private void button_Settings_Click(object sender,EventArgs e)
+        {
+            Settings.OldLanguage = (int)Language;
+            if(Settings.ShowDialog() == DialogResult.OK)
+            {
+                Languages temp = (Languages)Settings.NewLanguage;                
+                SetLanguage(temp);
+            }            
+        }
+
+        private void button_Parse_Click(object sender,EventArgs e)
+        {
+
+        }
+
+        private void button_FragmentMain_Click(object sender,EventArgs e)
+        {
+            WriteStatus("Parsing Hud...");
+            fragmentHud.Resource = new HudResourceFile("hudinfo","txt",fragmentHud.Path,new List<KeyValue>()
+            {
+                new KeyValue("name",textBox_Fragment_Name.Text),
+                new KeyValue("version",textBox_Fragment_Version.Text),
+                new KeyValue("author",textBox_Fragment_Author.Text),
+                new KeyValue("website",textBox_Fragment_Website.Text)
+            });
+
+            Hud tempHud = hudParse.HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
+            if(tempHud != null)
+                fragmentHud.m_FolderList = tempHud.m_FolderList;
+            else WriteStatus("Failed to parse Hud");
+
+
+            //WriteStatus("Successfully Parsed Hud " + fragmentHud.Name);
+        }
+
+        private void button_FragmentClearLogo_Click(object sender,EventArgs e)
+        {
+            textBox_Fragment_LogoBrowse.Text = "";
+            openFile_FragmentLogoBrowse.FileName = null;
+            fragmentHud.SetDeafaultLogo();
+            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;
+        }
+
+        private void button_Combine_Click(object sender,EventArgs e)
+        {
+            if(textBox_CombineBrowse1.Text != textBox_CombineBrowse2.Text)
+            {
+                //Combine();
+            }
+            else WriteStatus("Can't combine a hud with itself");
+
+        }
+        #endregion
     }
 }

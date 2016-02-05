@@ -90,6 +90,16 @@ namespace HudInstaller.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap icon_settings {
+            get {
+                object obj = ResourceManager.GetObject("icon_settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap logo_default {
             get {
                 object obj = ResourceManager.GetObject("logo_default", resourceCulture);
@@ -130,21 +140,22 @@ namespace HudInstaller.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &quot;Toolbox_English&quot;
         ///{
-        ///	&quot;null&quot;									&quot;null&quot;
-        ///	&quot;tab_InstallHud&quot;					&quot;Install Hud&quot;
-        ///	&quot;tab_FragmentHud&quot;				&quot;Create Blueprint&quot;
-        ///	&quot;tab_CombineHuds&quot;				&quot;Combine Huds&quot;
-        ///	&quot;tab_About&quot;							&quot;About&quot;
+        ///	
+        ///	//Install Tab
+        ///	&quot;label_Static_Hud&quot;					&quot;Hud&quot;
+        ///	&quot;label_Static_Hudname&quot;				&quot;Name&quot;
+        ///	&quot;label_Static_HudVersion&quot;			&quot;Version&quot;
+        ///	&quot;label_Static_HudWebsite&quot;			&quot;Website&quot;
+        ///	&quot;label_Static_HudAuthor&quot;			&quot;Author&quot;
+        ///	&quot;label_static_logo&quot;					&quot;Logo&quot;	
+        ///	&quot;label_static_result&quot;				&quot;Result&quot;
+        ///	&quot;label_TF2Folder&quot;					&quot;TF2 Folder:&quot;
         ///
-        ///	&quot;button_Parse&quot;						&quot;Parse&quot;
-        ///	&quot;button_Install&quot;						&quot;Install&quot;
-        ///	&quot;button_Browse&quot;					&quot;Browse&quot;
-        ///	&quot;button_Clear&quot;						&quot;Clear&quot;
-        ///	&quot;button_Customize&quot;				&quot;Customize&quot;
-        ///	&quot;button_MinimalToDefault&quot;	&quot;Minimal to Default&quot;
-        ///	&quot;button_StripMinimal&quot;			&quot;Strip Minimal&quot;
-        ///	&quot;button_CreateFragment&quot;		&quot;Create Blueprint&quot;
-        ///	&quot;button_ToggleHelp&quot;	 [rest of string was truncated]&quot;;.
+        ///	&quot;groupbox_HudInfo&quot;					&quot;Hud Info&quot;
+        ///	&quot;groupbox_InstallMode&quot;				&quot;Install Mode&quot;
+        ///
+        ///	&quot;checkbox_CombineUseMinimal&quot;		&quot;Use minmode values&quot;
+        ///	&quot;checkbox_CombineHud1UseDefault&quot;	&quot;Use Defa [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string toolbox_english {
             get {
@@ -155,21 +166,22 @@ namespace HudInstaller.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &quot;Toolbox_Russian&quot;
         ///{
-        ///	&quot;null&quot;									&quot;null&quot;
-        ///	&quot;tab_InstallHud&quot;					&quot;Установить Хад&quot;
-        ///	&quot;tab_FragmentHud&quot;				&quot;Создать Чертёж&quot;
-        ///	&quot;tab_CombineHuds&quot;				&quot;Соединить Хады&quot;
-        ///	&quot;tab_About&quot;							&quot;About&quot;
+        ///	
+        ///	//Install Tab
+        ///	&quot;label_Static_Hud&quot;					&quot;Хад&quot;
+        ///	&quot;label_Static_Hudname&quot;				&quot;Название&quot;
+        ///	&quot;label_Static_HudVersion&quot;			&quot;Версия&quot;
+        ///	&quot;label_Static_HudWebsite&quot;			&quot;Вэбсайт&quot;
+        ///	&quot;label_Static_HudAuthor&quot;			&quot;Автор&quot;
+        ///	&quot;label_static_logo&quot;					&quot;Логотип&quot;	
+        ///	&quot;label_static_result&quot;				&quot;Результат&quot;
+        ///	&quot;label_TF2_Folder&quot;					&quot;Путь ТФ2:&quot;
         ///
-        ///	&quot;button_Parse&quot;						&quot;Parse&quot;
-        ///	&quot;button_Install&quot;						&quot;Установить&quot;
-        ///	&quot;button_Browse&quot;					&quot;Browse&quot;
-        ///	&quot;button_Clear&quot;						&quot;Clear&quot;
-        ///	&quot;button_Customize&quot;				&quot;Customize&quot;
-        ///	&quot;button_MinimalToDefault&quot;	&quot;Minimal to Default&quot;
-        ///	&quot;button_StripMinimal&quot;			&quot;Strip Minimal&quot;
-        ///	&quot;button_CreateFragment&quot;		&quot;Create Blueprint&quot;
-        ///	&quot;button_Toggle [rest of string was truncated]&quot;;.
+        ///	&quot;groupbox_HudInfo&quot;					&quot;Хад Инфо&quot;
+        ///	&quot;groupbox_InstallMode&quot;				&quot;Режим Установки&quot;
+        ///
+        ///	&quot;checkbox_CombineUseMinimal&quot;		&quot;Use minmode values&quot;
+        ///	&quot;checkbox_CombineHudUseDefault1&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string toolbox_Russian {
             get {

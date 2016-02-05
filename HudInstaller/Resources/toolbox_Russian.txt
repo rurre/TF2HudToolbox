@@ -3,7 +3,7 @@
 	
 	//Install Tab
 	"label_Static_Hud"					"Хад"
-	"label_Static_Hudname"				"Имя"
+	"label_Static_Hudname"				"Название"
 	"label_Static_HudVersion"			"Версия"
 	"label_Static_HudWebsite"			"Вэбсайт"
 	"label_Static_HudAuthor"			"Автор"
@@ -15,25 +15,25 @@
 	"groupbox_InstallMode"				"Режим Установки"
 
 	"checkbox_CombineUseMinimal"		"Use minmode values"
-	"checkbox_CombineHudUseDefault1"	"Использ. стандартный Хад"	
+	"checkbox_CombineHudUseDefault"		"Использ. станд. Хад"	
 	
 	"button_MainBrowse"					"Поиск"
 	"button_Parse"						"Parse"
 	"button_Install"					"Установить"
 	"button_Customize"					"Customize"
-	"button_MainInstallBrowseClear"		"Очистить"
-	"button_MainInstallBrowse"			"Browse"
-	"button_StripMinimal"				"Убрать Минималь. Хад"
+	"button_MainInstallBrowseClear"		"Очист."
+	"button_MainInstallBrowse"			"Поиск"
+	"button_StripMinimal"				"Убрать Миним. Хад"
 	"button_MinimalDefault"				"Minimal to Default"
 	"button_ToggleHelp"					"Помощь"
-	"button_FragmentHudBrowse"			"Browse"
+	"button_FragmentHudBrowse"			"Поиск"
 	"button_FragmentMain"				"Создать Эскиз"
 	"button_FragmentLogoBrowse"			"Browse Logo"	
 	"button_CombineResultBrowseLogo"	"Browse"	
 	"button_MainCancel"					"Отмена"
 	
-	"tab_Install"						"Install Hud"
-	"tab_Fragment"						"Create Blueprint"
+	"tab_Install"						"Установить Хад"
+	"tab_Fragment"						"Создать Эскиз"
 	"tab_CombineHuds"					"Combine Huds"
 	"tab_About"							"About"
 

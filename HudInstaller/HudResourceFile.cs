@@ -123,6 +123,17 @@ namespace hudParse
             return null;
         }
 
+        public KeyValue FindKeyValueIgnoreEndNr(string name)
+        {
+            name = RefLib.RemoveEndNumbers(name).ToLower();
+            foreach(KeyValue element in m_ValueList)
+            {                
+                if(name == element.Name.ToLower())
+                    return element;                
+            }                
+            return null;           
+        }
+
         public SubElement FindSubElement(string name)
         {
             foreach(SubElement element in m_SubList)

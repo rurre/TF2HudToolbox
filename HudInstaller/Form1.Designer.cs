@@ -1,6 +1,6 @@
 ﻿namespace HudInstaller
 {
-    partial class mainForm
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tab_Install = new System.Windows.Forms.TabPage();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
@@ -114,6 +114,7 @@
             this.folderBrowse_Fragment = new System.Windows.Forms.FolderBrowserDialog();
             this.openFile_FragmentLogoBrowse = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowse_MainInstallPath = new System.Windows.Forms.FolderBrowserDialog();
+            this.button_Settings = new System.Windows.Forms.Button();
             this.tabControl_Main.SuspendLayout();
             this.tab_Install.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -687,6 +688,7 @@
             // checkBox_CombineHudUseDefault2
             // 
             this.checkBox_CombineHudUseDefault2.AutoSize = true;
+            this.checkBox_CombineHudUseDefault2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.checkBox_CombineHudUseDefault2.Location = new System.Drawing.Point(418, 324);
             this.checkBox_CombineHudUseDefault2.Name = "checkBox_CombineHudUseDefault2";
             this.checkBox_CombineHudUseDefault2.Size = new System.Drawing.Size(163, 21);
@@ -697,6 +699,7 @@
             // checkBox_CombineHudUseDefault1
             // 
             this.checkBox_CombineHudUseDefault1.AutoSize = true;
+            this.checkBox_CombineHudUseDefault1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.checkBox_CombineHudUseDefault1.Location = new System.Drawing.Point(17, 324);
             this.checkBox_CombineHudUseDefault1.Name = "checkBox_CombineHudUseDefault1";
             this.checkBox_CombineHudUseDefault1.Size = new System.Drawing.Size(163, 21);
@@ -817,6 +820,7 @@
             // 
             // checkBox_CombineUseMinimal2
             // 
+            this.checkBox_CombineUseMinimal2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.checkBox_CombineUseMinimal2.Location = new System.Drawing.Point(418, 296);
             this.checkBox_CombineUseMinimal2.Name = "checkBox_CombineUseMinimal2";
             this.checkBox_CombineUseMinimal2.Size = new System.Drawing.Size(178, 24);
@@ -826,6 +830,7 @@
             // 
             // checkBox_CombineUseMinimal1
             // 
+            this.checkBox_CombineUseMinimal1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.checkBox_CombineUseMinimal1.Location = new System.Drawing.Point(17, 296);
             this.checkBox_CombineUseMinimal1.Name = "checkBox_CombineUseMinimal1";
             this.checkBox_CombineUseMinimal1.Size = new System.Drawing.Size(178, 22);
@@ -998,11 +1003,23 @@
             // 
             this.folderBrowse_MainInstallPath.Description = "Browse for TF2 Game Path or any other place you want to Install the Hud";
             // 
-            // mainForm
+            // button_Settings
+            // 
+            this.button_Settings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button_Settings.Image = global::HudInstaller.Properties.Resources.icon_settings;
+            this.button_Settings.Location = new System.Drawing.Point(498, 12);
+            this.button_Settings.Name = "button_Settings";
+            this.button_Settings.Size = new System.Drawing.Size(30, 27);
+            this.button_Settings.TabIndex = 15;
+            this.button_Settings.UseVisualStyleBackColor = true;
+            this.button_Settings.Click += new System.EventHandler(this.button_Settings_Click);
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1131, 568);
+            this.Controls.Add(this.button_Settings);
             this.Controls.Add(this.button_MainCancel);
             this.Controls.Add(this.textBox_MainHelpTitle);
             this.Controls.Add(this.progressBar_Main);
@@ -1014,7 +1031,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "mainForm";
+            this.Name = "MainForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Hud ToolBox";
@@ -1133,6 +1150,7 @@
         private System.Windows.Forms.TextBox textBox_MainInstallPath;
         private System.Windows.Forms.Label label_TF2Folder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse_MainInstallPath;
+        private System.Windows.Forms.Button button_Settings;
     }
 }
 

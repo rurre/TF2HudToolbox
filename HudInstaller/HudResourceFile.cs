@@ -120,7 +120,17 @@ namespace hudParse
                 if(element.Name.ToLower() == name.ToLower())
                     return element;
             }
-            return new KeyValue();
+            return null;
+        }
+
+        public SubElement FindSubElement(string name)
+        {
+            foreach(SubElement element in m_SubList)
+            {
+                if(element.Name.ToLower() == name.ToLower())
+                    return element;
+            }
+            return new SubElement();
         }
     }
 }

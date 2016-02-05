@@ -61,7 +61,7 @@ namespace HudInstaller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;HelpInfo&quot;
+        ///   Looks up a localized string similar to &quot;HelpInfo_English&quot;
         ///{
         ///	&quot;button_MinimalDefault_name&quot;	&quot;Minimal to Default&quot;
         ///	&quot;button_MinimalDefault_desc&quot;	&quot;Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud.&quot;
@@ -69,11 +69,11 @@ namespace HudInstaller.Properties {
         ///	&quot;button_StripMinimal_name&quot;		&quot;Strip Minimal Hud&quot;
         ///	&quot;button_StripMinimal_desc&quot;		&quot;This option will remove all Minimal Hud (cl_Hud_minmode 1) values from the selected Hud. This doesn&apos;t overwrite the selected Hud, only the one that gets installed.&quot;
         ///	
-        ///	&quot;button_fragment_name&quot;			&quot; [rest of string was truncated]&quot;;.
+        ///	&quot;button_fragment_n [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string helpinfo {
+        internal static string helpinfo_English {
             get {
-                return ResourceManager.GetString("helpinfo", resourceCulture);
+                return ResourceManager.GetString("helpinfo_English", resourceCulture);
             }
         }
         
@@ -128,27 +128,52 @@ namespace HudInstaller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;Toolbox&quot;
+        ///   Looks up a localized string similar to &quot;Toolbox_English&quot;
         ///{
-        ///	&quot;tab_InstallHud&quot;				&quot;Install Hud&quot;
+        ///	&quot;null&quot;									&quot;null&quot;
+        ///	&quot;tab_InstallHud&quot;					&quot;Install Hud&quot;
         ///	&quot;tab_FragmentHud&quot;				&quot;Create Blueprint&quot;
         ///	&quot;tab_CombineHuds&quot;				&quot;Combine Huds&quot;
-        ///	&quot;tab_About&quot;						&quot;About&quot;
+        ///	&quot;tab_About&quot;							&quot;About&quot;
         ///
-        ///	&quot;button_Parse&quot;					&quot;Parse&quot;
-        ///	&quot;button_Install&quot;				&quot;Install&quot;
+        ///	&quot;button_Parse&quot;						&quot;Parse&quot;
+        ///	&quot;button_Install&quot;						&quot;Install&quot;
         ///	&quot;button_Browse&quot;					&quot;Browse&quot;
-        ///	&quot;button_Clear&quot;					&quot;Clear&quot;
+        ///	&quot;button_Clear&quot;						&quot;Clear&quot;
         ///	&quot;button_Customize&quot;				&quot;Customize&quot;
-        ///	&quot;button_MinimalToDefault&quot;		&quot;Minimal to Default&quot;
+        ///	&quot;button_MinimalToDefault&quot;	&quot;Minimal to Default&quot;
         ///	&quot;button_StripMinimal&quot;			&quot;Strip Minimal&quot;
-        ///	&quot;button_CreateFragment&quot;			&quot;Create Blueprint&quot;
-        ///	&quot;button_ToggleHelp&quot;				&quot;Toggle Help&quot;
-        ///	&quot;button_PickLogo&quot; [rest of string was truncated]&quot;;.
+        ///	&quot;button_CreateFragment&quot;		&quot;Create Blueprint&quot;
+        ///	&quot;button_ToggleHelp&quot;	 [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string toolbox {
+        internal static string toolbox_english {
             get {
-                return ResourceManager.GetString("toolbox", resourceCulture);
+                return ResourceManager.GetString("toolbox_english", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Toolbox_Russian&quot;
+        ///{
+        ///	&quot;null&quot;									&quot;null&quot;
+        ///	&quot;tab_InstallHud&quot;					&quot;Установить Хад&quot;
+        ///	&quot;tab_FragmentHud&quot;				&quot;Создать Чертёж&quot;
+        ///	&quot;tab_CombineHuds&quot;				&quot;Соединить Хады&quot;
+        ///	&quot;tab_About&quot;							&quot;About&quot;
+        ///
+        ///	&quot;button_Parse&quot;						&quot;Parse&quot;
+        ///	&quot;button_Install&quot;						&quot;Установить&quot;
+        ///	&quot;button_Browse&quot;					&quot;Browse&quot;
+        ///	&quot;button_Clear&quot;						&quot;Clear&quot;
+        ///	&quot;button_Customize&quot;				&quot;Customize&quot;
+        ///	&quot;button_MinimalToDefault&quot;	&quot;Minimal to Default&quot;
+        ///	&quot;button_StripMinimal&quot;			&quot;Strip Minimal&quot;
+        ///	&quot;button_CreateFragment&quot;		&quot;Create Blueprint&quot;
+        ///	&quot;button_Toggle [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string toolbox_Russian {
+            get {
+                return ResourceManager.GetString("toolbox_Russian", resourceCulture);
             }
         }
     }

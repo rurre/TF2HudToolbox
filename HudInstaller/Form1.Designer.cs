@@ -45,7 +45,7 @@
             this.button_MainInstallBrowseClear = new System.Windows.Forms.Button();
             this.button_MainInstallBrowse = new System.Windows.Forms.Button();
             this.textBox_MainInstallPath = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
+            this.label_TF2Folder = new System.Windows.Forms.Label();
             this.radio_InstallMode_Hard = new System.Windows.Forms.RadioButton();
             this.radio_InstallMode_Soft = new System.Windows.Forms.RadioButton();
             this.label_Static_Hud = new System.Windows.Forms.Label();
@@ -59,36 +59,36 @@
             this.PictureBox_HudThumb = new System.Windows.Forms.PictureBox();
             this.button_Parse = new System.Windows.Forms.Button();
             this.tab_Fragment = new System.Windows.Forms.TabPage();
-            this.group_FragmentHudInfo = new System.Windows.Forms.GroupBox();
+            this.groupBox_HudInfo1 = new System.Windows.Forms.GroupBox();
             this.button_FragmentClearLogo = new System.Windows.Forms.Button();
             this.button_FragmentLogoBrowse = new System.Windows.Forms.Button();
             this.textBox_Fragment_LogoBrowse = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.label_static_logo = new System.Windows.Forms.Label();
+            this.label_static_hudwebsite1 = new System.Windows.Forms.Label();
             this.textBox_Fragment_Website = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.label_static_hudauthor1 = new System.Windows.Forms.Label();
             this.textBox_Fragment_Author = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
+            this.label_static_hudversion1 = new System.Windows.Forms.Label();
             this.textBox_Fragment_Version = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label_static_hudname1 = new System.Windows.Forms.Label();
             this.textBox_Fragment_Name = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label_Static_Hud1 = new System.Windows.Forms.Label();
             this.button_FragmentHudBrowse = new System.Windows.Forms.Button();
             this.textBox_FragmentHudBrowse = new System.Windows.Forms.TextBox();
             this.textBox_FragmentHudMain = new System.Windows.Forms.TextBox();
             this.pictureBox_FragmentHudMain = new System.Windows.Forms.PictureBox();
             this.button_FragmentMain = new System.Windows.Forms.Button();
             this.tab_CombineHuds = new System.Windows.Forms.TabPage();
-            this.checkBox_CombineHud2UseDefault = new System.Windows.Forms.CheckBox();
-            this.checkBox_CombineHud1UseDefault = new System.Windows.Forms.CheckBox();
+            this.checkBox_CombineHudUseDefault2 = new System.Windows.Forms.CheckBox();
+            this.checkBox_CombineHudUseDefault1 = new System.Windows.Forms.CheckBox();
             this.button_CombineResultClearLogo = new System.Windows.Forms.Button();
-            this.button_CombineResultEditResource = new System.Windows.Forms.Button();
+            this.button_CombineResultBrowseLogo = new System.Windows.Forms.Button();
             this.button_CombineBrowse2 = new System.Windows.Forms.Button();
             this.textBox_CombineBrowse2 = new System.Windows.Forms.TextBox();
             this.textBox_CombineBrowse1 = new System.Windows.Forms.TextBox();
             this.button_CombineBrowse1 = new System.Windows.Forms.Button();
             this.textBox_CombineHud_Result = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label_Static_Result = new System.Windows.Forms.Label();
             this.label_CombineMinmode2 = new System.Windows.Forms.Label();
             this.label_CombineMinmode1 = new System.Windows.Forms.Label();
             this.textBox_CombineHudName2 = new System.Windows.Forms.TextBox();
@@ -121,7 +121,7 @@
             this.groupBox_InstallMode.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_HudThumb)).BeginInit();
             this.tab_Fragment.SuspendLayout();
-            this.group_FragmentHudInfo.SuspendLayout();
+            this.groupBox_HudInfo1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_FragmentHudMain)).BeginInit();
             this.tab_CombineHuds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -285,7 +285,7 @@
             this.groupBox_InstallMode.Controls.Add(this.button_MainInstallBrowseClear);
             this.groupBox_InstallMode.Controls.Add(this.button_MainInstallBrowse);
             this.groupBox_InstallMode.Controls.Add(this.textBox_MainInstallPath);
-            this.groupBox_InstallMode.Controls.Add(this.label13);
+            this.groupBox_InstallMode.Controls.Add(this.label_TF2Folder);
             this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Hard);
             this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Soft);
             this.groupBox_InstallMode.Location = new System.Drawing.Point(425, 108);
@@ -323,14 +323,14 @@
             this.textBox_MainInstallPath.TabIndex = 18;
             this.textBox_MainInstallPath.TextChanged += new System.EventHandler(this.textBox_MainInstallPath_TextChanged);
             // 
-            // label13
+            // label_TF2Folder
             // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(4, 74);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(77, 17);
-            this.label13.TabIndex = 17;
-            this.label13.Text = "TF2 folder:";
+            this.label_TF2Folder.AutoSize = true;
+            this.label_TF2Folder.Location = new System.Drawing.Point(4, 74);
+            this.label_TF2Folder.Name = "label_TF2Folder";
+            this.label_TF2Folder.Size = new System.Drawing.Size(77, 17);
+            this.label_TF2Folder.TabIndex = 17;
+            this.label_TF2Folder.Text = "TF2 folder:";
             // 
             // radio_InstallMode_Hard
             // 
@@ -456,8 +456,8 @@
             // tab_Fragment
             // 
             this.tab_Fragment.BackColor = System.Drawing.Color.Transparent;
-            this.tab_Fragment.Controls.Add(this.group_FragmentHudInfo);
-            this.tab_Fragment.Controls.Add(this.label2);
+            this.tab_Fragment.Controls.Add(this.groupBox_HudInfo1);
+            this.tab_Fragment.Controls.Add(this.label_Static_Hud1);
             this.tab_Fragment.Controls.Add(this.button_FragmentHudBrowse);
             this.tab_Fragment.Controls.Add(this.textBox_FragmentHudBrowse);
             this.tab_Fragment.Controls.Add(this.textBox_FragmentHudMain);
@@ -470,26 +470,26 @@
             this.tab_Fragment.TabIndex = 3;
             this.tab_Fragment.Text = "Fragment Hud";
             // 
-            // group_FragmentHudInfo
+            // groupBox_HudInfo1
             // 
-            this.group_FragmentHudInfo.Controls.Add(this.button_FragmentClearLogo);
-            this.group_FragmentHudInfo.Controls.Add(this.button_FragmentLogoBrowse);
-            this.group_FragmentHudInfo.Controls.Add(this.textBox_Fragment_LogoBrowse);
-            this.group_FragmentHudInfo.Controls.Add(this.label7);
-            this.group_FragmentHudInfo.Controls.Add(this.label5);
-            this.group_FragmentHudInfo.Controls.Add(this.textBox_Fragment_Website);
-            this.group_FragmentHudInfo.Controls.Add(this.label6);
-            this.group_FragmentHudInfo.Controls.Add(this.textBox_Fragment_Author);
-            this.group_FragmentHudInfo.Controls.Add(this.label4);
-            this.group_FragmentHudInfo.Controls.Add(this.textBox_Fragment_Version);
-            this.group_FragmentHudInfo.Controls.Add(this.label3);
-            this.group_FragmentHudInfo.Controls.Add(this.textBox_Fragment_Name);
-            this.group_FragmentHudInfo.Location = new System.Drawing.Point(233, 36);
-            this.group_FragmentHudInfo.Name = "group_FragmentHudInfo";
-            this.group_FragmentHudInfo.Size = new System.Drawing.Size(356, 311);
-            this.group_FragmentHudInfo.TabIndex = 18;
-            this.group_FragmentHudInfo.TabStop = false;
-            this.group_FragmentHudInfo.Text = "Hud Info";
+            this.groupBox_HudInfo1.Controls.Add(this.button_FragmentClearLogo);
+            this.groupBox_HudInfo1.Controls.Add(this.button_FragmentLogoBrowse);
+            this.groupBox_HudInfo1.Controls.Add(this.textBox_Fragment_LogoBrowse);
+            this.groupBox_HudInfo1.Controls.Add(this.label_static_logo);
+            this.groupBox_HudInfo1.Controls.Add(this.label_static_hudwebsite1);
+            this.groupBox_HudInfo1.Controls.Add(this.textBox_Fragment_Website);
+            this.groupBox_HudInfo1.Controls.Add(this.label_static_hudauthor1);
+            this.groupBox_HudInfo1.Controls.Add(this.textBox_Fragment_Author);
+            this.groupBox_HudInfo1.Controls.Add(this.label_static_hudversion1);
+            this.groupBox_HudInfo1.Controls.Add(this.textBox_Fragment_Version);
+            this.groupBox_HudInfo1.Controls.Add(this.label_static_hudname1);
+            this.groupBox_HudInfo1.Controls.Add(this.textBox_Fragment_Name);
+            this.groupBox_HudInfo1.Location = new System.Drawing.Point(233, 36);
+            this.groupBox_HudInfo1.Name = "groupBox_HudInfo1";
+            this.groupBox_HudInfo1.Size = new System.Drawing.Size(356, 311);
+            this.groupBox_HudInfo1.TabIndex = 18;
+            this.groupBox_HudInfo1.TabStop = false;
+            this.groupBox_HudInfo1.Text = "Hud Info";
             // 
             // button_FragmentClearLogo
             // 
@@ -521,24 +521,24 @@
             this.textBox_Fragment_LogoBrowse.TabIndex = 9;
             this.textBox_Fragment_LogoBrowse.TextChanged += new System.EventHandler(this.textBox_Fragment_LogoBrowse_TextChanged);
             // 
-            // label7
+            // label_static_logo
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 239);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(40, 17);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "Logo";
+            this.label_static_logo.AutoSize = true;
+            this.label_static_logo.Location = new System.Drawing.Point(16, 239);
+            this.label_static_logo.Name = "label_static_logo";
+            this.label_static_logo.Size = new System.Drawing.Size(40, 17);
+            this.label_static_logo.TabIndex = 8;
+            this.label_static_logo.Text = "Logo";
             // 
-            // label5
+            // label_static_hudwebsite1
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(16, 188);
-            this.label5.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(59, 17);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "Website";
+            this.label_static_hudwebsite1.AutoSize = true;
+            this.label_static_hudwebsite1.Location = new System.Drawing.Point(16, 188);
+            this.label_static_hudwebsite1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
+            this.label_static_hudwebsite1.Name = "label_static_hudwebsite1";
+            this.label_static_hudwebsite1.Size = new System.Drawing.Size(59, 17);
+            this.label_static_hudwebsite1.TabIndex = 7;
+            this.label_static_hudwebsite1.Text = "Website";
             // 
             // textBox_Fragment_Website
             // 
@@ -547,15 +547,15 @@
             this.textBox_Fragment_Website.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Website.TabIndex = 6;
             // 
-            // label6
+            // label_static_hudauthor1
             // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(16, 134);
-            this.label6.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(50, 17);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "Author";
+            this.label_static_hudauthor1.AutoSize = true;
+            this.label_static_hudauthor1.Location = new System.Drawing.Point(16, 134);
+            this.label_static_hudauthor1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
+            this.label_static_hudauthor1.Name = "label_static_hudauthor1";
+            this.label_static_hudauthor1.Size = new System.Drawing.Size(50, 17);
+            this.label_static_hudauthor1.TabIndex = 5;
+            this.label_static_hudauthor1.Text = "Author";
             // 
             // textBox_Fragment_Author
             // 
@@ -564,15 +564,15 @@
             this.textBox_Fragment_Author.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Author.TabIndex = 4;
             // 
-            // label4
+            // label_static_hudversion1
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(16, 80);
-            this.label4.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(56, 17);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Version";
+            this.label_static_hudversion1.AutoSize = true;
+            this.label_static_hudversion1.Location = new System.Drawing.Point(16, 80);
+            this.label_static_hudversion1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label_static_hudversion1.Name = "label_static_hudversion1";
+            this.label_static_hudversion1.Size = new System.Drawing.Size(56, 17);
+            this.label_static_hudversion1.TabIndex = 3;
+            this.label_static_hudversion1.Text = "Version";
             // 
             // textBox_Fragment_Version
             // 
@@ -581,14 +581,14 @@
             this.textBox_Fragment_Version.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Version.TabIndex = 2;
             // 
-            // label3
+            // label_static_hudname1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 29);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(45, 17);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Name";
+            this.label_static_hudname1.AutoSize = true;
+            this.label_static_hudname1.Location = new System.Drawing.Point(16, 29);
+            this.label_static_hudname1.Name = "label_static_hudname1";
+            this.label_static_hudname1.Size = new System.Drawing.Size(45, 17);
+            this.label_static_hudname1.TabIndex = 1;
+            this.label_static_hudname1.Text = "Name";
             // 
             // textBox_Fragment_Name
             // 
@@ -597,14 +597,14 @@
             this.textBox_Fragment_Name.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Name.TabIndex = 0;
             // 
-            // label2
+            // label_Static_Hud1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 17);
-            this.label2.TabIndex = 17;
-            this.label2.Text = "Hud";
+            this.label_Static_Hud1.AutoSize = true;
+            this.label_Static_Hud1.Location = new System.Drawing.Point(16, 16);
+            this.label_Static_Hud1.Name = "label_Static_Hud1";
+            this.label_Static_Hud1.Size = new System.Drawing.Size(34, 17);
+            this.label_Static_Hud1.TabIndex = 17;
+            this.label_Static_Hud1.Text = "Hud";
             // 
             // button_FragmentHudBrowse
             // 
@@ -650,23 +650,23 @@
             this.button_FragmentMain.Name = "button_FragmentMain";
             this.button_FragmentMain.Size = new System.Drawing.Size(195, 44);
             this.button_FragmentMain.TabIndex = 12;
-            this.button_FragmentMain.Text = "Create Fragment";
+            this.button_FragmentMain.Text = "Create Blueprint";
             this.button_FragmentMain.UseVisualStyleBackColor = true;
             this.button_FragmentMain.Click += new System.EventHandler(this.button_FragmentMain_Click);
             // 
             // tab_CombineHuds
             // 
             this.tab_CombineHuds.BackColor = System.Drawing.Color.Transparent;
-            this.tab_CombineHuds.Controls.Add(this.checkBox_CombineHud2UseDefault);
-            this.tab_CombineHuds.Controls.Add(this.checkBox_CombineHud1UseDefault);
+            this.tab_CombineHuds.Controls.Add(this.checkBox_CombineHudUseDefault2);
+            this.tab_CombineHuds.Controls.Add(this.checkBox_CombineHudUseDefault1);
             this.tab_CombineHuds.Controls.Add(this.button_CombineResultClearLogo);
-            this.tab_CombineHuds.Controls.Add(this.button_CombineResultEditResource);
+            this.tab_CombineHuds.Controls.Add(this.button_CombineResultBrowseLogo);
             this.tab_CombineHuds.Controls.Add(this.button_CombineBrowse2);
             this.tab_CombineHuds.Controls.Add(this.textBox_CombineBrowse2);
             this.tab_CombineHuds.Controls.Add(this.textBox_CombineBrowse1);
             this.tab_CombineHuds.Controls.Add(this.button_CombineBrowse1);
             this.tab_CombineHuds.Controls.Add(this.textBox_CombineHud_Result);
-            this.tab_CombineHuds.Controls.Add(this.label1);
+            this.tab_CombineHuds.Controls.Add(this.label_Static_Result);
             this.tab_CombineHuds.Controls.Add(this.label_CombineMinmode2);
             this.tab_CombineHuds.Controls.Add(this.label_CombineMinmode1);
             this.tab_CombineHuds.Controls.Add(this.textBox_CombineHudName2);
@@ -684,25 +684,25 @@
             this.tab_CombineHuds.TabIndex = 1;
             this.tab_CombineHuds.Text = "Combine Huds";
             // 
-            // checkBox_CombineHud2UseDefault
+            // checkBox_CombineHudUseDefault2
             // 
-            this.checkBox_CombineHud2UseDefault.AutoSize = true;
-            this.checkBox_CombineHud2UseDefault.Location = new System.Drawing.Point(418, 324);
-            this.checkBox_CombineHud2UseDefault.Name = "checkBox_CombineHud2UseDefault";
-            this.checkBox_CombineHud2UseDefault.Size = new System.Drawing.Size(163, 21);
-            this.checkBox_CombineHud2UseDefault.TabIndex = 19;
-            this.checkBox_CombineHud2UseDefault.Text = "Use Default TF2 Hud";
-            this.checkBox_CombineHud2UseDefault.UseVisualStyleBackColor = true;
+            this.checkBox_CombineHudUseDefault2.AutoSize = true;
+            this.checkBox_CombineHudUseDefault2.Location = new System.Drawing.Point(418, 324);
+            this.checkBox_CombineHudUseDefault2.Name = "checkBox_CombineHudUseDefault2";
+            this.checkBox_CombineHudUseDefault2.Size = new System.Drawing.Size(163, 21);
+            this.checkBox_CombineHudUseDefault2.TabIndex = 19;
+            this.checkBox_CombineHudUseDefault2.Text = "Use Default TF2 Hud";
+            this.checkBox_CombineHudUseDefault2.UseVisualStyleBackColor = true;
             // 
-            // checkBox_CombineHud1UseDefault
+            // checkBox_CombineHudUseDefault1
             // 
-            this.checkBox_CombineHud1UseDefault.AutoSize = true;
-            this.checkBox_CombineHud1UseDefault.Location = new System.Drawing.Point(17, 324);
-            this.checkBox_CombineHud1UseDefault.Name = "checkBox_CombineHud1UseDefault";
-            this.checkBox_CombineHud1UseDefault.Size = new System.Drawing.Size(163, 21);
-            this.checkBox_CombineHud1UseDefault.TabIndex = 18;
-            this.checkBox_CombineHud1UseDefault.Text = "Use Default TF2 Hud";
-            this.checkBox_CombineHud1UseDefault.UseVisualStyleBackColor = true;
+            this.checkBox_CombineHudUseDefault1.AutoSize = true;
+            this.checkBox_CombineHudUseDefault1.Location = new System.Drawing.Point(17, 324);
+            this.checkBox_CombineHudUseDefault1.Name = "checkBox_CombineHudUseDefault1";
+            this.checkBox_CombineHudUseDefault1.Size = new System.Drawing.Size(163, 21);
+            this.checkBox_CombineHudUseDefault1.TabIndex = 18;
+            this.checkBox_CombineHudUseDefault1.Text = "Use Default TF2 Hud";
+            this.checkBox_CombineHudUseDefault1.UseVisualStyleBackColor = true;
             // 
             // button_CombineResultClearLogo
             // 
@@ -714,14 +714,14 @@
             this.button_CombineResultClearLogo.Text = "X";
             this.button_CombineResultClearLogo.UseVisualStyleBackColor = true;
             // 
-            // button_CombineResultEditResource
+            // button_CombineResultBrowseLogo
             // 
-            this.button_CombineResultEditResource.Location = new System.Drawing.Point(216, 263);
-            this.button_CombineResultEditResource.Name = "button_CombineResultEditResource";
-            this.button_CombineResultEditResource.Size = new System.Drawing.Size(149, 27);
-            this.button_CombineResultEditResource.TabIndex = 16;
-            this.button_CombineResultEditResource.Text = "Pick logo";
-            this.button_CombineResultEditResource.UseVisualStyleBackColor = true;
+            this.button_CombineResultBrowseLogo.Location = new System.Drawing.Point(216, 263);
+            this.button_CombineResultBrowseLogo.Name = "button_CombineResultBrowseLogo";
+            this.button_CombineResultBrowseLogo.Size = new System.Drawing.Size(149, 27);
+            this.button_CombineResultBrowseLogo.TabIndex = 16;
+            this.button_CombineResultBrowseLogo.Text = "Pick logo";
+            this.button_CombineResultBrowseLogo.UseVisualStyleBackColor = true;
             // 
             // button_CombineBrowse2
             // 
@@ -772,14 +772,14 @@
             this.textBox_CombineHud_Result.TabIndex = 11;
             this.textBox_CombineHud_Result.Text = "CombinedHudName";
             // 
-            // label1
+            // label_Static_Result
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(215, 29);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 17);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Result";
+            this.label_Static_Result.AutoSize = true;
+            this.label_Static_Result.Location = new System.Drawing.Point(215, 29);
+            this.label_Static_Result.Name = "label_Static_Result";
+            this.label_Static_Result.Size = new System.Drawing.Size(48, 17);
+            this.label_Static_Result.TabIndex = 10;
+            this.label_Static_Result.Text = "Result";
             // 
             // label_CombineMinmode2
             // 
@@ -1030,8 +1030,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_HudThumb)).EndInit();
             this.tab_Fragment.ResumeLayout(false);
             this.tab_Fragment.PerformLayout();
-            this.group_FragmentHudInfo.ResumeLayout(false);
-            this.group_FragmentHudInfo.PerformLayout();
+            this.groupBox_HudInfo1.ResumeLayout(false);
+            this.groupBox_HudInfo1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_FragmentHudMain)).EndInit();
             this.tab_CombineHuds.ResumeLayout(false);
             this.tab_CombineHuds.PerformLayout();
@@ -1057,7 +1057,7 @@
         private System.Windows.Forms.ProgressBar progressBar_Main;
         private System.Windows.Forms.TabPage tab_About;
         private System.Windows.Forms.TextBox textBox_CombineHud_Result;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label_Static_Result;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label_CombineMinmode2;
         private System.Windows.Forms.Label label_CombineMinmode1;
@@ -1075,7 +1075,7 @@
         private System.Windows.Forms.TextBox textBox_CombineBrowse2;
         private System.Windows.Forms.TextBox textBox_CombineBrowse1;
         private System.Windows.Forms.Button button_CombineBrowse1;
-        private System.Windows.Forms.Button button_CombineResultEditResource;
+        private System.Windows.Forms.Button button_CombineResultBrowseLogo;
         private System.Windows.Forms.PictureBox pictureBox_About_Logo;
         private System.Windows.Forms.TextBox textBox_About;
         private System.Windows.Forms.Button button_MainBrowse;
@@ -1090,14 +1090,14 @@
         private System.Windows.Forms.TextBox textBox_MainHelp;
         private System.Windows.Forms.Label label_Help;
         private System.Windows.Forms.Label label_Static_Hud;
-        private System.Windows.Forms.CheckBox checkBox_CombineHud2UseDefault;
-        private System.Windows.Forms.CheckBox checkBox_CombineHud1UseDefault;
+        private System.Windows.Forms.CheckBox checkBox_CombineHudUseDefault2;
+        private System.Windows.Forms.CheckBox checkBox_CombineHudUseDefault1;
         private System.Windows.Forms.GroupBox groupBox_InstallMode;
         private System.Windows.Forms.RadioButton radio_InstallMode_Hard;
         private System.Windows.Forms.RadioButton radio_InstallMode_Soft;
         private System.Windows.Forms.TabPage tab_Fragment;
-        private System.Windows.Forms.GroupBox group_FragmentHudInfo;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.GroupBox groupBox_HudInfo1;
+        private System.Windows.Forms.Label label_Static_Hud1;
         private System.Windows.Forms.Button button_FragmentHudBrowse;
         private System.Windows.Forms.TextBox textBox_FragmentHudBrowse;
         private System.Windows.Forms.TextBox textBox_FragmentHudMain;
@@ -1107,14 +1107,14 @@
         private System.Windows.Forms.Button button_FragmentClearLogo;
         private System.Windows.Forms.Button button_FragmentLogoBrowse;
         private System.Windows.Forms.TextBox textBox_Fragment_LogoBrowse;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label_static_logo;
+        private System.Windows.Forms.Label label_static_hudwebsite1;
         private System.Windows.Forms.TextBox textBox_Fragment_Website;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label_static_hudauthor1;
         private System.Windows.Forms.TextBox textBox_Fragment_Author;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label_static_hudversion1;
         private System.Windows.Forms.TextBox textBox_Fragment_Version;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label_static_hudname1;
         private System.Windows.Forms.TextBox textBox_Fragment_Name;
         private System.Windows.Forms.OpenFileDialog openFile_FragmentLogoBrowse;
         private System.Windows.Forms.Button button_CombineResultClearLogo;
@@ -1131,7 +1131,7 @@
         private System.Windows.Forms.Button button_MainInstallBrowseClear;
         private System.Windows.Forms.Button button_MainInstallBrowse;
         private System.Windows.Forms.TextBox textBox_MainInstallPath;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label_TF2Folder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse_MainInstallPath;
     }
 }

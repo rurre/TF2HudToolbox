@@ -1,0 +1,43 @@
+"Toolbox_Russian"
+{
+	
+	//Install Tab
+	"label_Static_Hud"					"Хад"
+	"label_Static_Hudname"				"Имя"
+	"label_Static_HudVersion"			"Версия"
+	"label_Static_HudWebsite"			"Вэбсайт"
+	"label_Static_HudAuthor"			"Автор"
+	"label_static_logo"					"Логотип"	
+	"label_static_result"				"Результат"
+	"label_TF2_Folder"					"Путь ТФ2:"
+
+	"groupbox_HudInfo"					"Хад Инфо"
+	"groupbox_InstallMode"				"Режим Установки"
+
+	"checkbox_CombineUseMinimal"		"Use minmode values"
+	"checkbox_CombineHudUseDefault1"	"Использ. стандартный Хад"	
+	
+	"button_MainBrowse"					"Поиск"
+	"button_Parse"						"Parse"
+	"button_Install"					"Установить"
+	"button_Customize"					"Customize"
+	"button_MainInstallBrowseClear"		"Очистить"
+	"button_MainInstallBrowse"			"Browse"
+	"button_StripMinimal"				"Убрать Минималь. Хад"
+	"button_MinimalDefault"				"Minimal to Default"
+	"button_ToggleHelp"					"Помощь"
+	"button_FragmentHudBrowse"			"Browse"
+	"button_FragmentMain"				"Создать Эскиз"
+	"button_FragmentLogoBrowse"			"Browse Logo"	
+	"button_CombineResultBrowseLogo"	"Browse"	
+	"button_MainCancel"					"Отмена"
+	
+	"tab_Install"						"Install Hud"
+	"tab_Fragment"						"Create Blueprint"
+	"tab_CombineHuds"					"Combine Huds"
+	"tab_About"							"About"
+
+	"radio_installmode_hard"			"Hard"
+	"radio_installmode_soft"			"Soft (Recommended)"
+
+}

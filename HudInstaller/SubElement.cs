@@ -48,5 +48,15 @@ namespace hudParse
             result += "\t\t}\n";
             return result;
         }
+
+        public KeyValue FindKeyValue(string name)
+        {
+            foreach(KeyValue element in m_ValueList)
+            {
+                if(element.Name.ToLower() == name.ToLower())
+                    return element;
+            }
+            return new KeyValue();
+        }
     }
 }

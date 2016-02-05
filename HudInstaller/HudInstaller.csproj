@@ -111,10 +111,16 @@
     <None Include="Resources\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\toolbox_english.txt" />
+    <None Include="Resources\toolbox.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\toolbox.txt" />
+    <None Include="Resources\toolbox_English.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toolbox_Russian.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\helpinfo_English.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

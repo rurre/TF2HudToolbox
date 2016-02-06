@@ -78,6 +78,21 @@ namespace HudInstaller.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &quot;HelpInfo_Test&quot;
+        ///{
+        ///	&quot;button_MinimalDefault_name&quot;	&quot;Minimal ta Default&quot;
+        ///	&quot;button_MinimalDefault_desc&quot;	&quot;Turns Minimal Hud (cl_Hud_minmode 1) joints tha fuck into Default Hud (cl_Hud_minmode 0) joints then removes tha Minimal joints from tha Hud.&quot;
+        ///	
+        ///	&quot;button_StripMinimal_name&quot;		&quot;Strip Minimal Hud&quot;
+        ///	&quot;button_StripMinimal_desc&quot;		&quot;This option will remove all Minimal Hud (cl_Hud_minmode 1) joints from tha selected Hud. Y&apos;all KNOW dat shit, muthafucka! This don&apos;t overwrite tha selected Hud, only tha one dat gets [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string helpinfo_test {
+            get {
+                return ResourceManager.GetString("helpinfo_test", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon icon {
@@ -103,16 +118,6 @@ namespace HudInstaller.Properties {
         internal static System.Drawing.Bitmap logo_default {
             get {
                 object obj = ResourceManager.GetObject("logo_default", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap logo_default_old {
-            get {
-                object obj = ResourceManager.GetObject("logo_default_old", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -160,32 +165,6 @@ namespace HudInstaller.Properties {
         internal static string toolbox_english {
             get {
                 return ResourceManager.GetString("toolbox_english", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &quot;Toolbox_Russian&quot;
-        ///{
-        ///	
-        ///	//Install Tab
-        ///	&quot;label_Static_Hud&quot;					&quot;Хад&quot;
-        ///	&quot;label_Static_Hudname&quot;				&quot;Название&quot;
-        ///	&quot;label_Static_HudVersion&quot;			&quot;Версия&quot;
-        ///	&quot;label_Static_HudWebsite&quot;			&quot;Вэбсайт&quot;
-        ///	&quot;label_Static_HudAuthor&quot;			&quot;Автор&quot;
-        ///	&quot;label_static_logo&quot;					&quot;Логотип&quot;	
-        ///	&quot;label_static_result&quot;				&quot;Результат&quot;
-        ///	&quot;label_TF2_Folder&quot;					&quot;Путь ТФ2:&quot;
-        ///
-        ///	&quot;groupbox_HudInfo&quot;					&quot;Хад Инфо&quot;
-        ///	&quot;groupbox_InstallMode&quot;				&quot;Режим Установки&quot;
-        ///
-        ///	&quot;checkbox_CombineUseMinimal&quot;		&quot;Use minmode values&quot;
-        ///	&quot;checkbox_CombineHudUseDefault1&quot; [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string toolbox_Russian {
-            get {
-                return ResourceManager.GetString("toolbox_Russian", resourceCulture);
             }
         }
     }

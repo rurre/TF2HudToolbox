@@ -97,12 +97,12 @@ namespace hudParse
 
         public void ApplyResource()
         {            
-            if(m_Resource.FindKeyValue("name") != new KeyValue())
+            if(m_Resource.FindKeyValue("name") != null)
                 m_Name = m_Resource.FindKeyValue("name").Value;
-            if(m_Resource.FindKeyValue("author") != new KeyValue())
+            if(m_Resource.FindKeyValue("author") != null)
                 m_Author = m_Resource.FindKeyValue("author").Value;
-            if(m_Resource.FindKeyValue("link") != new KeyValue())
-                m_Link = m_Resource.FindKeyValue("link").Value;            
+            if(m_Resource.FindKeyValue("website") != null)
+                m_Link = m_Resource.FindKeyValue("website").Value;            
         }
 
         public void Add(HudFolder folder)

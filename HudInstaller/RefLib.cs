@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-class RefLib
+static class RefLib
 {
     public static string PathToForwardSlashes(ref string s)
     {                

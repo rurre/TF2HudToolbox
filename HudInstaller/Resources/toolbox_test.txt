@@ -1,0 +1,47 @@
+"Toolbox_English"
+{
+	
+	//Install Tab
+	"label_Static_Hud"					"Hud"
+	"label_Static_Hudname"				"Name"
+	"label_Static_HudVersion"			"Version"
+	"label_Static_HudWebsite"			"Website"
+	"label_Static_HudAuthor"			"Author"
+	"label_static_logo"					"Logo"	
+	"label_static_result"				"Result"
+	"label_TF2Folder"					"TF2 Folder:"
+
+	"groupbox_HudInfo"					"Hud Info"
+	"groupbox_InstallMode"				"Install Mode"
+
+	"checkbox_CombineUseMinimal"		"Use minmode values"
+	"checkbox_CombineHud1UseDefault"	"Use Default TF2 Hud"
+	"checkbox_CombineHud2UseDefault"	"Use Default TF2 Hud"
+	
+	"button_MainBrowse"					"Browse"
+	"button_Parse"						"Parse"
+	"button_Install"					"Install"
+	"button_Customize"					"Customize"
+	"button_MainInstallBrowseClear"		"Clear"
+	"button_MainInstallBrowse"			"Browse"
+	"button_StripMinimal"				"StripMinimal"
+	"button_MinimalDefault"				"Minimal to Default"
+	"button_ToggleHelp"					"Toggle Help"
+	"button_FragmentHudBrowse"			"Browse"
+	"button_FragmentMain"				"Create Blueprint"
+	"button_FragmentLogoBrowse"			"Browse Logo"	
+	"button_CombineResultBrowseLogo"	"Browse"	
+	"button_MainCancel"					"Cancel"
+	
+	"tab_Install"						"Install Hud"
+	"tab_Fragment"						"Create Blueprint"
+	"tab_CombineHuds"					"Combine Huds"
+	"tab_About"							"About"
+
+	"radio_installmode_hard"			"Hard"
+	"radio_installmode_soft"			"Soft (Recommended)"
+
+
+	//Lesson learned - Never use stupidly long names like these ever again
+	//Also never code my own localization when I can just use what everyone else does
+}

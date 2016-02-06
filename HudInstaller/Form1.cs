@@ -20,6 +20,10 @@ namespace HudInstaller
         Hud combineHud2 = new Hud();
         Hud combineHudResult = new Hud();
         Hud fragmentHud = new Hud();
+
+        
+        Jobs job;
+        bool working = false;
                         
         bool helpEnabled = false;
         static Point formSize = new Point(497, 500);    //Different from designer value!!
@@ -29,6 +33,9 @@ namespace HudInstaller
         ResourceManager resourceManager = HudInstaller.Properties.Resources.ResourceManager;
         HudResourceFile localizationFile;
         HudResourceFile helpInfo;
+        
+        public enum Languages { English, Test };
+        enum Jobs { None, Parse, Fragment, Combine, Install };
 
         Languages language;
 
@@ -69,7 +76,7 @@ namespace HudInstaller
             ClearLabel(ref label_HudVersion);
             ClearLabel(ref linkLabel_HudWebsite);
 
-            SetLanguage(Language);
+            SetLanguageDefault();
         }
 
         void ClearLabel(ref Label label)
@@ -83,112 +90,47 @@ namespace HudInstaller
         }
 
         void UpdateLocalizationText()
+        {            
+            UpdateControlText<Label>();
+            UpdateControlText<Button>();
+            UpdateControlText<GroupBox>();
+            UpdateControlText<CheckBox>();
+            UpdateControlText<RadioButton>();
+            UpdateControlText<TabControl>();
+        }
+        void UpdateControlText<T>() where T : class
         {
-            /*string s = localizationFile.ToString();
-            int count = 0;
-            foreach(char c in s)
+            if(typeof(T) == typeof(Button) || typeof(T) == typeof(Label) || typeof(T) == typeof(RadioButton) || typeof(T) == typeof(CheckBox) || typeof(T) == typeof(GroupBox))
             {
-                if(c == '\"')
-                    count++;
-            }
-            try
-            {
-                if(count % 2 == 0)
+                var all = RefLib.GetAll(this,typeof(T));
+                foreach(var x in all)
                 {
-                    count = count / 4;
+                    string ss = x.Name;
+                    KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
+                    if(kv != null)
+                        x.Text = kv.Value;
                 }
             }
-            catch(Exception e)
+            else if(typeof(T) == typeof(TabControl))
             {
-                throw e;
-            }*/
-            UpdateLabels();
-            UpdateButtons();
-            UpdateCheckBoxes();
-            UpdateRadioButtons();
-            UpdateTabs();
-        }
-        void UpdateLabels()
-        {               
-            var all = RefLib.GetAll(this,typeof(Label));            
-            foreach(Label x in all)
-            {               
-                string ss = x.Name;                    
-                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
-                if(kv != null)                
-                    x.Text = kv.Value;                                                                  
+                var all = RefLib.GetAll(this,typeof(TabControl));
+                foreach(TabControl x in all)
+                {
+                    TabControl.TabPageCollection pages = x.TabPages;
+                    foreach(TabPage page in pages)
+                    {
+                        string s = page.Controls.Owner.Name;
+                        KeyValue kv = localizationFile.FindKeyValue(s);
+                        if(kv != null)
+                            page.Controls.Owner.Text = kv.Value;
+                    }
+                }
             }
-        }
+            else throw new Exception("Invalid type " + typeof(T));
 
-        //Same code as UpdateLabels(). Figure out how to condense into 1 function.
-        void UpdateButtons()
-        {
-            var all = RefLib.GetAll(this,typeof(Button));
-            foreach(Button x in all)
-            {
-                string ss = x.Name;
-                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
-                if(kv != null)
-                    x.Text = kv.Value;
-            }
-        }
-
-        //Same code as UpdateLabels(). Figure out how to condense into 1 function.
-        void UpdateRadioButtons()
-        {
-            var all = RefLib.GetAll(this,typeof(RadioButton));
-            foreach(RadioButton x in all)
-            {
-                string ss = x.Name;
-                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
-                if(kv != null)
-                    x.Text = kv.Value;
-            }
-        }
-
-        //Same code as UpdateLabels(). Figure out how to condense into 1 function.
-        void UpdateCheckBoxes()
-        {
-            var all = RefLib.GetAll(this,typeof(CheckBox));
-            foreach(CheckBox x in all)
-            {
-                string ss = x.Name;
-                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
-                if(kv != null)
-                    x.Text = kv.Value;
-            }
-        }
-
-        //Same code as UpdateLabels(). Figure out how to condense into 1 function.
-        void UpdateGroupBoxes()
-        {
-            var all = RefLib.GetAll(this,typeof(GroupBox));
-            foreach(GroupBox x in all)
-            {
-                string ss = x.Name;
-                KeyValue kv = localizationFile.FindKeyValueIgnoreEndNr(ss);
-                if(kv != null)
-                    x.Text = kv.Value;
-            }
+            
         }
         
-        void UpdateTabs()
-        {
-            var all = RefLib.GetAll(this,typeof(TabControl));
-            foreach(TabControl x in all)
-            {
-                TabControl.TabPageCollection pages = x.TabPages;
-                foreach(TabPage page in pages)
-                {
-                    string s = page.Controls.Owner.Name;
-                    KeyValue kv = localizationFile.FindKeyValue(s);
-                    if(kv != null)
-                        page.Controls.Owner.Text = kv.Value;                    
-                }
-
-            }
-        }
-
         protected void CenterForm(Form form)
         {
             Screen screen = Screen.FromControl(this);
@@ -241,13 +183,15 @@ namespace HudInstaller
             if(resourceManager.GetObject(resourceName) != null)
                 return true;
             else return false;
-        }
+        }        
 
-        public enum Languages { English, Russian };
-
-        void SetLanguage()
-        {            
-            SetLanguage(Languages.English);
+        void SetLanguageDefault()
+        {
+            Language = Languages.English;
+            helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
+            localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
+            UpdateLocalizationText();
+            SetHelpToString("info_help");            
         }
 
         void SetLanguage(Languages lang)
@@ -265,12 +209,12 @@ namespace HudInstaller
                         helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_" + lang).ToString() ?? "")));
                     else
                         helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
+                    SetHelpToString("info_help");
                 }
                 catch(Exception e)
                 {
                     throw e;
                 }
-                UpdateLocalizationText();
 
                 Language = lang;
             }
@@ -307,8 +251,9 @@ namespace HudInstaller
 
                 if(File.Exists(fbd.SelectedPath + "\\hudinfo.txt"))
                 {
-                    WriteStatus("Found hudinfo.txt for " + hud.Name);
-                    hud.Resource = HudParse.ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");                    
+                    hud.Resource = HudParse.ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");
+                    hud.ApplyResource();
+                    WriteStatus("Found hudinfo.txt for " + hud.Name);                                     
                 }
                 else
                 {
@@ -559,12 +504,94 @@ namespace HudInstaller
         }
 
         private void button_Parse_Click(object sender,EventArgs e)
-        {
-
+        {            
+            if(!backgroundWorker.IsBusy)
+            {
+                job = Jobs.Parse;
+                working = true;
+                UpdateButtonState();
+                backgroundWorker.RunWorkerAsync();
+            }
         }
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
+        {            
+            if(!backgroundWorker.IsBusy)
+            {
+                job = Jobs.Fragment;
+                working = true;
+                UpdateButtonState();
+                backgroundWorker.RunWorkerAsync();
+            }
+        }
+
+        private void button_Install_Click(object sender,EventArgs e)
         {
+            if(!backgroundWorker.IsBusy)
+            {
+                job = Jobs.Install;
+                working = true;
+                UpdateButtonState();
+                backgroundWorker.RunWorkerAsync();
+            }
+        }
+
+        private void button_Combine_Click(object sender,EventArgs e)
+        {            
+            if(!backgroundWorker.IsBusy)
+            {
+                job = Jobs.Combine;
+                working = true;
+                UpdateButtonState();
+                backgroundWorker.RunWorkerAsync();
+            }
+            /*if(textBox_CombineBrowse1.Text != textBox_CombineBrowse2.Text)
+            {
+                //Combine();
+            }
+            else WriteStatus("Can't combine a hud with itself");*/
+
+        }
+        private void button_FragmentClearLogo_Click(object sender,EventArgs e)
+        {
+            textBox_Fragment_LogoBrowse.Text = "";
+            openFile_FragmentLogoBrowse.FileName = null;
+            fragmentHud.SetDeafaultLogo();
+            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;
+        }
+
+        #endregion
+
+        //Checks if out backgroundWorker is busy, if so buttons get disabled and cancel enabled
+        private void UpdateButtonState()
+        {
+            if(working)
+            {
+                button_Parse.Enabled = false;
+                button_MinimalDefault.Enabled = false;
+                button_StripMinimal.Enabled = false;
+                button_Install.Enabled = false;
+                button_FragmentMain.Enabled = false;
+                button_Combine.Enabled = false;
+
+                button_MainCancel.Enabled = true;
+            }
+            else
+            {
+                button_Parse.Enabled = true;
+                button_MinimalDefault.Enabled = true;
+                button_StripMinimal.Enabled = true;
+                button_Install.Enabled = true;
+                button_FragmentMain.Enabled = true;
+                button_Combine.Enabled = true;
+
+                button_MainCancel.Enabled = false;
+            }
+        }
+
+        private void backgroundWorker_DoWork(object sender,System.ComponentModel.DoWorkEventArgs e)
+        {
+            /*
             WriteStatus("Parsing Hud...");
             fragmentHud.Resource = new HudResourceFile("hudinfo","txt",fragmentHud.Path,new List<KeyValue>()
             {
@@ -577,29 +604,90 @@ namespace HudInstaller
             Hud tempHud = hudParse.HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
             if(tempHud != null)
                 fragmentHud.m_FolderList = tempHud.m_FolderList;
-            else WriteStatus("Failed to parse Hud");
+            else WriteStatus("Failed to parse Hud");*/
+            
+            //Use if statement to check for job to do.
 
-
-            //WriteStatus("Successfully Parsed Hud " + fragmentHud.Name);
-        }
-
-        private void button_FragmentClearLogo_Click(object sender,EventArgs e)
-        {
-            textBox_Fragment_LogoBrowse.Text = "";
-            openFile_FragmentLogoBrowse.FileName = null;
-            fragmentHud.SetDeafaultLogo();
-            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;
-        }
-
-        private void button_Combine_Click(object sender,EventArgs e)
-        {
-            if(textBox_CombineBrowse1.Text != textBox_CombineBrowse2.Text)
+            for(int i = 0; i < 100; i++)
             {
-                //Combine();
-            }
-            else WriteStatus("Can't combine a hud with itself");
+                System.Threading.Thread.Sleep(100);
+                backgroundWorker.ReportProgress(i);
 
+                if(backgroundWorker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    backgroundWorker.ReportProgress(0);
+                    return;
+                }
+            }
+            //e.Result = new Hud();     
         }
-        #endregion
+
+        private void backgroundWorker_ProgressChanged(object sender,System.ComponentModel.ProgressChangedEventArgs e)
+        {
+            progressBar_Main.Value = e.ProgressPercentage;
+        }
+
+        private void backgroundWorker_RunWorkerCompleted(object sender,System.ComponentModel.RunWorkerCompletedEventArgs e)
+        {
+            if(e.Cancelled)
+            {
+                switch(job)
+                {
+                    case (Jobs.Combine):
+                        WriteStatus("Cancelled Combine operation");
+                        break;
+                    case (Jobs.Fragment):
+                        WriteStatus("Cancelled Blueprint creation");
+                        break;
+                    case (Jobs.Parse):
+                        WriteStatus("Cancelled Parsing operation");
+                        break;
+                    case (Jobs.Install):
+                        WriteStatus("Cancelled Hud Install");
+                        break;
+                    default:
+                        throw new Exception("backgroundWorker stopped working but job wasn't reported");                        
+                }                
+            }
+            else if(e.Error != null)
+            {
+                //throw new Exception("Some error occured during backgroundWorker doing work.");
+                WriteStatus(e.Error.Message);
+            }
+            else
+            {
+                switch(job)
+                {
+                    case (Jobs.Combine):
+                        WriteStatus("Successfully Combined Huds");
+                        break;
+                    case (Jobs.Fragment):
+                        WriteStatus("Successfully created Blueprint from Hud");
+                        break;
+                    case (Jobs.Parse):
+                        WriteStatus("Successfully completed Parsing Hud");
+                        break;
+                    case (Jobs.Install):
+                        WriteStatus("Succesfully Installed Hud");
+                        break;
+                    default:
+                        throw new Exception("backgroundWorker finished working but job wasn't reported");
+                }
+                //fragmentHud = e.Result;
+            }
+            working = false;
+            job = Jobs.None;            
+            progressBar_Main.Value = 0;
+            UpdateButtonState();                        
+        }
+
+        private void button_MainCancel_Click(object sender,EventArgs e)
+        {
+            if(backgroundWorker.IsBusy)
+                backgroundWorker.CancelAsync();
+            else throw new Exception("Attempted to cancel while backgroundWorker wasn't working. Button should be disabled");
+            button_MainCancel.Enabled = false;
+        }
     }
 }

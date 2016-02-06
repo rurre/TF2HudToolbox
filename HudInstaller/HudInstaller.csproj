@@ -99,9 +99,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\helpinfo.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\logo_main.png" />
   </ItemGroup>
   <ItemGroup>
@@ -120,9 +117,6 @@
     <None Include="Resources\icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\toolbox.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\toolbox_English.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -133,6 +127,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\icon_settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\helpinfo_test.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\toolbox_test.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

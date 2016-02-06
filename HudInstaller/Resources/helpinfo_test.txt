@@ -1,0 +1,41 @@
+"HelpInfo_Test"
+{
+	"button_MinimalDefault_name"	"Minimal ta Default"
+	"button_MinimalDefault_desc"	"Turns Minimal Hud (cl_Hud_minmode 1) joints tha fuck into Default Hud (cl_Hud_minmode 0) joints then removes tha Minimal joints from tha Hud."
+	
+	"button_StripMinimal_name"		"Strip Minimal Hud"
+	"button_StripMinimal_desc"		"This option will remove all Minimal Hud (cl_Hud_minmode 1) joints from tha selected Hud. Y'all KNOW dat shit, muthafucka! This don't overwrite tha selected Hud, only tha one dat gets installed."
+	
+	"button_fragment_name"			"Smoke Hud Fragment file"
+	"button_Fragment_desc"			"This option asks you ta pick a gangbangin' folda containin a Hud afta which it creates a Hud Fragment up in tha same folder.A Fragment be a cold-ass lil cut-down version of a Hud dat tha ToolBox can work with."
+	
+	"button_Parse_name"				"Parse da Hud"
+	"button_Parse_desc"				"This option loadz tha selected Hud n' tha Default TF2 Hud tha fuck into memory. Yo ass gotta parse a Hud before you can do anythang wit dat shit."
+	
+	"button_Customize_name"		"Customize da Hud"
+	"button_Customize_desc"			"This lets you customize tha Hud before installin dat shit."
+	
+	"button_Browse_name"			"Browse"
+	"button_Browse_desc"				"Browse fo' Hud Fragment."	
+
+	"button_ToggleHelp_name"		"Toggle Help"
+	"button_ToggleHelp_desc"		"This button togglez tha help window on n' off. Yo ass probably figured dat up already."
+	
+	"button_Install_name"				"'nstall Hud"
+	"button_Install_desc"				"'nstall tha selected Hud wit tha selected mode n' customizations fo' realz. Available install modes are:-Soft: Overwrites only KeyValues inside Hud Elements, n' you can put dat on yo' toast. -Hard: Overwrites whole Hud Elements.If unusure select Soft Install. Well shiiiit, it is less likely ta cause crashes afta thugged-out shiznit when Valve addz freshly smoked up shiznit ta tha default Hud."
+
+	"tab_InstallHud_name"				"'nstall Hud"
+	"tab_InstallHud_desc"				"Lets you customize n' install a Hud from a Fragment, as well as all dem other options."
+
+	"tab_CombineHuds_name"		"Combine Huds"
+	"tab_CombineHuds_desc"			"Lets you combine 2 Hudz tha fuck into 1 dat you can toggle between by switchin ta Minimal Hud (cl_hud_minmode 1) n' back ta Default Hud (cl_hud_minmode 0)"
+
+	"tab_Fragment_name"				"Fragment Hud"
+	"tab_Fragment_desc"				"Lets you create a Fragment file from a existin Hud, as well as set itz resource info n' logo."
+
+	"tab_About_name"					"About"
+	"tab_About_desc"						"Extra info."
+
+	"info_Help_Name"						"Item title is ghon be displayed here"
+	"info_Help_desc"						"Detailed shiznit is ghon be displayed here, so peek-a-boo, clear tha way, I be comin' thru fo'sho. To receive detailed shiznit fo' a Button move yo' mouse over dat shit. For help wit a Tab - click dat shit."
+}

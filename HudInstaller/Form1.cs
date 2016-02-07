@@ -41,7 +41,7 @@ namespace HudInstaller
         public enum Languages { English, Test };
         enum Jobs { None, Parse, Fragment, Combine, Install };
 
-        
+
         #endregion
 
         #region Properties
@@ -85,8 +85,16 @@ namespace HudInstaller
             ClearLabel(ref linkLabel_HudWebsite);
 
             SetLanguageDefault();
+
+#if(DEBUG)
+            WriteStatus("!!!!Debug build!!!!");
+            WriteStatus("Debugging Fragment Hud");
+            folderBrowse_Fragment.SelectedPath = "D:\\Desktop\\testhud\\";
+            textBox_FragmentHudBrowse.Text = folderBrowse_Fragment.SelectedPath;
+            tabControl_Main.SelectedIndex = 1;
+#endif
         }
-        
+
 
         public void WriteStatus(string s)
         {

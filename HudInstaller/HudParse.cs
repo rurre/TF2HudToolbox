@@ -105,26 +105,30 @@ namespace hudParse
             RefLib.Seek(ref s);
             if(s.First() == '{')
             {
-                s = s.Remove(0,1);
+                s = s.Remove(0,1);                
                 while(true)
                 {
                     HudElement he = new HudElement();
+                    RefLib.Seek(ref s);                    
                     ss = Read(s);
-                    he.Name = ss;
-                    s = s.Remove(0,ss.Length + 2);
-                    RefLib.Seek(ref s);
+                    if(ss != "")
+                    {
+                        he.Name = ss;
+                        s = s.Remove(0,ss.Length + 2);
+                        RefLib.Seek(ref s);
+                    }
 
                     if(s.First() == '{')
                     {
                         s = s.Remove(0,1);
                         while(true)
                         {
-                            RefLib.Seek(ref s);                        
+                            RefLib.Seek(ref s);
                             if(s.First() != '}')
                             {
                                 ss = s;
-                                RefLib.GetLine(ref ss);
-                                s = s.Remove(ss.Length);
+                                ss = GetKeyValuePair(ss);
+                                s = s.Remove(0,ss.Length);
                                 KeyValue kv = ParseKeyValue(ss);
 
                                 if(kv != new KeyValue())
@@ -138,7 +142,18 @@ namespace hudParse
                         if(he != new HudElement())
                         {
                             hf.Add(he);
+                            RefLib.Seek(ref s);
+                            if(s.First() == '}')
+                                s = s.Remove(0,1);
                         }
+                        else break;
+                    }
+                    else if(s.First() == '}')
+                    {
+                        s = s.Remove(0,1);
+                        RefLib.Seek(ref s);
+                        if(s != "")
+                            throw new Exception("Error while parsing file " + hf.FullName + ". String should be empty by now but isn't");
                         else break;
                     }
                 }
@@ -149,64 +164,59 @@ namespace hudParse
         static KeyValue ParseKeyValue(string s)
         {            
             KeyValue kv = new KeyValue();
-
             string ss;
-            RefLib.Seek(ref s);
-            if(s.First() != '}')
+            int toRemove = 0;            
+
+            ss = Read(s,readModes.KeyValue);
+            kv.Name = ss;
+            for(int i = 0; i < ss.Length+2; i++)
             {
-                int toRemove = 0;
-                RefLib.Seek(ref s);
-
-                ss = Read(s,readModes.KeyValue);
-                kv.Name = ss;
-                for(int i = 0; i < ss.Length+2; i++)
+                if(i < s.Length)
                 {
-                    if(i < s.Length)
-                    {
-                        if(s[i] == '\"')
-                            toRemove++;
-                    }
-                    else throw new Exception("Out of range");               
-                }                
-                s = s.Remove(0,ss.Length + toRemove);
-                toRemove = 0;
-
-                RefLib.Seek(ref s);
-                ss = Read(s,readModes.KeyValue);
-                kv.Value = ss;
-                for(int i = 0; i < ss.Length + 2; i++)
-                {
-                    if(i < s.Length)
-                    {
-                        if(s[i] == '\"')
-                            toRemove++;
-                    }
-                    else throw new Exception("Out of range");
+                    if(s[i] == '\"')
+                        toRemove++;
                 }
-                s = s.Remove(0,ss.Length + toRemove);
-                toRemove = 0;
+                else throw new Exception("Out of range");               
+            }                
+            s = s.Remove(0,ss.Length + toRemove);
+            toRemove = 0;
 
-                RefLib.Seek(ref s);
-                if(s.Length > 0)
-                {                    
-                    ss = Read(s,readModes.PlatformTag);
-                    if(s != "")
+            RefLib.Seek(ref s);
+            ss = Read(s,readModes.KeyValue);
+            kv.Value = ss;
+            for(int i = 0; i < ss.Length + 2; i++)
+            {
+                if(i < s.Length)
+                {
+                    if(s[i] == '\"')
+                        toRemove++;
+                }
+                else throw new Exception("Out of range");
+            }
+            s = s.Remove(0,ss.Length + toRemove);
+            toRemove = 0;
+
+            RefLib.Seek(ref s);
+            if(s.Length > 0)
+            {                    
+                ss = Read(s,readModes.PlatformTag);
+                if(s != "")
+                {
+                    kv.Platform = s;
+                    for(int i = 0; i < ss.Length + 2; i++)
                     {
-                        kv.Platform = s;
-                        for(int i = 0; i < ss.Length + 2; i++)
+                        if(i < s.Length)
                         {
-                            if(i < s.Length)
-                            {
-                                if(s[i] == '\"')
-                                    toRemove++;
-                            }
-                            else throw new Exception("Out of range");
+                            if(s[i] == '\"')
+                                toRemove++;
                         }
-                        s = s.Remove(0,ss.Length + toRemove);
-                        toRemove = 0;
+                        else throw new Exception("Out of range");
                     }
+                    s = s.Remove(0,ss.Length + toRemove);
+                    toRemove = 0;
                 }
             }
+            
             return kv;
 
         }
@@ -235,10 +245,13 @@ namespace hudParse
                             continue;
                         }
                         else throw new Exception("Parse sub element returned null. Don't try to parse if there isn't one");
-                    }                    
-
+                    }
+                    RefLib.Seek(ref s);
                     KeyValue kv = new KeyValue();
-                    kv = ParseKeyValue(s);
+                    string x = GetKeyValuePair(s);
+                    kv = ParseKeyValue(x);
+                    if(x != "")                    
+                        s.Remove(0,x.Length);
                     if(kv != new KeyValue())
                     {
                         he.Add(kv);
@@ -292,7 +305,6 @@ namespace hudParse
                     file = ParseHudFile(file.FullName);
                     if(file != new HudFile())
                         folder.Add(file);
-
                 }
             }            
             return folder;
@@ -309,44 +321,47 @@ namespace hudParse
             string result = "";
             bool openedQuotes = false;
 
-            for(int i = 0; i < s.Length; i++)
+            if(s.First() != '}')
             {
-                if(mode == readModes.KeyValue)
+                for(int i = 0; i < s.Length; i++)
                 {
-                    if(s[i] == '\"')
+                    if(mode == readModes.KeyValue)
                     {
-                        if(!openedQuotes)
+                        if(s[i] == '\"')
                         {
-                            openedQuotes = true;                            
+                            if(!openedQuotes)
+                            {
+                                openedQuotes = true;
+                                continue;
+                            }
+                            else break;
+                        }
+                        else if(openedQuotes)
+                        {
+                            result += s[i];
                             continue;
                         }
-                        else break;
                     }
-                    else if(openedQuotes)
+                    else if(mode == readModes.PlatformTag)
                     {
-                        result += s[i];
-                        continue;
-                    }
-                }
-                else if(mode == readModes.PlatformTag)
-                {
-                    if(s[i] == '[')
-                    {
-                        if(!openedQuotes)
+                        if(s[i] == '[')
                         {
-                            openedQuotes = true;
-                            continue;
+                            if(!openedQuotes)
+                            {
+                                openedQuotes = true;
+                                continue;
+                            }
+                            else break;
                         }
-                        else break;
+                        else if(openedQuotes)
+                        {
+                            if(s[i] == ']')
+                                break;
+                            result += s[i];
+                        }
                     }
-                    else if(openedQuotes)
-                    {
-                        if(s[i] == ']')
-                            break;
-                        result += s[i];
-                    }
+                    else throw new Exception("Error: Something went wrong when trying to Read(). This isn't supposed to be possible. Help!");
                 }
-                else throw new Exception("Error: Something went wrong when trying to Read(). This isn't supposed to be possible. Help!");
             }
             return result;
         }
@@ -471,6 +486,22 @@ namespace hudParse
             return hf;
         }
 
+        static string GetKeyValuePair(string s)
+        {
+            string ss = s;            
+            string result = "";
+            int quoteNr = 0;
+            RefLib.Seek(ref ss);
 
+            for(int i = 0; quoteNr < 4; i++)
+            {
+                if(ss[i] == '\"')
+                {
+                    quoteNr++;
+                }                
+                result += ss[i];
+            }
+            return result;
+        }
     }
 }

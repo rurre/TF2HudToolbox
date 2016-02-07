@@ -8,7 +8,7 @@ using System.Windows.Forms;
 static class RefLib
 {
     public static string PathToForwardSlashes(ref string s)
-    {                
+    {
         return s.Replace('\\','/');
     }
     /// <summary>
@@ -17,7 +17,7 @@ static class RefLib
     /// <param name="s"></param>
     /// <returns></returns>
     public static string StripAndTrim(ref string s)
-    {            
+    {
         s = s.Replace("/","");
         s = s.Replace("\\","");
         s = s.Replace(":","");
@@ -46,6 +46,19 @@ static class RefLib
                     break;
             }
         }
+        return s;
+    }
+
+    public static string Seek(string s)
+    {
+        while((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r'))
+        {
+            s = s.Remove(0,1);
+            if(s.Length == 0)
+                break;
+            else if(!((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r')))
+                break;
+        }    
         return s;
     }
     /// <summary>

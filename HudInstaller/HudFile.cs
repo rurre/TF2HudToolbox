@@ -42,6 +42,7 @@ namespace hudParse
             }
             set
             {
+                value = value.Replace('/','\\');
                 m_Name = value.Remove(0,value.LastIndexOf("\\") + 1);                
                 m_Path = value.Remove(value.Length - m_Name.Length);
                 if(m_Name.IndexOf('.') != -1)

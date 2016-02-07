@@ -48,6 +48,10 @@ namespace hudParse
 
             set
             {
+                if(value.IndexOf('[') != -1)
+                    value = value.Remove(0,value.IndexOf('[') + 1);
+                if(value.IndexOf(']') != -1)
+                    value = value.Remove(value.IndexOf(']'));
                 m_Platform = value;
             }
         }

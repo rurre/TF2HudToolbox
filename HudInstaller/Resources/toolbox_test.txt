@@ -36,7 +36,7 @@
 	"tab_Fragment"						"QWEQWE"
 	"tab_CombineHuds"					"CCCCC"
 	"tab_About"							"YYYYY"
-
+	
 	"radio_installmode_hard"			"zzzz"
 	"radio_installmode_soft"			"zzzz"
 

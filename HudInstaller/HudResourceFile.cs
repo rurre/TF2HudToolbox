@@ -39,6 +39,10 @@ namespace hudParse
                 fileType = fileType.Remove(fileType.IndexOf('.'));
             m_FileType = fileType;
         }
+        public bool IsEmpty
+        {
+            get { return IsListEmpty(); }
+        }
 
         public string Name
         {
@@ -151,6 +155,14 @@ namespace hudParse
                     return element;
             }
             return new SubElement();
+        }
+
+        bool IsListEmpty()
+        {
+            if(m_ValueList.Count == 0)
+                return true;
+            else
+                return false;                
         }
     }
 }

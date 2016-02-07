@@ -29,42 +29,42 @@ namespace hudParse
                     folder.CopyNoParse = true;
                 hud.Add(folder);                
             }            
-
             return hud;
         }
 
         public static HudResourceFile ParseHudResource(Stream stream)
         {
             HudResourceFile hf = new HudResourceFile();
-            string line;
-            string s;
-
             StreamReader sr = new StreamReader(stream);
-
-            s = sr.ReadToEnd();
-            RefLib.CleanUp(ref s,RefLib.cleanupModes.Comments);
+            string s = sr.ReadToEnd();
             sr.Close();
-
-            line = RefLib.GetLine(ref s);
-            RefLib.Condense(ref line);
-            hf.FullName = line.Trim(new char[] { '\"' });
+            RefLib.CleanUp(ref s,RefLib.cleanupModes.Comments);
 
             RefLib.Seek(ref s);
-            line = RefLib.GetLine(ref s);
-            RefLib.Condense(ref line);
+            hf.Name = Read(s);
+            s = s.Remove(0,hf.Name.Length + 2);
+            RefLib.Seek(ref s);
 
-            if(line.First() == '{')
+            if(s.First() == '{')
             {
+                s = s.Remove(0,1);
                 while(true)
                 {
                     RefLib.Seek(ref s);
-                    line = RefLib.GetLine(ref s);
-                    if(line.IndexOf('}') == -1)
-                        hf.Add(ParseKeyValue(line));
+                    string ss = s;
+                    if(ss.First() != '}')
+                    {
+                        ss = RefLib.GetLine(ref ss);
+                        KeyValue kv = ParseKeyValue(ss);
+                        s = s.Remove(0,ss.Length);
+
+                        if(kv != new KeyValue())
+                            hf.Add(kv);
+                        else break;                        
+                    }
                     else break;
-                }                
+                }
             }
-            
             return hf;
         }
 
@@ -144,7 +144,10 @@ namespace hudParse
                             hf.Add(he);
                             RefLib.Seek(ref s);
                             if(s.First() == '}')
+                            {
                                 s = s.Remove(0,1);
+                                RefLib.Seek(ref s);
+                            }
                         }
                         else break;
                     }
@@ -214,7 +217,7 @@ namespace hudParse
                     }
                     s = s.Remove(0,ss.Length + toRemove);
                     toRemove = 0;
-                }
+                }                
             }
             
             return kv;
@@ -493,14 +496,22 @@ namespace hudParse
             int quoteNr = 0;
             RefLib.Seek(ref ss);
 
-            for(int i = 0; quoteNr < 4; i++)
+            for(int i = 0; i < s.Length; i++)
             {
-                if(ss[i] == '\"')
+                if(quoteNr < 4)
                 {
-                    quoteNr++;
-                }                
-                result += ss[i];
+                    if(ss[i] == '\"')                    
+                        quoteNr++;                    
+                    result += ss[i];
+                    continue;
+                }
+                else break;                
+                throw new Exception("Syntax error when parsing KeyValue. Reached end of file before end of KeyValue.");
             }
+            ss = ss.Remove(0,result.Length);
+            ss = RefLib.GetLine(ref ss);
+            if(ss != "")            
+                result += ss;            
             return result;
         }
     }

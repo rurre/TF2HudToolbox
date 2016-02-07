@@ -95,7 +95,7 @@ static class RefLib
         string result = "";
         for(int i = 0; i < s.Length; i++)
         {
-            if(s[i] != '\r')
+            if(s[i] != '\n')
             {
                 result += s[i];
                 continue;
@@ -107,6 +107,8 @@ static class RefLib
         if(result.Length + 2 <= s.Length)
             s = s.Remove(0,result.Length + 2);
         else s = "";
+        if(result.IndexOf('\r') != -1)        
+            result = result.Replace("\r","");
         return result;
     }
     /// <summary>

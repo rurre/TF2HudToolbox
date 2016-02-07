@@ -67,7 +67,11 @@ namespace HudInstaller
         {
             InitializeComponent();
             localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
-            helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_English").ToString() ?? "")));
+            if(localizationFile.IsEmpty)
+                throw new Exception("localizationFile is empty!");
+            helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_English").ToString() ?? "")));            
+            if(helpInfo.IsEmpty)
+                throw new Exception("helpInfo is empty!");
         }
 
         private void mainForm_Load(object sender,EventArgs e)
@@ -109,9 +113,9 @@ namespace HudInstaller
             }
         }
 
-        #endregion
+#endregion
 
-        #region UI Functions
+#region UI Functions
         /// <summary>
         /// Sets a label's text value to null.
         /// </summary>
@@ -255,9 +259,9 @@ namespace HudInstaller
             }
         }
 
-        #endregion
+#endregion
 
-        #region Browse - Browsing related functions
+#region Browse - Browsing related functions
 
         /// <summary>
         /// Browse for a logo.
@@ -376,9 +380,9 @@ namespace HudInstaller
             else textBox_Fragment_LogoBrowse.Text = openFile_FragmentLogoBrowse.FileName;
         }
 
-        #endregion
+#endregion
 
-        #region Help - Sets help strings and stuff
+#region Help - Sets help strings and stuff
         /// <summary>
         /// Sets help to a string from inside helpinfo.txt resource. Appends _name and _desc automatically to get name and description.
         /// </summary>
@@ -491,9 +495,9 @@ namespace HudInstaller
             }
         }
 
-        #endregion
+#endregion
 
-        #region UpdateFilePaths - Updates file paths when text boxes' text change
+#region UpdateFilePaths - Updates file paths when text boxes' text change
 
         private void textBox_CombineBrowse2_TextChanged(object sender,EventArgs e)
         {
@@ -525,9 +529,9 @@ namespace HudInstaller
             folderBrowse_MainInstallPath.SelectedPath = textBox_MainInstallPath.Text;
         }
 
-        #endregion
+#endregion
 
-        #region Buttons - Click events
+#region Buttons - Click events
         private void button_MainInstallBrowseClear_Click(object sender,EventArgs e)
         {
             folderBrowse_MainInstallPath.SelectedPath = null;
@@ -629,9 +633,9 @@ namespace HudInstaller
             button_MainCancel.Enabled = false;
         }
 
-        #endregion
+#endregion
 
-        #region General Functions
+#region General Functions
         /// <summary>
         /// Checks the Windows Registry for the Steam install path and figures out the TF2 path from there
         /// </summary>
@@ -696,7 +700,7 @@ namespace HudInstaller
             }
         }
 
-        #endregion
+#endregion
 
         private void backgroundWorker_DoWork(object sender,System.ComponentModel.DoWorkEventArgs e)
         {

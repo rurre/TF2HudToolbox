@@ -1,5 +1,6 @@
 # Hud Toolbox
-A tool complete with a GUI used to install Team Fortress 2 huds as well as a few extra features.
+A tool, complete with a GUI, used to install Team Fortress 2 huds as well as a few extra features.
+Initially planned to be used for IvHud but it will support any hud just fine.
 
 It compares custom huds with the default hud and strips all values matching default, leaving only the custom values in files. It then zips all this custom data into blueprint files that the intaller can understand.
 When installing a hud it will extract fresh default hud files and apply the blueprint on top, ensuring a more or less up to date version with little conflicts. 

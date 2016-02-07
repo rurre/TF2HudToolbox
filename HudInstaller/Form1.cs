@@ -13,7 +13,10 @@ namespace HudInstaller
 {
     public partial class MainForm : Form
     {
-        //Variables
+        delegate void SetTextCallback(string s);
+
+        #region Variables
+
         Hud mainHud = new Hud();
         Hud defaultHud = new Hud();
         Hud combineHud1 = new Hud();
@@ -21,15 +24,16 @@ namespace HudInstaller
         Hud combineHudResult = new Hud();
         Hud fragmentHud = new Hud();
 
-        
+        string gamePath;
+        string installPath;
+
+        Languages language;
         Jobs job;
         bool working = false;
-                        
+        bool silentCancel = false;              
         bool helpEnabled = false;
         static Point formSize = new Point(497, 500);    //Different from designer value!!
-
         SettingsForm Settings = new SettingsForm();
-
         ResourceManager resourceManager = HudInstaller.Properties.Resources.ResourceManager;
         HudResourceFile localizationFile;
         HudResourceFile helpInfo;
@@ -37,10 +41,10 @@ namespace HudInstaller
         public enum Languages { English, Test };
         enum Jobs { None, Parse, Fragment, Combine, Install };
 
-        Languages language;
+        
+        #endregion
 
-        string gamePath;
-        string installPath;
+        #region Properties
 
         public Languages Language
         {
@@ -54,7 +58,11 @@ namespace HudInstaller
                 language = value;
             }
         }
-        
+
+        #endregion
+
+        #region Form Functions
+
         public MainForm()
         {
             InitializeComponent();
@@ -78,17 +86,46 @@ namespace HudInstaller
 
             SetLanguageDefault();
         }
+        
 
+        public void WriteStatus(string s)
+        {
+            if(this.textBox_MainStatus.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(WriteStatus);
+                this.Invoke(d,new object[] { s + "\n" });            
+            }
+            else
+            {
+                textBox_MainStatus.AppendText("-" + s + "\n");
+            }
+        }
+
+        #endregion
+
+        #region UI Functions
+        /// <summary>
+        /// Sets a label's text value to null.
+        /// </summary>
+        /// <param name="label"></param>
         void ClearLabel(ref Label label)
         {
             label.Text = "";
         }
 
+        /// <summary>
+        /// Sets a linklabel's text value to null.
+        /// </summary>
+        /// <param name="label"></param>
         void ClearLabel(ref LinkLabel label)
         {
             label.Text = "";
         }
 
+        /// <summary>
+        /// Updates Labels', Buttons', GroupBoxes', CheckBoxes', RadioButtons' and Tabs' text values to the language selected.
+        /// Values are taken from toolbox_language.txt
+        /// </summary>
         void UpdateLocalizationText()
         {            
             UpdateControlText<Label>();
@@ -98,6 +135,11 @@ namespace HudInstaller
             UpdateControlText<RadioButton>();
             UpdateControlText<TabControl>();
         }
+
+        /// <summary>
+        /// See UpdateLocalizationText()
+        /// </summary>
+        /// <typeparam name="T">Type name to use.</typeparam>
         void UpdateControlText<T>() where T : class
         {
             if(typeof(T) == typeof(Button) || typeof(T) == typeof(Label) || typeof(T) == typeof(RadioButton) || typeof(T) == typeof(CheckBox) || typeof(T) == typeof(GroupBox))
@@ -126,11 +168,13 @@ namespace HudInstaller
                     }
                 }
             }
-            else throw new Exception("Invalid type " + typeof(T));
-
-            
+            else throw new Exception("Invalid type " + typeof(T));            
         }
-        
+
+        /// <summary>
+        /// Centers the form to the screen.
+        /// </summary>
+        /// <param name="form"></param>
         protected void CenterForm(Form form)
         {
             Screen screen = Screen.FromControl(this);
@@ -142,6 +186,11 @@ namespace HudInstaller
                 Y = Math.Max(workingArea.Y,workingArea.Y + (workingArea.Height - this.Height) / 2)
             };
         }
+
+        /// <summary>
+        /// Centers the form to the screen on the X axis only.
+        /// </summary>
+        /// <param name="form"></param>
         protected void CenterFormHorizontally(Form form)
         {
             Screen screen = Screen.FromControl(this);
@@ -155,36 +204,10 @@ namespace HudInstaller
             };
         }
 
-        public void GetInstallPaths(FolderBrowserDialog fbd,TextBox tb)
-        {
-            var steamPath = Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam","SteamPath",null);
-            if(steamPath != null)
-            {
-                if(Directory.Exists(steamPath + "\\steamapps\\common\\team Fortress 2"))
-                {
-                    gamePath = steamPath + "\\steamapps\\common\\team Fortress 2";
-                    gamePath = RefLib.PathToForwardSlashes(ref gamePath);
-                    WriteStatus("Found TF2 at " + gamePath);
-                    tb.Text = gamePath;
-                    installPath = gamePath + "\\tf\\custom\\";
-                    fbd.SelectedPath = gamePath;
-                }
-                else WriteStatus("Couldn't find TF2 install path, select an install folder manually");
-            }                
-        }
-
-        public void WriteStatus(string s)
-        {
-            textBox_MainStatus.AppendText("-" + s + "\n");
-        }
-
-        bool ResourceExists(string resourceName)
-        {
-            if(resourceManager.GetObject(resourceName) != null)
-                return true;
-            else return false;
-        }        
-
+        /// <summary>
+        /// Sets the Application's language to English.
+        /// Ran at the start of the form to update all the labels and buttons to match toolbox_english.txt.
+        /// </summary>
         void SetLanguageDefault()
         {
             Language = Languages.English;
@@ -194,6 +217,10 @@ namespace HudInstaller
             SetHelpToString("info_help");            
         }
 
+        /// <summary>
+        /// Changes the Application language and updates the controls' text.
+        /// </summary>
+        /// <param name="lang">Language from the Languages enum</param>
         void SetLanguage(Languages lang)
         {            
             if(lang != Language)
@@ -210,18 +237,26 @@ namespace HudInstaller
                     else
                         helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
                     SetHelpToString("info_help");
+                    UpdateLocalizationText();
                 }
                 catch(Exception e)
                 {
                     throw e;
                 }
-
                 Language = lang;
             }
         }
 
-        #region Browse
+        #endregion
 
+        #region Browse - Browsing related functions
+
+        /// <summary>
+        /// Browse for a logo.
+        /// </summary>
+        /// <param name="ofd">OpenFileDialog to set logo path in</param>
+        /// <param name="pb">PictureBox to show preview in </param>
+        /// <param name="tb">TextBox to display file path in</param>
         private void BrowseLogo(OpenFileDialog ofd,PictureBox pb,TextBox tb)
         {
             if(ofd.ShowDialog() == DialogResult.OK)
@@ -243,6 +278,7 @@ namespace HudInstaller
         {
             FragmentHudBrowse(fbd,tb,hudName,pb,hud,null,null,null,null,null);
         }
+
         void FragmentHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb, Hud hud,TextBox resName,TextBox resVersion,TextBox resAuthor,TextBox resWebsite, TextBox resLogo)
         {
             if(fbd.ShowDialog() == DialogResult.OK)
@@ -313,10 +349,32 @@ namespace HudInstaller
             BrowseLogo(openFile_FragmentLogoBrowse,pictureBox_FragmentHudMain,textBox_Fragment_LogoBrowse);
         }
 
+        private void button_FragmentClearLogo_Click(object sender,EventArgs e)
+        {
+            textBox_Fragment_LogoBrowse.Text = "";
+            openFile_FragmentLogoBrowse.FileName = null;
+            fragmentHud.SetDeafaultLogo();
+            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;
+        }
+
+        private void button_FragmentHudBrowse_Click(object sender,EventArgs e)
+        {
+            FragmentHudBrowse(folderBrowse_Fragment,textBox_FragmentHudBrowse,textBox_FragmentHudMain,pictureBox_FragmentHudMain,fragmentHud,textBox_Fragment_Name,textBox_Fragment_Version,textBox_Fragment_Author,textBox_Fragment_Website,textBox_Fragment_LogoBrowse);
+            if(fragmentHud.HasDefaultLogo)
+            {
+                textBox_Fragment_LogoBrowse.Text = "";
+                openFile_FragmentLogoBrowse.FileName = "";
+            }
+            else textBox_Fragment_LogoBrowse.Text = openFile_FragmentLogoBrowse.FileName;
+        }
+
         #endregion
 
-
         #region Help - Sets help strings and stuff
+        /// <summary>
+        /// Sets help to a string from inside helpinfo.txt resource. Appends _name and _desc automatically to get name and description.
+        /// </summary>
+        /// <param name="s">String name as appears in helpinfo.txt, without _name or _desc suffix.</param>
         private void SetHelpToString(string s)
         {                        
             if(s != null)
@@ -375,18 +433,7 @@ namespace HudInstaller
         {
             SetHelpToString("button_parse");
         }
-
-        private void button_FragmentHudBrowse_Click(object sender,EventArgs e)
-        {
-            FragmentHudBrowse(folderBrowse_Fragment,textBox_FragmentHudBrowse,textBox_FragmentHudMain,pictureBox_FragmentHudMain,fragmentHud,textBox_Fragment_Name,textBox_Fragment_Version,textBox_Fragment_Author,textBox_Fragment_Website,textBox_Fragment_LogoBrowse);
-            if(fragmentHud.HasDefaultLogo)
-            {
-                textBox_Fragment_LogoBrowse.Text = "";
-                openFile_FragmentLogoBrowse.FileName = "";
-            }
-            else textBox_Fragment_LogoBrowse.Text = openFile_FragmentLogoBrowse.FileName;
-        }
-
+             
         private void button_ToggleHelp_Click(object sender,EventArgs e)
         {
             SetHelpToString("info_help");
@@ -434,11 +481,6 @@ namespace HudInstaller
                         break;
                 }
             }
-        }
-
-        private void button_ToggleHelp_MouseHover(object sender,EventArgs e)
-        {
-
         }
 
         #endregion
@@ -515,14 +557,32 @@ namespace HudInstaller
         }
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
-        {            
-            if(!backgroundWorker.IsBusy)
+        {
+            /*if(!backgroundWorker.IsBusy)
             {
                 job = Jobs.Fragment;
                 working = true;
                 UpdateButtonState();
                 backgroundWorker.RunWorkerAsync();
+            }*/
+
+            if(folderBrowse_Fragment.SelectedPath != "")
+            {
+                WriteStatus("Attempting to Create Hud Blueprint...");
+                WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
+                Hud tempFragment = new Hud();
+
+                tempFragment = HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
+                tempFragment.Resource = fragmentHud.Resource;
+
             }
+            else
+            {
+                WriteStatus("Select a Hud folder first");
+                silentCancel = true;
+                backgroundWorker.CancelAsync();
+            }
+
         }
 
         private void button_Install_Click(object sender,EventArgs e)
@@ -552,17 +612,54 @@ namespace HudInstaller
             else WriteStatus("Can't combine a hud with itself");*/
 
         }
-        private void button_FragmentClearLogo_Click(object sender,EventArgs e)
+
+        private void button_MainCancel_Click(object sender,EventArgs e)
         {
-            textBox_Fragment_LogoBrowse.Text = "";
-            openFile_FragmentLogoBrowse.FileName = null;
-            fragmentHud.SetDeafaultLogo();
-            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;
+            if(backgroundWorker.IsBusy)
+                backgroundWorker.CancelAsync();
+            else throw new Exception("Attempted to cancel while backgroundWorker wasn't working. Button should be disabled");
+            button_MainCancel.Enabled = false;
         }
 
         #endregion
 
-        //Checks if out backgroundWorker is busy, if so buttons get disabled and cancel enabled
+        #region General Functions
+        /// <summary>
+        /// Checks the Windows Registry for the Steam install path and figures out the TF2 path from there
+        /// </summary>
+        /// <param name="fbd">Folder browser dialog to set path in</param>
+        /// <param name="tb">Text box representing the selected path</param>
+        public void GetInstallPaths(FolderBrowserDialog fbd,TextBox tb)
+        {
+            var steamPath = Registry.GetValue("HKEY_CURRENT_USER\\Software\\Valve\\Steam","SteamPath",null);
+            if(steamPath != null)
+            {
+                if(Directory.Exists(steamPath + "\\steamapps\\common\\team Fortress 2"))
+                {
+                    gamePath = steamPath + "\\steamapps\\common\\team Fortress 2";
+                    gamePath = RefLib.PathToForwardSlashes(ref gamePath);
+                    WriteStatus("Found TF2 at " + gamePath);
+                    tb.Text = gamePath;
+                    installPath = gamePath + "\\tf\\custom\\";
+                    fbd.SelectedPath = gamePath;
+                }
+                else WriteStatus("Couldn't find TF2 install path, select an install folder manually");
+            }
+        }
+        /// <summary>
+        /// Checks if a resource exists.
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <returns>Returns bool</returns>
+        bool ResourceExists(string resourceName)
+        {
+            if(resourceManager.GetObject(resourceName) != null)
+                return true;
+            else return false;
+        }
+        /// <summary>
+        /// Checks if out backgroundWorker is busy, if so buttons get disabled and cancel enabled
+        /// </summary>
         private void UpdateButtonState()
         {
             if(working)
@@ -573,6 +670,7 @@ namespace HudInstaller
                 button_Install.Enabled = false;
                 button_FragmentMain.Enabled = false;
                 button_Combine.Enabled = false;
+                button_Customize.Enabled = false;
 
                 button_MainCancel.Enabled = true;
             }
@@ -584,13 +682,52 @@ namespace HudInstaller
                 button_Install.Enabled = true;
                 button_FragmentMain.Enabled = true;
                 button_Combine.Enabled = true;
+                button_Customize.Enabled = true;
 
                 button_MainCancel.Enabled = false;
             }
         }
 
+        #endregion
+
         private void backgroundWorker_DoWork(object sender,System.ComponentModel.DoWorkEventArgs e)
         {
+            if(job == Jobs.Parse)
+            {
+                WriteStatus("Attempting to parse Hud...");
+                WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
+            }
+            else if(job == Jobs.Combine)
+            {
+                WriteStatus("Attempting to Combine Huds...");
+                WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
+            }
+            else if(job == Jobs.Install)
+            {
+                WriteStatus("Attempting to Install Hud...");
+                WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
+            }
+            else if(job == Jobs.Fragment)
+            {
+                /*if(folderBrowse_Fragment.SelectedPath != "")
+                {
+                    WriteStatus("Attempting to Create Hud Blueprint...");
+                    WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
+                    Hud tempFragment = new Hud();
+
+                    tempFragment = HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
+                    tempFragment.Resource = fragmentHud.Resource;
+
+                }
+                else
+                {
+                    WriteStatus("Select a Hud folder first");
+                    silentCancel = true;
+                    backgroundWorker.CancelAsync();
+                }   */             
+            }
+            else
+                throw new Exception("backgroundWorker asked to do work but a job wasn't assigned");
             /*
             WriteStatus("Parsing Hud...");
             fragmentHud.Resource = new HudResourceFile("hudinfo","txt",fragmentHud.Path,new List<KeyValue>()
@@ -605,9 +742,8 @@ namespace HudInstaller
             if(tempHud != null)
                 fragmentHud.m_FolderList = tempHud.m_FolderList;
             else WriteStatus("Failed to parse Hud");*/
-            
-            //Use if statement to check for job to do.
 
+            //Use if statement to check for job to do.            
             for(int i = 0; i < 100; i++)
             {
                 System.Threading.Thread.Sleep(100);
@@ -632,23 +768,26 @@ namespace HudInstaller
         {
             if(e.Cancelled)
             {
-                switch(job)
+                if(!silentCancel)
                 {
-                    case (Jobs.Combine):
-                        WriteStatus("Cancelled Combine operation");
-                        break;
-                    case (Jobs.Fragment):
-                        WriteStatus("Cancelled Blueprint creation");
-                        break;
-                    case (Jobs.Parse):
-                        WriteStatus("Cancelled Parsing operation");
-                        break;
-                    case (Jobs.Install):
-                        WriteStatus("Cancelled Hud Install");
-                        break;
-                    default:
-                        throw new Exception("backgroundWorker stopped working but job wasn't reported");                        
-                }                
+                    switch(job)
+                    {
+                        case (Jobs.Combine):
+                            WriteStatus("Cancelled Combine operation");
+                            break;
+                        case (Jobs.Fragment):
+                            WriteStatus("Cancelled Blueprint creation");
+                            break;
+                        case (Jobs.Parse):
+                            WriteStatus("Cancelled Parsing operation");
+                            break;
+                        case (Jobs.Install):
+                            WriteStatus("Cancelled Hud Install");
+                            break;
+                        default:
+                            throw new Exception("backgroundWorker stopped working but job wasn't reported");
+                    }
+                }            
             }
             else if(e.Error != null)
             {
@@ -656,7 +795,7 @@ namespace HudInstaller
                 WriteStatus(e.Error.Message);
             }
             else
-            {
+            {                
                 switch(job)
                 {
                     case (Jobs.Combine):
@@ -673,21 +812,16 @@ namespace HudInstaller
                         break;
                     default:
                         throw new Exception("backgroundWorker finished working but job wasn't reported");
-                }
-                //fragmentHud = e.Result;
+                }                                
             }
+            
             working = false;
-            job = Jobs.None;            
+            job = Jobs.None;                        
             progressBar_Main.Value = 0;
-            UpdateButtonState();                        
-        }
+            UpdateButtonState();
 
-        private void button_MainCancel_Click(object sender,EventArgs e)
-        {
-            if(backgroundWorker.IsBusy)
-                backgroundWorker.CancelAsync();
-            else throw new Exception("Attempted to cancel while backgroundWorker wasn't working. Button should be disabled");
-            button_MainCancel.Enabled = false;
+            if(silentCancel)
+                silentCancel = false;
         }
     }
 }

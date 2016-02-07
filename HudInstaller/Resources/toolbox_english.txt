@@ -15,8 +15,7 @@
 	"groupbox_InstallMode"				"Install Mode"
 
 	"checkbox_CombineUseMinimal"		"Use minmode values"
-	"checkbox_CombineHud1UseDefault"	"Use Default TF2 Hud"
-	"checkbox_CombineHud2UseDefault"	"Use Default TF2 Hud"
+	"checkbox_CombineHudUseDefault"		"Use Default TF2 Hud"	
 	
 	"button_MainBrowse"					"Browse"
 	"button_Parse"						"Parse"

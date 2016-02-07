@@ -19,6 +19,7 @@ namespace hudParse
         public HudResourceFile()
         {
             m_Name = "";
+            m_FileType = "txt";
         }
 
         public HudResourceFile(string fileType) : base()
@@ -41,11 +42,19 @@ namespace hudParse
 
         public string Name
         {
-            get
-            {
-                return m_Name;
-            }
+            get { return m_Name; }
+            set { m_Name = value; }
+        }
 
+        public string Path
+        {
+            get { return m_Path; }
+            set { m_Path = value; }
+        }
+
+        public string FullName
+        {
+            get { return m_Path + m_Name; }
             set
             {
                 value.Replace("\\","/");
@@ -62,7 +71,7 @@ namespace hudParse
                 else m_Name = value;
             }
         }
-
+        
         public void Add(KeyValue kv)
         {
             m_ValueList.Add(kv);

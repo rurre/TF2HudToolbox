@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace hudParse
 {
@@ -18,18 +15,19 @@ namespace hudParse
             {
                 hud.Resource = tempRes;
                 hud.ApplyResource();
-            }
-            else return null;            
+            }                   
 
             var Hud_Subfolders = Directory.GetDirectories(path);
             for(int i = 0; i < Hud_Subfolders.Length; i++)
             {
                 HudFolder folder = new HudFolder();
-                folder.FolderName = Hud_Subfolders[i];
+                folder.FullName = Hud_Subfolders[i];
 
-                folder = ParseHudFolder(folder.FullName);
-                if(!folder.IsEmpty())
-                    hud.Add(folder);
+                if(folder.Name.ToLower() == "resource" || folder.Name.ToLower() == "scripts")
+                    folder = ParseHudFolder(folder.FullName);
+                else
+                    folder.CopyNoParse = true;
+                hud.Add(folder);                
             }            
 
             return hud;
@@ -49,7 +47,7 @@ namespace hudParse
 
             line = RefLib.GetLine(ref s);
             RefLib.Condense(ref line);
-            hf.Name = line.Trim(new char[] { '\"' });
+            hf.FullName = line.Trim(new char[] { '\"' });
 
             RefLib.Seek(ref s);
             line = RefLib.GetLine(ref s);
@@ -76,27 +74,33 @@ namespace hudParse
                 path += "\\hudinfo.txt";
 
             if(File.Exists(path))
-                return ParseHudResource(new StreamReader(path).BaseStream);
+            {
+                HudResourceFile newRes = new HudResourceFile();                
+                newRes = ParseHudResource(new StreamReader(path).BaseStream);
+                newRes.FullName = path;                
+                return newRes;
+            }
             else return new HudResourceFile();
         }
 
         static HudFile ParseHudFile(string path)
         {
             HudFile hf = new HudFile();
-            string s;
+            string s;            
 
             if(File.Exists(path))
             {
                 StreamReader sr = new StreamReader(path);
                 s = sr.ReadToEnd();
                 RefLib.CleanUp(ref s,RefLib.cleanupModes.Comments);
-                sr.Close();
+                sr.Close();                
             }
             else throw new Exception("Can't parse file, it doesn't exist.");
 
             RefLib.Seek(ref s);
-            hf.Name = Read(s);
-            s = s.Remove(hf.Name.Length + 2);
+            hf.FullName = Read(s);
+            s = s.Remove(0,hf.FullName.Length + 2);
+            string ss;
 
             RefLib.Seek(ref s);
             if(s.First() == '{')
@@ -105,38 +109,40 @@ namespace hudParse
                 while(true)
                 {
                     HudElement he = new HudElement();
-                    while(true)
+                    ss = Read(s);
+                    he.Name = ss;
+                    s = s.Remove(0,ss.Length + 2);
+                    RefLib.Seek(ref s);
+
+                    if(s.First() == '{')
                     {
-                        RefLib.Seek(ref s);
-
-                        SubElement sb = ParseSubElement(s);
-                        if(sb != new SubElement())
+                        s = s.Remove(0,1);
+                        while(true)
                         {
-                            he.Add(sb);
-                        }
-                        else if(s.First() != '}')
-                        {
-                            string ss = s;
-                            RefLib.GetLine(ref ss);
-                            s = s.Remove(ss.Length);
-                            KeyValue kv = ParseKeyValue(ss);
-
-                            if(kv != new KeyValue())
+                            RefLib.Seek(ref s);                        
+                            if(s.First() != '}')
                             {
-                                he.Add(kv);
-                                continue;
-                            }                            
-                        }                        
-                        break;                        
+                                ss = s;
+                                RefLib.GetLine(ref ss);
+                                s = s.Remove(ss.Length);
+                                KeyValue kv = ParseKeyValue(ss);
+
+                                if(kv != new KeyValue())
+                                {
+                                    he.Add(kv);
+                                    continue;
+                                }
+                            }
+                            break;
+                        }
+                        if(he != new HudElement())
+                        {
+                            hf.Add(he);
+                        }
+                        else break;
                     }
-                    if(he != new HudElement())
-                    {
-                        hf.Add(he);                        
-                    }
-                    else break;
                 }
             }
-
             return hf;
         }
 
@@ -218,6 +224,19 @@ namespace hudParse
             {
                 while(s.First() != '}')
                 {
+                    string temp = s;
+                    temp = RefLib.GetLines(2,ref temp);
+                    if(temp.IndexOf('{') != -1)
+                    {
+                        SubElement sb = ParseSubElement(s);
+                        if(sb != new SubElement())
+                        {
+                            he.Add(sb);
+                            continue;
+                        }
+                        else throw new Exception("Parse sub element returned null. Don't try to parse if there isn't one");
+                    }                    
+
                     KeyValue kv = new KeyValue();
                     kv = ParseKeyValue(s);
                     if(kv != new KeyValue())
@@ -243,48 +262,24 @@ namespace hudParse
         //TODO: Set folder check to Hud's path + folder name, or whatever, so it ignores the parsing ONLY if we're in the root hud folder.
         static SubElement ParseSubElement(string s)
         {
-            SubElement ssb = new SubElement();
             SubElement sb = new SubElement();
 
-            RefLib.Seek(ref s);
-            ssb = ParseSubElement(s);
-            if(ssb != new SubElement())
-                sb.Add(ssb);            
-                        
-            RefLib.Seek(ref s);
-            string ss = Read(s);
-            sb.Name = ss;
-
-            s = s.Remove(ss.Length + 2);
-            RefLib.Seek(ref s);
-            if(s.First() == '{')
-            {
-                while(s.First() != '}')
-                {
-                    KeyValue kv = new KeyValue();
-                    kv = ParseKeyValue(s);
-                    if(kv != new KeyValue())
-                    {
-                        sb.Add(kv);
-                    }
-                    else break;
-                }
-            }            
             return sb;
         }
 
         static HudFolder ParseHudFolder(string path)
-        {
-            HudFolder folder = new HudFolder();            
+        {            
+            HudFolder folder = new HudFolder();
+            folder.FullName = path;
             var hudFiles = Directory.GetFiles(path, "*.res");
             var folders = Directory.GetDirectories(path);
 
             for(int i = 0; i < folders.Length; i++)
             {
                 HudFolder subFolder = new HudFolder();                
-                subFolder.FolderName = folders[i];
+                subFolder.FullName = folders[i];
                 if(!subFolder.CopyNoParse)
-                    subFolder = ParseHudFolder(subFolder.FolderPath+subFolder.FolderName);
+                    subFolder = ParseHudFolder(subFolder.FullName);
                 folder.Add(subFolder);
             }
             if(hudFiles.Length > 0)
@@ -292,7 +287,7 @@ namespace hudParse
                 for(int i = 0; i < hudFiles.Length; i++)
                 {
                     HudFile file = new HudFile();
-                    file.Name = hudFiles[i];
+                    file.FullName = hudFiles[i];
 
                     file = ParseHudFile(file.FullName);
                     if(file != new HudFile())

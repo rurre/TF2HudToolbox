@@ -8,55 +8,52 @@ namespace hudParse
 {
     public class HudFolder
     {
-        string m_FolderName = "";
-        string m_FolderPath = "";        
+        string m_Name = "";
+        string m_Path = "";        
         List<HudFile> m_FileList = new List<HudFile>();
         List<HudFolder> m_SubFolderList = new List<HudFolder>();
         public bool CopyNoParse = false;
 
-        public string FolderName
+        public string FullName
         {
             get
             {
-                return m_FolderName;
+                return m_Path + m_Name;
             }
 
             set
             {
                 if(value.IndexOf("\\") != -1)
                 {
-                    m_FolderName = value.Remove(0,value.LastIndexOf("\\")+1);
-                    m_FolderPath = value.Remove(value.Length - m_FolderName.Length);
+                    m_Name = value.Remove(0,value.LastIndexOf("\\")+1);
+                    m_Path = value.Remove(value.Length - m_Name.Length);
                 }
                 else
                 {
                     RefLib.StripAndTrim(ref value);
-                    m_FolderName = value;
+                    m_Name = value;
                 }
             }
         }
 
-        public string FolderPath
+        public string Name
         {
             get
             {
-                return m_FolderPath;
+                return m_Name;
             }
-
             set
             {
-                m_FolderPath = value;
+                m_Name = value;
             }
         }
 
-        public string FullName
+        public string Path
         {
-            get
-            {
-                return FolderPath + FolderName;
-            }
+            get { return m_Path; }
+            set { m_Path = value; }
         }
-
+                
         public void Add(HudFile file)
         {
             m_FileList.Add(file);
@@ -64,14 +61,14 @@ namespace hudParse
 
         public void Add(HudFolder folder)
         {
-            if(folder.FolderName == null)
+            if(folder.FullName == null)
             {
-                if(folder.FolderName.ToLower() == "new folder")
+                if(folder.FullName.ToLower() == "new folder")
                 {
-                    for(int i = 1; folder.FolderName == "new folder" + i; i++)
-                        folder.FolderName = "New Folder " + i;
+                    for(int i = 1; folder.FullName == "new folder" + i; i++)
+                        folder.FullName = "New Folder " + i;
                 }
-                else folder.FolderName = "New Folder";
+                else folder.FullName = "New Folder";
             }
             m_SubFolderList.Add(folder);
         }

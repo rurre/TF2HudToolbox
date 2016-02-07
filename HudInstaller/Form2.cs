@@ -12,18 +12,9 @@ namespace HudInstaller
 {
     public partial class SettingsForm : Form
     {
-        public SettingsForm()
-        {            
-            InitializeComponent();
-            foreach(object o in langArray)
-            {                            
-                comboBox_Language.Items.Add(o);                
-            }            
-        }
-
         int newLanguage;
         int oldLanguage;
-        System.Array langArray = Enum.GetValues(typeof(MainForm.Languages));
+        System.Array langArray;
 
         public int NewLanguage
         {
@@ -46,6 +37,16 @@ namespace HudInstaller
             }
         }
 
+        public SettingsForm()
+        {
+            langArray = Enum.GetValues(typeof(MainForm.Languages));
+            InitializeComponent();
+            foreach(object o in langArray)
+            {                            
+                comboBox_Language.Items.Add(o);                
+            }            
+        }
+        
         private void button_Ok_Click(object sender,EventArgs e)
         {
             this.DialogResult = DialogResult.OK;

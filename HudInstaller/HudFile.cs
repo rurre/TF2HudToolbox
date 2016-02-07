@@ -23,40 +23,29 @@ namespace hudParse
         {
             Name = name;
         }
+
         public string Name
         {
-            get
-            {
-                return m_Name;
-            }
-
-            set
-            {
-                if(value.IndexOf("\\") != -1)
-                {
-                    m_Name = value.Remove(0,value.LastIndexOf("\\") + 1);
-                    m_Path = value.Remove(value.Length - m_Name.Length);
-                }
-                else
-                {
-                    RefLib.StripAndTrim(ref value);
-                    m_Name = value;
-                }
-                if(m_Name.IndexOf('.') != -1)
-                    m_Name = m_Name.Remove(m_Name.IndexOf('.'));                
-            }
+            get { return m_Name; }
+            set { m_Name = value; }
         }
-
         public string Path
         {
+            get { return m_Path; }
+            set { m_Path = value; }
+        }
+        public string FullName
+        {
             get
-            {
-                return m_Path;
+            {                
+                return m_Path + m_Name + "." + m_FileType;                
             }
-
             set
             {
-                m_Path = value;
+                m_Name = value.Remove(0,value.LastIndexOf("\\") + 1);                
+                m_Path = value.Remove(value.Length - m_Name.Length);
+                if(m_Name.IndexOf('.') != -1)
+                    m_Name = m_Name.Remove(m_Name.LastIndexOf('.'));
             }
         }
 
@@ -91,14 +80,6 @@ namespace hudParse
                 sr.Close();
             }
             else throw new Exception("Filepath is empty");
-        }
-
-        public string FullName
-        {
-            get
-            {
-                return m_Path + m_Name + "." + m_FileType;
-            }
         }
 
         public override string ToString()

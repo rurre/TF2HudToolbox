@@ -160,11 +160,39 @@ namespace HudInstaller.Properties {
         ///	&quot;groupbox_InstallMode&quot;				&quot;Install Mode&quot;
         ///
         ///	&quot;checkbox_CombineUseMinimal&quot;		&quot;Use minmode values&quot;
-        ///	&quot;checkbox_CombineHud1UseDefault&quot;	&quot;Use Defa [rest of string was truncated]&quot;;.
+        ///	&quot;checkbox_CombineHudUseDefault&quot;		&quot;Use Defa [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string toolbox_english {
             get {
                 return ResourceManager.GetString("toolbox_english", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Toolbox_Test&quot;
+        ///{
+        ///	
+        ///	//Install Tab
+        ///	&quot;label_Static_Hud&quot;					&quot;Hddd&quot;
+        ///	&quot;label_Static_Hudname&quot;				&quot;namae&quot;
+        ///	&quot;label_Static_HudVersion&quot;			&quot;Ver&quot;
+        ///	&quot;label_Static_HudWebsite&quot;			&quot;We&quot;
+        ///	&quot;label_Static_HudAuthor&quot;			&quot;Aut&quot;
+        ///	&quot;label_static_logo&quot;					&quot;Lo&quot;	
+        ///	&quot;label_static_result&quot;				&quot;lt&quot;
+        ///	&quot;label_TF2Folder&quot;					&quot;TF2 :&quot;
+        ///
+        ///	&quot;groupbox_HudInfo&quot;					&quot;Hud INFO&quot;
+        ///	&quot;groupbox_InstallMode&quot;				&quot;Install &quot;
+        ///
+        ///	&quot;checkbox_CombineUseMinimal&quot;		&quot;Use values&quot;
+        ///	&quot;checkbox_CombineHudUseDefault&quot;	&quot;Use TF2 Hud&quot;	
+        ///	
+        ///	&quot;button_MainBrowse&quot;					&quot;Br [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string toolbox_test {
+            get {
+                return ResourceManager.GetString("toolbox_test", resourceCulture);
             }
         }
     }

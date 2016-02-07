@@ -433,6 +433,7 @@
             this.textBox_HudNameMain.ReadOnly = true;
             this.textBox_HudNameMain.Size = new System.Drawing.Size(194, 22);
             this.textBox_HudNameMain.TabIndex = 2;
+            this.textBox_HudNameMain.TabStop = false;
             // 
             // PictureBox_HudThumb
             // 
@@ -635,6 +636,7 @@
             this.textBox_FragmentHudMain.ReadOnly = true;
             this.textBox_FragmentHudMain.Size = new System.Drawing.Size(194, 22);
             this.textBox_FragmentHudMain.TabIndex = 14;
+            this.textBox_FragmentHudMain.TabStop = false;
             // 
             // pictureBox_FragmentHudMain
             // 
@@ -811,6 +813,7 @@
             this.textBox_CombineHudName2.ReadOnly = true;
             this.textBox_CombineHudName2.Size = new System.Drawing.Size(178, 22);
             this.textBox_CombineHudName2.TabIndex = 6;
+            this.textBox_CombineHudName2.TabStop = false;
             // 
             // textBox_CombineHudName1
             // 
@@ -819,6 +822,7 @@
             this.textBox_CombineHudName1.ReadOnly = true;
             this.textBox_CombineHudName1.Size = new System.Drawing.Size(178, 22);
             this.textBox_CombineHudName1.TabIndex = 5;
+            this.textBox_CombineHudName1.TabStop = false;
             // 
             // checkBox_CombineUseMinimal2
             // 
@@ -905,6 +909,7 @@
             this.textBox_About.ReadOnly = true;
             this.textBox_About.Size = new System.Drawing.Size(345, 230);
             this.textBox_About.TabIndex = 1;
+            this.textBox_About.TabStop = false;
             this.textBox_About.Text = "Hud Toolbox v1.0\r\nMade by Pumkin\r\nOr whatever other name I\'m using at the time.\r\n" +
     "\r\nhttp://steamcommunity.com/groups/ivhud";
             // 
@@ -927,7 +932,6 @@
             this.button_ToggleHelp.Text = "Toggle Help";
             this.button_ToggleHelp.UseVisualStyleBackColor = true;
             this.button_ToggleHelp.Click += new System.EventHandler(this.button_ToggleHelp_Click);
-            this.button_ToggleHelp.MouseHover += new System.EventHandler(this.button_ToggleHelp_MouseHover);
             // 
             // textBox_MainHelpTitle
             // 

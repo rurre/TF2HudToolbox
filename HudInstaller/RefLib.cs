@@ -68,6 +68,17 @@ static class RefLib
     /// <returns>Returns the removed line.</returns>
     public static string GetLine(ref string s)
     {
+        return GetLines(1,ref s);
+    }
+    /// <summary>
+    /// Takes a string and removes a given number of lines from it.
+    /// </summary>
+    /// <param name="nr">Number of lines to take out</param>
+    /// <param name="s">Target string</param>
+    /// <returns>Returns the removed lines</returns>
+    public static string GetLines(int nr,ref string s)
+    {
+        int foundNewLine = 0;
         string result = "";
         for(int i = 0; i < s.Length; i++)
         {
@@ -76,11 +87,13 @@ static class RefLib
                 result += s[i];
                 continue;
             }
-            break;
+            foundNewLine++;
+            if(foundNewLine == nr)
+                break;
         }
         if(result.Length + 2 <= s.Length)
             s = s.Remove(0,result.Length + 2);
-        else s = "";        
+        else s = "";
         return result;
     }
     /// <summary>

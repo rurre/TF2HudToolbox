@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 
 namespace hudParse
 {
@@ -17,7 +18,7 @@ namespace hudParse
         HudResourceFile m_Resource;
         bool m_HasDefaultLogo;
 
-        public List<HudFolder> m_FolderList = new List<HudFolder>();
+        public List<HudFolder> m_FolderList;
 
         public Hud()
         {
@@ -25,6 +26,7 @@ namespace hudParse
             m_Author    = "Unknown";
             m_Link      = "Unknown";
             m_HasDefaultLogo = true;
+            m_FolderList = new List<HudFolder>();
         }
         
         public string Name
@@ -40,7 +42,6 @@ namespace hudParse
                 m_Name = value;
             }
         }
-
         internal HudResourceFile Resource
         {
             get
@@ -53,7 +54,6 @@ namespace hudParse
                 m_Resource = value;
             }
         }
-
         public string Path
         {
             get
@@ -66,7 +66,6 @@ namespace hudParse
                 m_Path = value;
             }
         }
-
         public Image Logo
         {
             get
@@ -74,27 +73,24 @@ namespace hudParse
                 return m_Logo;
             }
         }
-
         public bool HasDefaultLogo
         {
             get
             {
                 return m_HasDefaultLogo;
             }
-        }
+        }        
 
         public void SetLogo(Image logo)
         {
             m_Logo = logo;
             m_HasDefaultLogo = false;
         }
-
         public void SetDeafaultLogo()
         {
             m_Logo = HudInstaller.Properties.Resources.logo_default;
             m_HasDefaultLogo = true;
         }
-
         public void ApplyResource()
         {            
             if(m_Resource.FindKeyValue("name") != null)
@@ -104,10 +100,14 @@ namespace hudParse
             if(m_Resource.FindKeyValue("website") != null)
                 m_Link = m_Resource.FindKeyValue("website").Value;            
         }
-
         public void Add(HudFolder folder)
         {
             m_FolderList.Add(folder);
+        }
+
+        public void Write()
+        {      
+                  
         }
     }
 }

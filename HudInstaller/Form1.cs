@@ -16,6 +16,7 @@ namespace HudInstaller
         delegate void SetTextCallback(string s);
 
         #region Variables
+        
 
         Hud mainHud = new Hud();
         Hud defaultHud = new Hud();
@@ -34,13 +35,15 @@ namespace HudInstaller
         bool helpEnabled = false;
         static Point formSize = new Point(497, 500);    //Different from designer value!!
         SettingsForm Settings = new SettingsForm();
-        ResourceManager resourceManager = HudInstaller.Properties.Resources.ResourceManager;
+        ResourceManager resourceManager = Properties.Resources.ResourceManager;
         HudResourceFile localizationFile;
         HudResourceFile helpInfo;
-        
+#if DEBUG
         public enum Languages { English, Test };
+#else
+        public enum Languages { English };        
+#endif
         enum Jobs { None, Parse, Fragment, Combine, Install };
-
 
         #endregion
 
@@ -67,10 +70,10 @@ namespace HudInstaller
         {
             InitializeComponent();
             localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
-            if(localizationFile.IsEmpty)
+            if(localizationFile.IsNull)
                 throw new Exception("localizationFile is empty!");
             helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_English").ToString() ?? "")));            
-            if(helpInfo.IsEmpty)
+            if(helpInfo.IsNull)
                 throw new Exception("helpInfo is empty!");
         }
 
@@ -342,7 +345,10 @@ namespace HudInstaller
                 if(resWebsite != null)
                     resWebsite.Text = hud.Resource.FindKeyValue("website").Value;
                 if(resLogo != null)
-                    resLogo.Text = files[0];
+                {
+                    if(files.Length > 0)
+                        resLogo.Text = files[0];
+                }
             }            
         }
 
@@ -580,12 +586,12 @@ namespace HudInstaller
 
             if(folderBrowse_Fragment.SelectedPath != "")
             {
-                WriteStatus("Attempting to Create Hud Blueprint...");
-                WriteStatus("This is just a simulation. It doesn't actually do anything yet.");
+                WriteStatus("Attempting to Create Hud Blueprint...");                
                 Hud tempFragment = new Hud();
 
                 tempFragment = HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
                 tempFragment.Resource = fragmentHud.Resource;
+                WriteStatus("Finished Parsing Hud.");
 
             }
             else
@@ -594,7 +600,6 @@ namespace HudInstaller
                 silentCancel = true;
                 backgroundWorker.CancelAsync();
             }
-
         }
 
         private void button_Install_Click(object sender,EventArgs e)
@@ -835,5 +840,11 @@ namespace HudInstaller
             if(silentCancel)
                 silentCancel = false;
         }
+
+        #region HudParse
+
+
+
+        #endregion
     }
 }

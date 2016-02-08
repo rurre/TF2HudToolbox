@@ -8,10 +8,18 @@ namespace hudParse
 {
     public class SubElement
     {
-        string m_Name = "";
-        string m_Platform = "";
-        public List<KeyValue> m_ValueList = new List<KeyValue>();
-        public List<SubElement> m_SubValueList = new List<SubElement>();
+        string m_Name;
+        string m_Platform;
+        public List<KeyValue> m_ValueList;
+        public List<SubElement> m_SubValueList;
+
+        public SubElement()
+        {
+            m_Name = null;
+            m_Platform = null;
+            m_SubValueList = new List<SubElement>();
+            m_ValueList = new List<KeyValue>();
+        }
 
         public string Platform
         {
@@ -28,7 +36,6 @@ namespace hudParse
                 m_Platform = value;
             }
         }
-
         public string Name
         {
             get
@@ -42,17 +49,24 @@ namespace hudParse
                 m_Name = value.Replace("\"","");
             }
         }
+        public bool IsNull
+        {
+            get
+            {
+                if(m_Name == null)
+                    return true;
+                else return false;
+            }
+        }
 
         public void Add(KeyValue kv)
         {
             m_ValueList.Add(kv);
         }
-
         public void Add(SubElement sb)
         {
             m_SubValueList.Add(sb);
         }
-
         public override string ToString()
         {
             string result = "";
@@ -65,7 +79,6 @@ namespace hudParse
             result += "\t\t}\n";
             return result;
         }
-
         public KeyValue FindKeyValue(string name)
         {
             foreach(KeyValue element in m_ValueList)
@@ -74,13 +87,6 @@ namespace hudParse
                     return element;
             }
             return new KeyValue();
-        }
-
-        public bool isNull()
-        {
-            if((m_ValueList.Count > 0) || (m_SubValueList.Count > 0))
-                return false;
-            else return true;
         }
     }
 }

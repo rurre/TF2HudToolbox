@@ -8,11 +8,20 @@ namespace hudParse
 {
     public class HudFolder
     {
-        string m_Name = "";
-        string m_Path = "";        
-        List<HudFile> m_FileList = new List<HudFile>();
-        List<HudFolder> m_SubFolderList = new List<HudFolder>();
-        public bool CopyNoParse = false;
+        string m_Name;
+        string m_Path;
+        bool m_CopyNoParse;
+        List<HudFile> m_FileList;
+        List<HudFolder> m_SubFolderList;        
+
+        public HudFolder()
+        {
+            m_Name = "";
+            m_Path = "";
+            m_FileList = new List<HudFile>();
+            m_SubFolderList = new List<HudFolder>();
+            m_CopyNoParse = false;
+        }
 
         public string FullName
         {
@@ -35,7 +44,6 @@ namespace hudParse
                 }
             }
         }
-
         public string Name
         {
             get
@@ -47,18 +55,37 @@ namespace hudParse
                 m_Name = value;
             }
         }
-
         public string Path
         {
             get { return m_Path; }
             set { m_Path = value; }
         }
-                
+        public bool IsEmpty
+        {
+            get
+            {
+                if((m_FileList.Count > 0) || (m_SubFolderList.Count > 0))
+                    return false;
+                else return true;
+            }
+        }
+        public bool CopyNoParse
+        {
+            get
+            {
+                return m_CopyNoParse;
+            }
+
+            set
+            {
+                m_CopyNoParse = value;
+            }
+        }          
+             
         public void Add(HudFile file)
         {
             m_FileList.Add(file);
         }
-
         public void Add(HudFolder folder)
         {
             if(folder.FullName == null)
@@ -71,13 +98,6 @@ namespace hudParse
                 else folder.FullName = "New Folder";
             }
             m_SubFolderList.Add(folder);
-        }
-
-        public bool IsEmpty()
-        {
-            if(m_FileList.Count == 0)
-                return true;
-            else return false;
         }
     }
 }

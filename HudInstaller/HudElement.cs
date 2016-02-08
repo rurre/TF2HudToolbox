@@ -8,15 +8,20 @@ namespace hudParse
 {
     public class HudElement
     {
-        public List<KeyValue> m_ValueList = new List<KeyValue>();
-        public List<SubElement> m_SubList = new List<SubElement>();
-
+        public List<KeyValue> m_ValueList;
+        public List<SubElement> m_SubList;
         public enum removeType { KeyValue, SubElement };
 
-        int m_NrOfElements = 0;
-        int m_NrOfSubElements = 0;
-        string m_Name = null;
-        string m_Platform = null;    
+        string m_Name;
+        string m_Platform;
+
+        public HudElement()
+        {
+            m_Name = null;
+            m_Platform = null;
+            m_ValueList = new List<KeyValue>();
+            m_SubList = new List<SubElement>();
+        }
 
         public string Name
         {
@@ -27,19 +32,26 @@ namespace hudParse
 
             set
             {
+                if(value.IndexOf('\"') != -1)
+                    value = value.Replace("\"","");
                 RefLib.StripAndTrim(ref value);
                 m_Name = value;
             }
         }
-
         public int NrOfElements
         {
             get
             {
-                return m_NrOfElements;
+                return m_ValueList.Count;
             }
         }
-
+        public int NrOfSubElements
+        {
+            get
+            {
+                return m_SubList.Count;
+            }
+        }
         public string Platform
         {
             get
@@ -53,7 +65,18 @@ namespace hudParse
                     value = value.Replace("[","");
                 if(value.IndexOf(']') != -1)
                     value = value.Replace("]","");
-                m_Platform = value;
+                if(value != "")
+                    m_Platform = value;
+                else m_Platform = null;
+            }
+        }
+        public bool IsNull
+        {
+            get
+            {
+                if((m_SubList.Count > 0) || m_ValueList.Count > 0)
+                    return false;
+                else return true;
             }
         }
 
@@ -76,19 +99,14 @@ namespace hudParse
             }
             return s;
         }
-
         public void Add(KeyValue kv)
         {                        
-            m_ValueList.Add(kv);
-            m_NrOfElements++;
+            m_ValueList.Add(kv);            
         }
-
         public void Add(SubElement se)
         {
-            m_SubList.Add(se);
-            m_NrOfSubElements++;
+            m_SubList.Add(se);            
         }
-
         public void Remove(string name, removeType tp)
         {
             if(tp == removeType.KeyValue)
@@ -100,8 +118,7 @@ namespace hudParse
                         m_ValueList.Remove(element);
                         break;
                     }
-                }
-                m_NrOfElements--;
+                }                
             }
             else if(tp == removeType.SubElement)
             {
@@ -112,16 +129,13 @@ namespace hudParse
                         m_SubList.Remove(element);
                         break;
                     }
-                }
-                m_NrOfSubElements--;
+                }                
             }
         }
-
         public void Remove(KeyValue kv)
         {
             m_ValueList.Remove(kv);
         }        
-
         public KeyValue FindKeyValue(string name)
         {
             foreach(KeyValue element in m_ValueList)

@@ -9,15 +9,17 @@ namespace hudParse
 {
     public class HudFile
     {
-        public List<HudElement> m_ElementList = new List<HudElement>();
+        public List<HudElement> m_ElementList;
         string m_Name;
         string m_FileType;
         string m_Path;
 
         public HudFile()
         {
+            m_ElementList = new List<HudElement>();
             m_FileType = "res";
-            m_Path = "";
+            m_Path = null;
+            m_Name = null;
         }
         public HudFile(string name) : base()
         {
@@ -26,13 +28,24 @@ namespace hudParse
 
         public string Name
         {
-            get { return m_Name; }
-            set { m_Name = value; }
+            get
+            {
+                return m_Name;
+            }
+            set
+            {
+                if(value.IndexOf('.') != -1)
+                    value = value.Remove(value.LastIndexOf('.'));
+                m_Name = value.Replace("\"","");
+            }
         }
         public string Path
         {
             get { return m_Path; }
-            set { m_Path = value; }
+            set
+            {
+                m_Path = value.Replace("\"","");
+            }
         }
         public string FullName
         {
@@ -43,10 +56,18 @@ namespace hudParse
             set
             {
                 value = value.Replace('/','\\');
-                m_Name = value.Remove(0,value.LastIndexOf("\\") + 1);                
-                m_Path = value.Remove(value.Length - m_Name.Length);
-                if(m_Name.IndexOf('.') != -1)
-                    m_Name = m_Name.Remove(m_Name.LastIndexOf('.'));
+                string temp = value.Remove(0,value.LastIndexOf("\\") + 1);
+                Name = value.Remove(0,value.LastIndexOf("\\") + 1);                
+                Path = value.Remove(value.Length - temp.Length);                                
+            }
+        }
+        public bool IsNull
+        {
+            get
+            {
+                if(m_ElementList.Count > 0)
+                    return false;
+                else return true;
             }
         }
 
@@ -54,7 +75,6 @@ namespace hudParse
         {
             m_ElementList.Add(element);
         }
-
         public void Remove(string name)
         {
             foreach(HudElement element in m_ElementList)
@@ -66,33 +86,35 @@ namespace hudParse
                 }
             }
         }
-
         public void Write()
         {
-            if(m_Path != "")
+            if(!this.IsNull)
             {
-                StreamWriter sr = new StreamWriter(m_Path + m_Name + "." + m_FileType);      //Change this later
-                sr.WriteLine("\"" + m_Path + m_Name + "." + m_FileType + "\"\n{\n");
-                foreach(HudElement element in m_ElementList)
+                if(m_Path != null)
                 {
-                    sr.WriteLine(element.ToString());
+                    StreamWriter sr = new StreamWriter(m_Path + m_Name + "." + m_FileType);
+                    sr.WriteLine("\"" + m_Path + m_Name + "." + m_FileType + "\"\n{\n");
+                    foreach(HudElement element in m_ElementList)
+                    {
+                        sr.WriteLine(element.ToString());
+                    }
+                    sr.WriteLine("}");
+                    sr.Close();
                 }
-                sr.WriteLine("}");
-                sr.Close();
+                else throw new Exception("Filepath is empty");
             }
-            else throw new Exception("Filepath is empty");
+            else throw new Exception("Requested to write a null file");
         }
-
         public override string ToString()
-        {
-            string s = "";            
+        {            
+            string s = "";
             s += "\"" + m_Path + m_Name + "." + m_FileType + "\"\n{\n";
             foreach(HudElement element in m_ElementList)
-            {                
+            {
                 s += element.ToString();
             }
             s += "\n}";
-            return s;
+            return s;            
         }
     }
 }

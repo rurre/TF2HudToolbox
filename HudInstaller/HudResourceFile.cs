@@ -9,53 +9,32 @@ namespace hudParse
 {
     public class HudResourceFile
     {
-        List<KeyValue> m_ValueList = new List<KeyValue>();
-        List<SubElement> m_SubList = new List<SubElement>();
+        List<KeyValue> m_ValueList;
+        List<SubElement> m_SubList;
 
         string m_Name;
         string m_FileType;
         string m_Path;
 
-        public HudResourceFile()
+        public bool IsNull
         {
-            m_Name = "";
-            m_FileType = "txt";
+            get
+            {
+                if((m_ValueList.Count > 0) || (m_SubList.Count > 0))
+                    return false;
+                else return true;
+            }
         }
-
-        public HudResourceFile(string fileType) : base()
-        {            
-            if(fileType.IndexOf('.') != -1)
-                fileType = fileType.Remove(fileType.IndexOf('.'));
-            m_FileType = fileType;            
-        }
-
-        public HudResourceFile(string name,string fileType,string path, List<KeyValue> kvList) : base()
-        {            
-            m_Name = name;
-            m_Path = path;
-            m_ValueList = kvList;
-
-            if(fileType.IndexOf('.') != -1)
-                fileType = fileType.Remove(fileType.IndexOf('.'));
-            m_FileType = fileType;
-        }
-        public bool IsEmpty
-        {
-            get { return IsListEmpty(); }
-        }
-
         public string Name
         {
             get { return m_Name; }
             set { m_Name = value; }
         }
-
         public string Path
         {
             get { return m_Path; }
             set { m_Path = value; }
         }
-
         public string FullName
         {
             get { return m_Path + m_Name; }
@@ -73,19 +52,48 @@ namespace hudParse
                 if(value.IndexOf('.') != -1)
                     m_Name = value.Remove(value.IndexOf('.'));
                 else m_Name = value;
+                if(value.IndexOf('\"') != -1)
+                {
+                    m_Name.Replace("\"","");
+                    m_Path.Replace("\"","");
+                }
+
             }
         }
-        
+
+        public HudResourceFile()
+        {
+            m_Name = null;
+            m_Path = null;
+            m_FileType = "txt";
+
+            m_ValueList = new List<KeyValue>();
+            m_SubList = new List<SubElement>();
+        }
+        public HudResourceFile(string fileType) : base()
+        {            
+            if(fileType.IndexOf('.') != -1)
+                fileType = fileType.Remove(fileType.IndexOf('.'));
+            m_FileType = fileType;            
+        }
+        public HudResourceFile(string name,string fileType,string path, List<KeyValue> kvList) : base()
+        {            
+            m_Name = name;
+            m_Path = path;
+            m_ValueList = kvList;
+
+            if(fileType.IndexOf('.') != -1)
+                fileType = fileType.Remove(fileType.IndexOf('.'));
+            m_FileType = fileType;
+        }        
         public void Add(KeyValue kv)
         {
             m_ValueList.Add(kv);
         }
-
         public void Add(SubElement sb)
         {
             m_SubList.Add(sb);
         }
-
         public void Remove(string name)
         {
             foreach(KeyValue element in m_ValueList)
@@ -97,10 +105,9 @@ namespace hudParse
                 }
             }
         }
-
         public void Write()
         {
-            if(m_Path != "")
+            if(m_Path != null)
             {
                 StreamWriter sr = new StreamWriter(m_Path + m_Name + "." + m_FileType);
                 sr.WriteLine("\"" + m_Path + m_Name +"\"\n{\n");
@@ -113,7 +120,6 @@ namespace hudParse
             }
             else throw new Exception("Filepath is empty");
         }
-
         public override string ToString()
         {
             string s = "";
@@ -125,7 +131,6 @@ namespace hudParse
             s += "\n}";
             return s;
         }
-
         public KeyValue FindKeyValue(string name)
         {
             foreach(KeyValue element in m_ValueList)
@@ -135,7 +140,6 @@ namespace hudParse
             }
             return null;
         }
-
         public KeyValue FindKeyValueIgnoreEndNr(string name)
         {
             name = RefLib.RemoveEndNumbers(name).ToLower();
@@ -146,7 +150,6 @@ namespace hudParse
             }                
             return null;           
         }
-
         public SubElement FindSubElement(string name)
         {
             foreach(SubElement element in m_SubList)
@@ -155,14 +158,6 @@ namespace hudParse
                     return element;
             }
             return new SubElement();
-        }
-
-        bool IsListEmpty()
-        {
-            if(m_ValueList.Count == 0)
-                return true;
-            else
-                return false;                
         }
     }
 }

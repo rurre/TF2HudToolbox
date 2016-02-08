@@ -25,7 +25,6 @@ namespace hudParse
                 m_Name = value;
             }
         }
-
         public string Value
         {
             get
@@ -38,7 +37,6 @@ namespace hudParse
                 m_Value = value;
             }
         }
-
         public string Platform
         {
             get
@@ -52,7 +50,18 @@ namespace hudParse
                     value = value.Remove(0,value.IndexOf('[') + 1);
                 if(value.IndexOf(']') != -1)
                     value = value.Remove(value.IndexOf(']'));
-                m_Platform = value;
+                if(value != "")
+                    m_Platform = value;
+                else m_Platform = null;                
+            }
+        }
+        public bool IsNull
+        {
+            get
+            {
+                if(m_Name == null)
+                    return true;
+                return false;
             }
         }
 
@@ -62,13 +71,11 @@ namespace hudParse
             m_Value = null;
             m_Platform = null;       
         }
-
         public KeyValue(string name, string value)
         {
             m_Name = name;
             m_Value = value;
-        }
-        
+        }        
         public override string ToString()
         {
             string s = "";
@@ -77,14 +84,6 @@ namespace hudParse
                 s += "\t\t" + "[" + Platform + "]";
             s += "\n";
             return s;
-        }
-
-        public bool isNull()
-        {
-            if(m_Name == null)
-                return true;
-            return false;
-        }          
-
+        }        
     }
 }

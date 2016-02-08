@@ -74,6 +74,14 @@ static class RefLib
         s = s.Replace(" ","");
         return s;
     }
+    public static string Condense(string s)
+    {
+        s = s.Replace("\n","");
+        s = s.Replace("\t","");
+        s = s.Replace("\r","");
+        s = s.Replace(" ","");
+        return s;
+    }
     /// <summary>
     /// Takes a string and removes a line from it.
     /// </summary>
@@ -127,6 +135,18 @@ static class RefLib
         {
             int commentIndex = s.IndexOf("//");
             int platformIndex = s.IndexOf('[');
+
+            int indexOfStart = s.IndexOf("/*");
+            int indexOfEnd = s.IndexOf("*/");
+
+            if(indexOfEnd == -1 && indexOfStart != -1)
+                throw new Exception("Found beginning of block comment - \"/*\" but couldn't find end of it - \"*/\"");
+
+            if(indexOfStart != -1)
+            {                   
+                s = s.Remove(indexOfStart,indexOfEnd - indexOfStart+2);
+                continue;
+            }
 
             if((s.IndexOf("http://") != -1) || (s.IndexOf("https://") != -1))
             {

@@ -9,8 +9,25 @@ namespace hudParse
     public class SubElement
     {
         string m_Name = "";
+        string m_Platform = "";
         public List<KeyValue> m_ValueList = new List<KeyValue>();
         public List<SubElement> m_SubValueList = new List<SubElement>();
+
+        public string Platform
+        {
+            get
+            {
+                return m_Platform;
+            }
+            set
+            {
+                if(value.IndexOf('[') != -1)
+                    value = value.Replace("[","");
+                if(value.IndexOf(']') != -1)
+                    value = value.Replace("]","");
+                m_Platform = value;
+            }
+        }
 
         public string Name
         {
@@ -22,7 +39,7 @@ namespace hudParse
             set
             {
                 RefLib.StripAndTrim(ref value);
-                m_Name = value;
+                m_Name = value.Replace("\"","");
             }
         }
 
@@ -57,6 +74,13 @@ namespace hudParse
                     return element;
             }
             return new KeyValue();
+        }
+
+        public bool isNull()
+        {
+            if((m_ValueList.Count > 0) || (m_SubValueList.Count > 0))
+                return false;
+            else return true;
         }
     }
 }

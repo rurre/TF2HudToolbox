@@ -581,7 +581,7 @@ namespace HudInstaller
             if(folderBrowse_Fragment.SelectedPath != "")
             {
                 WriteStatus("Attempting to Create Hud Blueprint...");
-                WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
+                WriteStatus("This is just a simulation. It doesn't actually do anything yet.");
                 Hud tempFragment = new Hud();
 
                 tempFragment = HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);

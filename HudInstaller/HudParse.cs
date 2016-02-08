@@ -27,7 +27,7 @@ namespace hudParse
                     folder = ParseHudFolder(folder.FullName);
                 else
                     folder.CopyNoParse = true;
-                hud.Add(folder);                
+                hud.Add(folder);                                                  
             }            
             return hud;
         }
@@ -124,6 +124,19 @@ namespace hudParse
                         while(true)
                         {
                             RefLib.Seek(ref s);
+                            ss = s;
+                            ss = RefLib.GetLines(2,ref ss);
+                            if(ss.IndexOf('{') != -1)
+                            {
+                                SubElement sb = ParseSubElement(ref s);
+                                if(!sb.isNull())
+                                {
+                                    he.Add(sb);
+                                    s = s.Remove(0,s.IndexOf('}')+1);
+                                }
+                                continue;                                
+                            }
+
                             if(s.First() != '}')
                             {
                                 ss = s;
@@ -215,13 +228,10 @@ namespace hudParse
                         }
                         else throw new Exception("Out of range");
                     }
-                    s = s.Remove(0,ss.Length + toRemove);
-                    toRemove = 0;
+                    s = s.Remove(0,ss.Length + toRemove);                    
                 }                
-            }
-            
+            }            
             return kv;
-
         }
 
         static HudElement ParseHudElement(string s)
@@ -233,6 +243,22 @@ namespace hudParse
 
             s = s.Remove(ss.Length + 2);
             RefLib.Seek(ref s);
+            if(s.First() == '[')
+            {                
+                string result = "";
+                ss = s;
+                ss = RefLib.GetLine(ref ss);
+                for(int i = 0; i < s.Length; i++)
+                {                    
+                    result += ss[i];
+                    if(ss[i] == ']')
+                        break;
+                    throw new Exception("Reached end of file before reaching end of platform tag");         
+                }
+                s = s.Remove(0,ss.Length);
+                he.Platform = ss;
+                RefLib.Seek(ref s);
+            }
             if(s.First() == '{')
             {
                 while(s.First() != '}')
@@ -241,7 +267,7 @@ namespace hudParse
                     temp = RefLib.GetLines(2,ref temp);
                     if(temp.IndexOf('{') != -1)
                     {
-                        SubElement sb = ParseSubElement(s);
+                        SubElement sb = ParseSubElement(ref s);
                         if(sb != new SubElement())
                         {
                             he.Add(sb);
@@ -276,10 +302,58 @@ namespace hudParse
         //TODO: Derive SubElement from HudElement and share code.
         //TODO: Check if it's a .res file before parsing and return null if it's not as a flag to copy the file over when installing.
         //TODO: Set folder check to Hud's path + folder name, or whatever, so it ignores the parsing ONLY if we're in the root hud folder.
-        static SubElement ParseSubElement(string s)
+        static SubElement ParseSubElement(ref string s)
         {
             SubElement sb = new SubElement();
 
+            string ss = s;
+
+            ss = RefLib.GetLine(ref ss);
+            sb.Name = ss;
+            ss = s;
+            ss = RefLib.GetLine(ref ss);
+            int toRemove = 0;
+
+            for(int i = 0; i < ss.Length; i++)
+            {
+                if(ss[i] == '\"')
+                    toRemove++;
+            }
+            s = s.Remove(0,ss.Length + toRemove);
+            RefLib.Seek(ref s);
+            if(s.First() == '{')
+            {
+                s = s.Remove(0,1);
+                while(true)
+                {
+                    RefLib.Seek(ref s);
+                    SubElement ssb = new SubElement();
+                    ss = s;
+                    ss = RefLib.GetLines(2,ref ss);
+                    if(ss.IndexOf('{') != -1)
+                    {
+                        ssb = ParseSubElement(ref s);
+                        if(!ssb.isNull())
+                        {
+                            sb.Add(ssb);
+                            s = s.Remove(0,s.IndexOf('}') + 1);
+                            continue;
+                        }
+                    }
+
+                    RefLib.Seek(ref s);
+                    KeyValue kv = new KeyValue();
+                    if(s.First() != '}')
+                    {
+                        ss = GetKeyValuePair(s);
+                        s = s.Remove(0,ss.Length);
+                        kv = ParseKeyValue(ss);
+                    }                    
+                    if(!kv.isNull())
+                        sb.Add(kv);
+                    else break; 
+                }
+            }
             return sb;
         }
 

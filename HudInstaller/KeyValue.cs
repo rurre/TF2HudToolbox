@@ -62,6 +62,7 @@ namespace hudParse
             m_Value = null;
             m_Platform = null;       
         }
+
         public KeyValue(string name, string value)
         {
             m_Name = name;

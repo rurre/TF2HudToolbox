@@ -15,7 +15,8 @@ namespace hudParse
 
         int m_NrOfElements = 0;
         int m_NrOfSubElements = 0;
-        string m_Name = null;        
+        string m_Name = null;
+        string m_Platform = null;    
 
         public string Name
         {
@@ -36,6 +37,23 @@ namespace hudParse
             get
             {
                 return m_NrOfElements;
+            }
+        }
+
+        public string Platform
+        {
+            get
+            {
+                return m_Platform;
+            }
+
+            set
+            {
+                if(value.IndexOf('[') != -1)
+                    value = value.Replace("[","");
+                if(value.IndexOf(']') != -1)
+                    value = value.Replace("]","");
+                m_Platform = value;
             }
         }
 

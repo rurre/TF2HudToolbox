@@ -5,15 +5,18 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
-using hudParse;
 using Microsoft.Win32;
 using System.Resources;
+using hudParse;
+using System.Diagnostics;
 
 namespace HudInstaller
 {
     public partial class MainForm : Form
     {
         delegate void SetTextCallback(string s);
+        delegate void SetProgressBarMaxCallback(int i);
+        delegate void SetProgressBarValueCallback(int i);
 
         #region Variables
         
@@ -33,6 +36,9 @@ namespace HudInstaller
         bool working = false;
         bool silentCancel = false;              
         bool helpEnabled = false;
+        bool gameInstalled = false;
+        bool defaultHudParsed = false;
+
         static Point formSize = new Point(497, 500);    //Different from designer value!!
         SettingsForm Settings = new SettingsForm();
         ResourceManager resourceManager = Properties.Resources.ResourceManager;
@@ -43,7 +49,7 @@ namespace HudInstaller
 #else
         public enum Languages { English };        
 #endif
-        enum Jobs { None, Parse, Fragment, Combine, Install };
+        enum Jobs { None, Parse, ParseDefault , Fragment, Combine, Install, Error };
 
         #endregion
 
@@ -69,10 +75,10 @@ namespace HudInstaller
         public MainForm()
         {
             InitializeComponent();
-            localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
+            localizationFile = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
             if(localizationFile.IsNull)
                 throw new Exception("localizationFile is empty!");
-            helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_English").ToString() ?? "")));            
+            helpInfo = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_English").ToString() ?? "")));            
             if(helpInfo.IsNull)
                 throw new Exception("helpInfo is empty!");
         }
@@ -113,6 +119,35 @@ namespace HudInstaller
             else
             {
                 textBox_MainStatus.AppendText("-" + s + "\n");
+            }
+        }
+
+        public void SetProgressBarMax(int i)
+        {
+            if(this.progressBar_Main.InvokeRequired)
+            {
+                SetProgressBarMaxCallback d = new SetProgressBarMaxCallback(SetProgressBarMax);
+                this.Invoke(d,i);                
+            }
+            else
+            {
+                progressBar_Main.Maximum = i;
+            }
+        }
+
+        public void SetProgressBarValue(int i)
+        {
+            if(this.progressBar_Main.InvokeRequired)
+            {
+                SetProgressBarValueCallback d = new SetProgressBarValueCallback(SetProgressBarValue);
+                this.Invoke(d,progressBar_Main.Value = i);
+            }
+            else
+            {
+                if(progressBar_Main.Value + i > progressBar_Main.Maximum)
+                    progressBar_Main.Value = progressBar_Main.Maximum;
+                else
+                    progressBar_Main.Value += i;
             }
         }
 
@@ -226,8 +261,8 @@ namespace HudInstaller
         void SetLanguageDefault()
         {
             Language = Languages.English;
-            helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
-            localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
+            helpInfo = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
+            localizationFile = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
             UpdateLocalizationText();
             SetHelpToString("info_help");            
         }
@@ -243,14 +278,14 @@ namespace HudInstaller
                 try
                 {
                     if(ResourceExists("toolbox_" + lang))
-                        localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_" + lang).ToString() ?? "")));
+                        localizationFile = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_" + lang).ToString() ?? "")));
                     else
-                        localizationFile = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
+                        localizationFile = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("toolbox_english").ToString() ?? "")));
 
                     if(ResourceExists("helpInfo_" + lang))
-                        helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_" + lang).ToString() ?? "")));
+                        helpInfo = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_" + lang).ToString() ?? "")));
                     else
-                        helpInfo = HudParse.ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
+                        helpInfo = ParseHudResource(new MemoryStream(Encoding.UTF8.GetBytes(resourceManager.GetObject("helpinfo_english").ToString() ?? "")));
                     SetHelpToString("info_help");
                     UpdateLocalizationText();
                 }
@@ -302,7 +337,7 @@ namespace HudInstaller
 
                 if(File.Exists(fbd.SelectedPath + "\\hudinfo.txt"))
                 {
-                    hud.Resource = HudParse.ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");
+                    hud.Resource = ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");
                     hud.ApplyResource();
                     WriteStatus("Found hudinfo.txt for " + hud.Name);                                     
                 }
@@ -570,36 +605,56 @@ namespace HudInstaller
                 job = Jobs.Parse;
                 working = true;
                 UpdateButtonState();
+                SetProgressBarValue(0);
                 backgroundWorker.RunWorkerAsync();
             }
         }
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
         {
+            gameInstalled = true;
+            if(!defaultHudParsed && gameInstalled)
+            {
+                Jobs oldJob = job;
+                job = Jobs.ParseDefault;
+                WriteStatus("Default Hud not parsed. Parsing...");
+
+                string temp = System.IO.Path.GetTempPath();
+                Directory.Delete(temp + "Hud Toolbox", true);
+                Directory.CreateDirectory(temp + "Hud Toolbox\\DefaultHud");
+                //Directory.Move(gamePath + "\\tf\\resource","\\tf\\_resource");                
+                
+                ProcessStartInfo start = new ProcessStartInfo();                
+                start.Arguments = "\\l " + gamePath + "\tf\tf2_misc_dir.vpk";                
+                start.FileName = gamePath + "/bin/vpk.exe";                
+                start.WindowStyle = ProcessWindowStyle.Hidden;
+                start.CreateNoWindow = true;
+                int exitCode;
+                                
+                start.RedirectStandardOutput = true;
+                start.UseShellExecute = false;
+                Stream s = new MemoryStream();
+                                
+                using(Process psi = Process.Start(start))
+                {                       
+                    psi.WaitForExit();                    
+                    exitCode = psi.ExitCode;
+                }
+
+
+                //Directory.Move(gamePath + "\\tf\\resource",temp + "Hud Toolbox\\DefaultHud\\resource");
+                //Directory.Move(gamePath + "\\tf\\_resource","\\tf\\resource");
+
+                //defaultHud = ParseHud();
+            }
             /*if(!backgroundWorker.IsBusy)
             {
                 job = Jobs.Fragment;
                 working = true;
                 UpdateButtonState();
+                SetProgressBarValue(0);
                 backgroundWorker.RunWorkerAsync();
             }*/
-
-            if(folderBrowse_Fragment.SelectedPath != "")
-            {
-                WriteStatus("Attempting to Create Hud Blueprint...");                
-                Hud tempFragment = new Hud();
-
-                tempFragment = HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
-                tempFragment.Resource = fragmentHud.Resource;
-                WriteStatus("Finished Parsing Hud.");
-
-            }
-            else
-            {
-                WriteStatus("Select a Hud folder first");
-                silentCancel = true;
-                backgroundWorker.CancelAsync();
-            }
         }
 
         private void button_Install_Click(object sender,EventArgs e)
@@ -609,6 +664,7 @@ namespace HudInstaller
                 job = Jobs.Install;
                 working = true;
                 UpdateButtonState();
+                SetProgressBarValue(0);
                 backgroundWorker.RunWorkerAsync();
             }
         }
@@ -620,6 +676,7 @@ namespace HudInstaller
                 job = Jobs.Combine;
                 working = true;
                 UpdateButtonState();
+                SetProgressBarValue(0);
                 backgroundWorker.RunWorkerAsync();
             }
             /*if(textBox_CombineBrowse1.Text != textBox_CombineBrowse2.Text)
@@ -701,14 +758,71 @@ namespace HudInstaller
                 button_Combine.Enabled = true;
                 button_Customize.Enabled = true;
 
-                button_MainCancel.Enabled = false;
+                button_MainCancel.Enabled = false;                
             }
         }
 
-#endregion
+        private List<String> GetFiles(string sDir)
+        {
+            return GetFiles(sDir,false);
+        }
+
+        private List<String> GetFiles(string sDir, bool skipRootDirectory)
+        {
+            bool skipRoot = skipRootDirectory;
+            List<String> files = new List<String>();
+            try
+            {
+                if(!skipRoot)
+                {
+                    foreach(string f in Directory.GetFiles(sDir))
+                    {
+                        files.Add(f);
+                    }
+                }
+                foreach(string d in Directory.GetDirectories(sDir))
+                {
+                    files.AddRange(GetFiles(d));
+                }
+                skipRoot = false;
+            }
+            catch(System.Exception excpt)
+            {
+                MessageBox.Show(excpt.Message);
+            }
+
+            return files;
+        }
+
+        #endregion
 
         private void backgroundWorker_DoWork(object sender,System.ComponentModel.DoWorkEventArgs e)
         {
+            if(!defaultHudParsed && gameInstalled)
+            {
+
+            }
+            if(!gameInstalled)
+            {
+                bool vpkExecFound = false;
+                bool vpkFound = false;
+                if(File.Exists(folderBrowse_MainInstallPath.SelectedPath + "/bin/vpk.exe"))
+                    vpkExecFound = true;
+                else
+                    WriteStatus(gamePath + "/bin/vpk.exe Not found");
+
+                if(File.Exists(folderBrowse_MainInstallPath.SelectedPath + "/tf/tf2_misc_dir.vpk"))
+                    vpkFound = true;
+                else
+                    WriteStatus(gamePath + "/tf/tf2_misc_dir.vpk Not found");
+
+                if(!vpkExecFound || !vpkFound)
+                {
+                    WriteStatus("Can't continue until the above issues are resolved");
+                    job = Jobs.Error;
+                }
+                else gameInstalled = true;
+            }
             if(job == Jobs.Parse)
             {
                 WriteStatus("Attempting to parse Hud...");
@@ -726,27 +840,37 @@ namespace HudInstaller
             }
             else if(job == Jobs.Fragment)
             {
-                /*if(folderBrowse_Fragment.SelectedPath != "")
+                if(folderBrowse_Fragment.SelectedPath != "")
                 {
                     WriteStatus("Attempting to Create Hud Blueprint...");
-                    WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
                     Hud tempFragment = new Hud();
 
-                    tempFragment = HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
-                    tempFragment.Resource = fragmentHud.Resource;
+                    //Set progress bar to length of nr of files in hud
+                    var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
+                    var filesInThisFolder = Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*");
 
+                    SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count);
+
+                    tempFragment = ParseHud(folderBrowse_Fragment.SelectedPath);
+                    tempFragment.Resource = fragmentHud.Resource;
+                    fragmentHud = tempFragment;
+                    fragmentHud.ApplyResource();
                 }
                 else
                 {
                     WriteStatus("Select a Hud folder first");
                     silentCancel = true;
                     backgroundWorker.CancelAsync();
-                }   */             
+                }
+            }
+            else if(job == Jobs.Error)
+            {
+                backgroundWorker.CancelAsync();
             }
             else
                 throw new Exception("backgroundWorker asked to do work but a job wasn't assigned");
-            /*
-            WriteStatus("Parsing Hud...");
+            
+            /*WriteStatus("Parsing Hud...");
             fragmentHud.Resource = new HudResourceFile("hudinfo","txt",fragmentHud.Path,new List<KeyValue>()
             {
                 new KeyValue("name",textBox_Fragment_Name.Text),
@@ -755,30 +879,29 @@ namespace HudInstaller
                 new KeyValue("website",textBox_Fragment_Website.Text)
             });
 
-            Hud tempHud = hudParse.HudParse.ParseHud(folderBrowse_Fragment.SelectedPath);
+            Hud tempHud = ParseHud(folderBrowse_Fragment.SelectedPath);
             if(tempHud != null)
                 fragmentHud.m_FolderList = tempHud.m_FolderList;
             else WriteStatus("Failed to parse Hud");*/
 
             //Use if statement to check for job to do.            
-            for(int i = 0; i < 100; i++)
+            /*for(int i = 0; i < 100; i++)
             {
                 System.Threading.Thread.Sleep(100);
                 backgroundWorker.ReportProgress(i);
 
                 if(backgroundWorker.CancellationPending)
                 {
-                    e.Cancel = true;
-                    backgroundWorker.ReportProgress(0);
+                    e.Cancel = true;                    
                     return;
                 }
-            }
+            }*/
             //e.Result = new Hud();     
         }
 
         private void backgroundWorker_ProgressChanged(object sender,System.ComponentModel.ProgressChangedEventArgs e)
         {
-            progressBar_Main.Value = e.ProgressPercentage;
+            SetProgressBarValue(e.ProgressPercentage);
         }
 
         private void backgroundWorker_RunWorkerCompleted(object sender,System.ComponentModel.RunWorkerCompletedEventArgs e)
@@ -791,12 +914,16 @@ namespace HudInstaller
                     {
                         case (Jobs.Combine):
                             WriteStatus("Cancelled Combine operation");
+                            combineHud1 = new Hud();
+                            combineHud2 = new Hud();
                             break;
                         case (Jobs.Fragment):
                             WriteStatus("Cancelled Blueprint creation");
+                            fragmentHud = new Hud();
                             break;
                         case (Jobs.Parse):
                             WriteStatus("Cancelled Parsing operation");
+                            defaultHud = new Hud();                            
                             break;
                         case (Jobs.Install):
                             WriteStatus("Cancelled Hud Install");
@@ -807,19 +934,35 @@ namespace HudInstaller
                 }            
             }
             else if(e.Error != null)
-            {
-                //throw new Exception("Some error occured during backgroundWorker doing work.");
+            {                
                 WriteStatus(e.Error.Message);
+                switch(job)
+                {
+                    case (Jobs.Combine):
+                        combineHud1 = new Hud();
+                        combineHud2 = new Hud();
+                        break;
+                    case (Jobs.Fragment):
+                        fragmentHud = new Hud();
+                        break;
+                    case (Jobs.Parse):
+                        defaultHud = new Hud();
+                        defaultHudParsed = false;
+                        break;
+                    default:
+                        throw new Exception("Something went wrong");                       
+                }
+                job = Jobs.Error;
             }
             else
             {                
                 switch(job)
                 {
                     case (Jobs.Combine):
-                        WriteStatus("Successfully Combined Huds");
+                        WriteStatus("Successfully Combined Huds " + combineHud1.Name + " and " + combineHud2.Name);
                         break;
                     case (Jobs.Fragment):
-                        WriteStatus("Successfully created Blueprint from Hud");
+                        WriteStatus("Successfully created Blueprint from " + fragmentHud.Name);
                         break;
                     case (Jobs.Parse):
                         WriteStatus("Successfully completed Parsing Hud");
@@ -827,23 +970,684 @@ namespace HudInstaller
                     case (Jobs.Install):
                         WriteStatus("Succesfully Installed Hud");
                         break;
+                    case (Jobs.Error):
+                    break;
                     default:
                         throw new Exception("backgroundWorker finished working but job wasn't reported");
                 }                                
             }
             
             working = false;
-            job = Jobs.None;                        
-            progressBar_Main.Value = 0;
+            job = Jobs.None;
+            
+            if(backgroundWorker.IsBusy == false)
+                SetProgressBarValue(progressBar_Main.Maximum);
             UpdateButtonState();
 
             if(silentCancel)
-                silentCancel = false;
+                silentCancel = false;            
         }
 
         #region HudParse
 
+        public Hud ParseHud(string path)
+        {               
+            Hud hud = new Hud();
+            HudResourceFile tempRes;
+            WriteStatus("Attempting to parse Hud resource");
+            tempRes = ParseHudResource(path);
+            if(!tempRes.IsNull)
+            {
+                hud.Resource = tempRes;
+                hud.ApplyResource();
+                WriteStatus("Succesfully parsed Hud resource file " + hud.Resource.Name);
+            }
+            else WriteStatus("Resource not found, generating default");
+            
+            var Hud_Subfolders = Directory.GetDirectories(path);
+            WriteStatus("Found " + Hud_Subfolders.Length + " folders in " + path);
+            for(int i = 0; i < Hud_Subfolders.Length; i++)
+            {
+                HudFolder folder = new HudFolder();
+                folder.FullName = Hud_Subfolders[i];
+                WriteStatus("Attempting to parse folder " + folder.Name);
+                if(folder.Name.ToLower() == "resource" || folder.Name.ToLower() == "scripts")
+                    folder = ParseHudFolder(folder.FullName);
+                else
+                    folder.CopyNoParse = true;
+                WriteStatus("Successfully parsed folder " + folder.Name);
+                hud.Add(folder);
+            }
+            return hud;
+        }
 
+        public HudResourceFile ParseHudResource(Stream stream)
+        {
+            HudResourceFile hf = new HudResourceFile();
+            StreamReader sr = new StreamReader(stream);
+            string s = sr.ReadToEnd();
+            sr.Close();
+            RefLib.CleanUp(ref s,RefLib.cleanupModes.Comments);
+
+            RefLib.Seek(ref s);
+            string ss = s;
+            ss = RefLib.GetLine(ref ss);
+            hf.Name = ReadName(ss);
+            s = s.Remove(0,ss.Length);
+            RefLib.Seek(ref s);
+
+            if(s.First() == '{')
+            {
+                s = s.Remove(0,1);
+                while(true)
+                {
+                    RefLib.Seek(ref s);
+                    ss = s;
+                    if(ss.First() != '}')
+                    {
+                        ss = RefLib.GetLine(ref ss);
+                        KeyValue kv = ParseKeyValue(ss);
+                        s = s.Remove(0,ss.Length);
+
+                        if(kv != new KeyValue())
+                            hf.Add(kv);
+                        else break;
+                    }
+                    else break;
+                }
+            }
+            return hf;
+        }
+
+        public HudResourceFile ParseHudResource(string path)
+        {
+            if(!path.EndsWith("\\hudinfo.txt"))
+                path += "hudinfo.txt";
+
+            if(File.Exists(path))
+            {
+                HudResourceFile newRes = new HudResourceFile();
+                newRes = ParseHudResource(new StreamReader(path).BaseStream);
+                newRes.FullName = path;
+                return newRes;
+            }
+            else return new HudResourceFile();
+        }
+
+        HudFile ParseHudFile(string path)
+        {
+            HudFile hf = new HudFile();
+            string s;
+
+            if(File.Exists(path))
+            {
+                StreamReader sr = new StreamReader(path);
+                s = sr.ReadToEnd();
+                RefLib.CleanUp(ref s,RefLib.cleanupModes.Comments);
+                sr.Close();
+            }
+            else throw new Exception("Can't parse file, it doesn't exist.");
+
+            RefLib.Seek(ref s);
+            string ss = s;
+            ss = RefLib.GetLine(ref ss);
+            hf.FullName = ReadName(ss);
+            s = s.Remove(0,ss.Length);
+
+
+            RefLib.Seek(ref s);
+            if(s.First() == '{')
+            {
+                s = s.Remove(0,1);
+                while(true)
+                {
+                    HudElement he = new HudElement();
+                    RefLib.Seek(ref s);
+                    ss = ReadName(s);
+                    if(ss != "")
+                    {
+                        he.Name = ss;
+                        s = s.Remove(0,ss.Length);
+                        RefLib.Seek(ref s);
+                    }
+                    ss = s;
+                    ss = RefLib.GetLine(ref ss);
+                    if(ss.First() == '[')
+                    {
+                        if(ss.IndexOf(']') != -1)
+                        {
+                            he.Platform = Read(s,readModes.PlatformTag);
+                        }
+                        else throw new Exception("Expected platform tag (ex. [$WIN32]) in element " + he.Name + ". In file " + hf.FullName + " got: " + ss);
+                        s = s.Remove(0,ss.Length);
+                        RefLib.Seek(ref s);
+                    }
+
+                    if(s.First() == '{')
+                    {
+                        s = s.Remove(0,1);
+                        while(true)
+                        {
+                            RefLib.Seek(ref s);
+                            ss = s;
+                            ss = RefLib.GetLines(2,ref ss);
+                            if(ss.IndexOf('{') != -1)
+                            {
+                                SubElement sb = ParseSubElement(ref s);
+                                if(!sb.IsNull)
+                                {
+                                    he.Add(sb);
+                                    s = s.Remove(0,s.IndexOf('}') + 1);
+                                }
+                                continue;
+                            }
+
+                            if(s.First() != '}')
+                            {
+                                ss = s;
+                                ss = GetKeyValuePair(ss);
+                                s = s.Remove(0,ss.Length);
+                                KeyValue kv = ParseKeyValue(ss);
+
+                                if(!kv.IsNull)
+                                {
+                                    he.Add(kv);
+                                    continue;
+                                }
+                            }
+                            break;
+                        }
+                        if(!he.IsNull)
+                        {
+                            hf.Add(he);
+                            RefLib.Seek(ref s);
+                            if(s.First() == '}')
+                            {
+                                s = s.Remove(0,1);
+                                RefLib.Seek(ref s);
+                            }
+                        }
+                        else break;
+                    }
+                    else if(s.First() == '}')
+                    {
+                        s = s.Remove(0,1);
+                        RefLib.Seek(ref s);
+                        if(s != "")
+                            throw new Exception("Error while parsing file " + hf.FullName + ". String should be empty by now but isn't");
+                        else break;
+                    }
+                }
+            }
+            return hf;
+        }
+
+        KeyValue ParseKeyValue(string s)
+        {
+            KeyValue kv = new KeyValue();
+            if(s != "")
+            {
+                string name = "";
+                string value = "";
+                bool foundName = false;
+                bool foundValue = false;
+                bool openQuotes = false;
+                int quotesToRemove = 0;
+                for(int i = 0; i < s.Length; i++)
+                {
+                    if((s[i] != '\t') && (s[i] != ' ') && (s[i] != '\r') && (s[i] != '\n'))
+                    {
+                        if(s[i] == '\"')
+                        {
+                            if(!openQuotes)
+                                openQuotes = true;
+                            else
+                                openQuotes = false;
+                            quotesToRemove++;
+                            continue;
+                        }
+                        if(!foundName)
+                            name += s[i];
+                        else
+                        {
+                            value += s[i];
+                            foundValue = true;
+                        }
+                    }
+                    else
+                    {
+                        if(openQuotes)
+                        {
+                            if(!foundName)
+                                name += s[i];
+                            else
+                                value += s[i];
+                            continue;
+                        }
+                        foundName = true;
+                        if(foundValue && foundName)
+                            break;
+                    }
+                }
+                if(name != "")
+                {
+                    s = s.Remove(0,name.Length);
+                    kv.Name = name;
+                    s = RefLib.Seek(ref s);
+                }
+                if(value != "")
+                {
+                    s = s.Remove(0,value.Length);
+                    kv.Value = value;
+                    s = RefLib.Seek(ref s);
+                }
+                s = s.Remove(0,quotesToRemove);
+                if(s != "")
+                    kv.Platform = Read(s,readModes.PlatformTag);
+            }
+            return kv;
+        }
+
+        HudElement ParseHudElement(string s)
+        {
+            HudElement he = new HudElement();
+            RefLib.Seek(ref s);
+            string ss = s;
+            ss = RefLib.GetLine(ref ss);
+            if(ss.IndexOf('[') == -1)
+                he.Name = RefLib.Condense(ss);
+            else
+            {
+                if(s.First() == '[')
+                {
+                    string result = "";
+                    for(int i = 0; i < s.Length; i++)
+                    {
+                        result += ss[i];
+                        if(ss[i] == ']')
+                            break;
+                        throw new Exception("Reached end of file before reaching end of platform tag");
+                    }
+                    s = s.Remove(0,ss.Length);
+                    he.Platform = ss;
+                    RefLib.Seek(ref s);
+                }
+            }
+            s = s.Remove(ss.Length);
+            RefLib.Seek(ref s);
+            if(s.First() == '{')
+            {
+                while(s.First() != '}')
+                {
+                    string temp = s;
+                    temp = RefLib.GetLines(2,ref temp);
+                    if(temp.IndexOf('{') != -1)
+                    {
+                        SubElement sb = ParseSubElement(ref s);
+                        if(!sb.IsNull)
+                        {
+                            he.Add(sb);
+                            continue;
+                        }
+                        else throw new Exception("Parse sub element returned null. Don't try to parse if there isn't one");
+                    }
+                    RefLib.Seek(ref s);
+                    KeyValue kv = new KeyValue();
+                    string x = GetKeyValuePair(s);
+                    kv = ParseKeyValue(x);
+                    if(x != "")
+                        s.Remove(0,x.Length);
+                    if(!kv.IsNull)
+                    {
+                        he.Add(kv);
+                    }
+                    else break;
+                }
+            }
+            return he;
+        }
+
+        public Hud CombineHuds(Hud hud1,Hud hud2)
+        {
+            Hud result = new Hud();
+
+            return result;
+        }
+
+        //Currently uses almost the same code as ParseHudElement. 
+        //TODO: Derive SubElement from HudElement and share code.
+        //TODO: Check if it's a .res file before parsing and return null if it's not as a flag to copy the file over when installing.
+        //TODO: Set folder check to Hud's path + folder name, or whatever, so it ignores the parsing ONLY if we're in the root hud folder.
+        SubElement ParseSubElement(ref string s)
+        {
+            SubElement sb = new SubElement();
+
+            string ss = s;
+
+            ss = RefLib.GetLine(ref ss);
+            sb.Name = ss;
+            ss = s;
+            ss = RefLib.GetLine(ref ss);
+            int toRemove = 0;
+
+            for(int i = 0; i < ss.Length; i++)
+            {
+                if(ss[i] == '\"')
+                    toRemove++;
+            }
+            s = s.Remove(0,ss.Length + toRemove);
+            RefLib.Seek(ref s);
+            if(s.First() == '{')
+            {
+                s = s.Remove(0,1);
+                while(true)
+                {
+                    RefLib.Seek(ref s);
+                    SubElement ssb = new SubElement();
+                    ss = s;
+                    ss = RefLib.GetLines(2,ref ss);
+                    if(ss.IndexOf('{') != -1)
+                    {
+                        ssb = ParseSubElement(ref s);
+                        if(!ssb.IsNull)
+                        {
+                            sb.Add(ssb);
+                            s = s.Remove(0,s.IndexOf('}') + 1);
+                            continue;
+                        }
+                    }
+
+                    RefLib.Seek(ref s);
+                    KeyValue kv = new KeyValue();
+                    if(s.First() != '}')
+                    {
+                        ss = GetKeyValuePair(s);
+                        s = s.Remove(0,ss.Length);
+                        kv = ParseKeyValue(ss);
+                    }
+                    if(!kv.IsNull)
+                        sb.Add(kv);
+                    else break;
+                }
+            }
+            return sb;
+        }
+
+        HudFolder ParseHudFolder(string path)
+        {
+            HudFolder folder = new HudFolder();
+            folder.FullName = path;
+            var hudFiles = Directory.GetFiles(path, "*.res");
+            var folders = Directory.GetDirectories(path);
+
+            WriteStatus("Found " + folders.Length + " folders in " + path);
+            for(int i = 0; i < folders.Length; i++)
+            {
+                HudFolder subFolder = new HudFolder();
+                subFolder.FullName = folders[i];                                
+                if(!subFolder.CopyNoParse)
+                    subFolder = ParseHudFolder(subFolder.FullName);
+                folder.Add(subFolder);                
+            }
+            if(hudFiles.Length > 0)
+            {
+                WriteStatus("Found " + hudFiles.Length + " files in " + folder.Name);
+                for(int i = 0; i < hudFiles.Length; i++)
+                {
+                    HudFile file = new HudFile();
+                    file.FullName = hudFiles[i];
+                    WriteStatus("Attempting to parse file " + file.Name);
+                    file = ParseHudFile(file.FullName);
+                    if(!file.IsNull)
+                    {
+                        folder.Add(file);
+                        WriteStatus("Successfully parsed file " + file.Name);
+                        backgroundWorker.ReportProgress(1);
+                    }
+
+                    if(backgroundWorker.CancellationPending)
+                    {
+                        backgroundWorker.CancelAsync();                        
+                    }
+                }
+            }
+            return folder;
+        }
+
+        public enum readModes { KeyValue, PlatformTag };
+        /// <summary>
+        /// Looks for the first value it can find enclosed in quotes or square brackets.
+        /// </summary>
+        /// <param name="s">Target string to look in.</param>
+        /// <returns>Returns the value enclosed in quotes or square brackets.</returns>
+        static string Read(string s,readModes mode)
+        {
+            string result = "";
+            bool openedQuotes = false;
+
+            if(s.First() != '}')
+            {
+                for(int i = 0; i < s.Length; i++)
+                {
+                    if(mode == readModes.KeyValue)
+                    {
+                        if(s[i] == '\"')
+                        {
+                            if(!openedQuotes)
+                            {
+                                openedQuotes = true;
+                                continue;
+                            }
+                            else break;
+                        }
+                        else if(openedQuotes)
+                        {
+                            result += s[i];
+                            continue;
+                        }
+                    }
+                    else if(mode == readModes.PlatformTag)
+                    {
+                        if(s[i] == '[')
+                        {
+                            if(!openedQuotes)
+                            {
+                                openedQuotes = true;
+                                continue;
+                            }
+                            else break;
+                        }
+                        else if(openedQuotes)
+                        {
+                            if(s[i] == ']')
+                                break;
+                            result += s[i];
+                        }
+                    }
+                    else throw new Exception("Error: Something went wrong when trying to Read(). This isn't supposed to be possible. Help!");
+                }
+            }
+            return result;
+        }
+        static string Read(string s)
+        {
+            return Read(s,readModes.KeyValue);
+        }
+        static string ReadName(string s)
+        {
+            string result = "";
+            string ss = s;
+            ss = RefLib.GetLine(ref ss);
+
+            for(int i = 0; i < ss.Length; i++)
+            {
+                if((ss[i] != ' ') && (ss[i] != '}') && (ss[i] != '\t'))
+                    result += ss[i];
+                else break;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Strips keyvalues containing "_minmode" off all elements and their subelements.
+        /// </summary>
+        /// <param name="hf">HudFile to strip.</param>
+        /// <returns>Returns a HudFile without any minimal values.</returns>
+        HudFile StripMinimal(HudFile hf)
+        {
+            foreach(HudElement he in hf.m_ElementList)
+            {
+                foreach(KeyValue kv in he.m_ValueList)
+                {
+                    if(kv.Name.IndexOf("_minmode") != -1)
+                        he.Remove(kv);
+                }
+                foreach(SubElement sb in he.m_SubList)
+                {
+                    foreach(KeyValue kv in sb.m_ValueList)
+                    {
+                        if(kv.Name.IndexOf("_minmode") != -1)
+                            he.Remove(kv);
+                    }
+                    foreach(SubElement ssb in sb.m_SubValueList)
+                    {
+                        foreach(KeyValue kv in ssb.m_ValueList)
+                        {
+                            if(kv.Name.IndexOf("_minmode") != -1)
+                                he.Remove(kv);
+                        }
+                    }
+                }
+            }
+            return hf;
+        }
+
+        /// <summary>
+        /// Takes a HudFile and makes minimal values override default values, then removes the minimal ones.
+        /// For example: It finds a pair like:
+        /// "xpos"          "10"    
+        /// "xpos_minmode"  "20"
+        /// After which it sets "xpos" to 20 and deletes "xpos_minmode" so you're left with only:
+        /// "xpos"      "20"
+        /// </summary>
+        /// <param name="hf">HudFile to use.</param>
+        /// <returns>Returns the new HudFile.</returns>
+        HudFile MakeMinimalDefault(HudFile hf)
+        {
+            foreach(HudElement he in hf.m_ElementList)
+            {
+                foreach(KeyValue kv in he.m_ValueList)
+                {
+                    string newValue;
+                    string name;
+                    if(kv.Name.Contains("_minmode"))
+                    {
+                        newValue = kv.Value;
+                        name = kv.Name.Replace("_minmode","");
+                        foreach(KeyValue kv2 in he.m_ValueList)
+                        {
+                            if(kv2.Name.ToLower() == name.ToLower())
+                            {
+                                kv2.Value = newValue;
+                                he.m_ValueList.Remove(kv);
+                                break;
+                            }
+                        }
+                    }
+                }
+                foreach(SubElement sb in he.m_SubList)
+                {
+                    foreach(KeyValue kv in he.m_ValueList)
+                    {
+                        string newValue;
+                        string name;
+                        if(kv.Name.Contains("_minmode"))
+                        {
+                            newValue = kv.Value;
+                            name = kv.Name.Replace("_minmode","");
+                            foreach(KeyValue kv2 in he.m_ValueList)
+                            {
+                                if(kv2.Name.ToLower() == name.ToLower())
+                                {
+                                    kv2.Value = newValue;
+                                    he.m_ValueList.Remove(kv);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    foreach(SubElement ssb in sb.m_SubValueList)
+                    {
+                        foreach(KeyValue kv in he.m_ValueList)
+                        {
+                            string newValue;
+                            string name;
+                            if(kv.Name.Contains("_minmode"))
+                            {
+                                newValue = kv.Value;
+                                name = kv.Name.Replace("_minmode","");
+                                foreach(KeyValue kv2 in he.m_ValueList)
+                                {
+                                    if(kv2.Name.ToLower() == name.ToLower())
+                                    {
+                                        kv2.Value = newValue;
+                                        he.m_ValueList.Remove(kv);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return hf;
+        }
+
+        static string GetKeyValuePair(string s)
+        {
+            string ss = s;
+            string result = "";
+            int quoteNr = 0;
+            RefLib.Seek(ref ss);
+            bool foundKey = false;
+            bool foundInBetween = false;
+            string key = "";
+            string value = "";
+            string inBetween = "";
+
+            if(ss != "")
+            {
+                for(int i = 0; i < ss.Length; i++)
+                {
+                    if((ss[i] != '\t') && (ss[i] != ' ') && (ss[i] != '\r') && (ss[i] != '\n'))
+                    {
+                        if(ss[i] == '\"')
+                            quoteNr++;
+                        if(!foundKey)
+                            key += ss[i];
+                        else
+                        {
+                            foundInBetween = true;
+                            value += ss[i];
+                        }
+                    }
+                    else
+                    {
+                        foundKey = true;
+                        if(!foundInBetween)
+                            inBetween += ss[i];
+                        if(foundInBetween && foundKey)
+                            break;
+                    }
+                }
+                result = key + inBetween + value;
+            }
+            ss = ss.Remove(0,result.Length);
+            ss = RefLib.GetLine(ref ss);
+            if(ss != "")
+                result += ss;
+            return result;
+        }
 
         #endregion
     }

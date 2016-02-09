@@ -40,7 +40,7 @@ namespace hudParse
             get { return m_Path + m_Name; }
             set
             {
-                value.Replace("\\","/");
+                value = value.Replace("\\","/");
                 if(value.LastIndexOf('/') != -1)
                 {
                     string s = value;
@@ -57,7 +57,6 @@ namespace hudParse
                     m_Name.Replace("\"","");
                     m_Path.Replace("\"","");
                 }
-
             }
         }
 

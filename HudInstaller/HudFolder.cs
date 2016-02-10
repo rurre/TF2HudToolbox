@@ -99,5 +99,33 @@ namespace hudParse
             }
             m_SubFolderList.Add(folder);
         }
+
+        public List<string> GetFileNames()
+        {
+            List<string> l = new List<String>();
+            foreach(HudFolder hf in m_SubFolderList)
+            {
+                l.AddRange(hf.GetFileNames());
+            }
+            foreach(HudFile f in m_FileList)
+            {
+                l.Add(f.FullName);
+            }
+            return l;
+        }
+
+        public void MakeFilePathsRelative(string hudPath)
+        {
+            if(Path.StartsWith(hudPath))
+                m_Path = m_Path.Remove(0,hudPath.Length);
+            foreach(HudFile file in m_FileList)
+            {
+                file.MakeFilePathsRelative(hudPath);
+            }
+            foreach(HudFolder folder in m_SubFolderList)
+            {
+                folder.MakeFilePathsRelative(hudPath);
+            }
+        }
     }
 }

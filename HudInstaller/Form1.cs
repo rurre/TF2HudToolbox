@@ -18,15 +18,16 @@ namespace HudInstaller
         delegate void SetProgressBarMaxCallback(int i);
         delegate void SetProgressBarValueCallback(int i);
 
-        #region Variables
+        #region Variables        
         
-
-        Hud mainHud = new Hud();
-        Hud defaultHud = new Hud();
-        Hud combineHud1 = new Hud();
-        Hud combineHud2 = new Hud();
-        Hud combineHudResult = new Hud();
+        Hud fragmentDefault = new Hud();
         Hud fragmentHud = new Hud();
+
+        Hud defaultHud = new Hud();
+
+        Hud combineHud1 = new Hud();
+
+        Hud combineHud2 = new Hud();
 
         string gamePath;
         string installPath;
@@ -49,7 +50,7 @@ namespace HudInstaller
 #else
         public enum Languages { English };        
 #endif
-        enum Jobs { None, Parse, ParseDefault , Fragment, Combine, Install, Error };
+        enum Jobs { None, Parse, GetDefaultHud , ParseDefaultHud , Fragment, Combine_GetDefault1, Combine_GetDefault2, Combine ,Install, Error };
 
         #endregion
 
@@ -355,7 +356,7 @@ namespace HudInstaller
                     });                    
                 }
                 hudName.Text = hud.Resource.FindKeyValue("name").Value;                
-                hud.Path = fbd.SelectedPath;
+                hud.FullName = fbd.SelectedPath;
 
                 var files = Directory.GetFiles(fbd.SelectedPath,"logo.*");
                 if(files.Length > 0)
@@ -612,41 +613,37 @@ namespace HudInstaller
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
         {
-            gameInstalled = true;
-            if(!defaultHudParsed && gameInstalled)
+            if(folderBrowse_Fragment.SelectedPath != "")
             {
-                Jobs oldJob = job;
-                job = Jobs.ParseDefault;
-                WriteStatus("Default Hud not parsed. Parsing...");
+                WriteStatus("Attempting to Create Hud Blueprint...");
+                Hud tempFragment = new Hud();
 
-                string temp = System.IO.Path.GetTempPath();
-                Directory.Delete(temp + "Hud Toolbox", true);
-                Directory.CreateDirectory(temp + "Hud Toolbox\\DefaultHud");
-                //Directory.Move(gamePath + "\\tf\\resource","\\tf\\_resource");                
+                //Set progress bar to length of nr of files in hud
+                var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
+                var filesInThisFolder = Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*");
+
+                SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count*2);
+
+                tempFragment = ParseHud(folderBrowse_Fragment.SelectedPath);
+                tempFragment.Resource = fragmentHud.Resource;
+                tempFragment.Path = fragmentHud.Path;
+                if(!fragmentHud.HasDefaultLogo)
+                    tempFragment.Logo = fragmentHud.Logo;
                 
-                ProcessStartInfo start = new ProcessStartInfo();                
-                start.Arguments = "\\l " + gamePath + "\tf\tf2_misc_dir.vpk";                
-                start.FileName = gamePath + "/bin/vpk.exe";                
-                start.WindowStyle = ProcessWindowStyle.Hidden;
-                start.CreateNoWindow = true;
-                int exitCode;
-                                
-                start.RedirectStandardOutput = true;
-                start.UseShellExecute = false;
-                Stream s = new MemoryStream();
-                                
-                using(Process psi = Process.Start(start))
-                {                       
-                    psi.WaitForExit();                    
-                    exitCode = psi.ExitCode;
-                }
+                         
+                fragmentHud = tempFragment;
+                fragmentHud.ApplyResource();
 
 
-                //Directory.Move(gamePath + "\\tf\\resource",temp + "Hud Toolbox\\DefaultHud\\resource");
-                //Directory.Move(gamePath + "\\tf\\_resource","\\tf\\resource");
-
-                //defaultHud = ParseHud();
+                fragmentDefault = GetDefaultHudFor(fragmentHud);
+                WriteStatus("Hold on");
             }
+            else
+            {
+                WriteStatus("Select a Hud folder first");
+                silentCancel = true;
+                backgroundWorker.CancelAsync();
+            }            
             /*if(!backgroundWorker.IsBusy)
             {
                 job = Jobs.Fragment;
@@ -655,6 +652,11 @@ namespace HudInstaller
                 SetProgressBarValue(0);
                 backgroundWorker.RunWorkerAsync();
             }*/
+        }
+
+        void pr_OutputDataReceived(object sender,DataReceivedEventArgs e)
+        {
+            WriteStatus(e.Data);
         }
 
         private void button_Install_Click(object sender,EventArgs e)
@@ -686,6 +688,8 @@ namespace HudInstaller
             else WriteStatus("Can't combine a hud with itself");*/
 
         }
+
+
 
         private void button_MainCancel_Click(object sender,EventArgs e)
         {
@@ -794,13 +798,124 @@ namespace HudInstaller
             return files;
         }
 
+        void CreateShortcut(string applicationPath,string pathName)
+        {
+            Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
+            dynamic shell = Activator.CreateInstance(t);
+            try
+            {
+                if(!pathName.EndsWith(".lnk"))
+                    pathName += ".lnk";
+                var lnk = shell.CreateShortcut(pathName);
+                try
+                {
+                    lnk.TargetPath = applicationPath;
+                    lnk.IconLocation = "shell32.dll, 1";
+                    lnk.Save();
+                }
+                finally
+                {
+                    System.Runtime.InteropServices.Marshal.FinalReleaseComObject(lnk);
+                }
+            }
+            finally
+            {
+                System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell);
+            }
+        }
+
         #endregion
+
+        private Hud GetDefaultHudFor(Hud hud)
+        {            
+            Jobs oldJob = job;
+            Jobs newJob = Jobs.ParseDefaultHud;
+                                     
+            WriteStatus("Grabbing default Hud.");
+
+            //string temp = System.IO.Path.GetTempPath();
+            string temp = gamePath + "\\bin\\";
+            try
+            {
+                if(Directory.Exists(temp + "Hud Toolbox"))
+                    Directory.Delete(temp + "Hud Toolbox",true);
+                Directory.CreateDirectory(temp + "Hud Toolbox\\DefaultHud");
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
+            //File.Copy(gamePath + "\\bin\\vpk.exe", temp + "\\Hud Toolbox\\vpk.exe");
+            //File.Copy(gamePath + "\\bin\\tier0.dll",temp + "\\Hud Toolbox\\tier0.dll");
+            //File.Copy(gamePath + "\\bin\\vstdlib.dll",temp + "\\Hud Toolbox\\vstdlib.dll");
+
+            
+            int rand = new Random().Next();            
+            if(Directory.Exists(gamePath + "\\bin\\resource"))            
+                Directory.Move(gamePath + "\\bin\\resource",gamePath + "\\bin\\resource" + rand);
+            if(Directory.Exists(gamePath + "\\bin\\scripts"))
+                Directory.Move(gamePath + "\\bin\\scripts",gamePath + "\\bin\\scripts" + rand);
+
+            string arguments = "x \"" + gamePath + "\\tf\\tf2_misc_dir.vpk\" ";
+            List<String> fileList = new List<String>();
+            fileList.AddRange(hud.GetFileNames());
+            string tempPath;
+            foreach(String s in fileList)
+            {
+                if(s.StartsWith(hud.FullName))                        
+                    arguments += s.Remove(0,hud.FullName.Length+1);                
+                else arguments += s;
+                arguments += " ";
+
+                if(!Directory.Exists(gamePath + "\\bin\\" + s.Remove(s.LastIndexOf("\\") + 1)))
+                {
+                    tempPath = s.Remove(s.LastIndexOf("\\") + 1);
+                    tempPath = tempPath.Remove(0,hud.FullName.Length);
+                    Directory.CreateDirectory(gamePath + "\\bin" + tempPath);
+                }
+            }
+                        
+            Process pr = new Process();
+            pr.StartInfo.Arguments = arguments;            
+            pr.StartInfo.FileName = gamePath + "\\bin\\vpk.exe";
+
+            pr.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            pr.StartInfo.CreateNoWindow = true;
+
+            pr.Start();            
+            pr.WaitForExit();
+
+            try
+            {
+                Directory.Move(gamePath + "\\bin\\resource",temp + "\\Hud Toolbox\\DefaultHud\\");
+                //Directory.Move(gamePath + "\\bin\\scripts",temp + "\\Hud Toolbox\\DefaultHud\\");
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
+            if(Directory.Exists(gamePath + "\\bin\\resource" + rand.ToString()))
+                Directory.Move(gamePath + "\\bin\\resource" + rand.ToString(),gamePath + "\\bin\\resource");
+            if(Directory.Exists(gamePath + "\\bin\\scripts" + rand.ToString()))
+                Directory.Move(gamePath + "\\bin\\scripts" + rand.ToString(),gamePath + "\\bin\\scripts");
+
+            WriteStatus("Got default Hud. Attempting to Parse");
+            job = oldJob;
+
+            Hud tempHud = ParseHud(temp + "\\DefaultHud");
+
+            WriteStatus("Successfully Parsed Default Hud");
+            return tempHud;
+        }
+
 
         private void backgroundWorker_DoWork(object sender,System.ComponentModel.DoWorkEventArgs e)
         {
-            if(!defaultHudParsed && gameInstalled)
+            if(gameInstalled)
             {
-
+                //Get hud
             }
             if(!gameInstalled)
             {
@@ -855,6 +970,9 @@ namespace HudInstaller
                     tempFragment.Resource = fragmentHud.Resource;
                     fragmentHud = tempFragment;
                     fragmentHud.ApplyResource();
+
+
+                    GetDefaultHudFor(fragmentHud);
                 }
                 else
                 {
@@ -1018,6 +1136,10 @@ namespace HudInstaller
                 WriteStatus("Successfully parsed folder " + folder.Name);
                 hud.Add(folder);
             }
+            foreach(HudFolder folder in hud.m_FolderList)
+            {
+                folder.MakeFilePathsRelative(hud.FullName);
+            }
             return hud;
         }
 
@@ -1093,6 +1215,7 @@ namespace HudInstaller
             ss = RefLib.GetLine(ref ss);
             hf.FullName = ReadName(ss);
             s = s.Remove(0,ss.Length);
+            hf.FullName = path;
 
 
             RefLib.Seek(ref s);
@@ -1399,7 +1522,7 @@ namespace HudInstaller
                     WriteStatus("Attempting to parse file " + file.Name);
                     file = ParseHudFile(file.FullName);
                     if(!file.IsNull)
-                    {
+                    {                        
                         folder.Add(file);
                         WriteStatus("Successfully parsed file " + file.Name);
                         backgroundWorker.ReportProgress(1);

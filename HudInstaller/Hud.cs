@@ -15,8 +15,7 @@ namespace hudParse
         string  m_Path;
         string  m_Author;
         string  m_Link;
-        HudResourceFile m_Resource;
-        bool m_HasDefaultLogo;
+        HudResourceFile m_Resource;        
 
         public List<HudFolder> m_FolderList;
 
@@ -24,8 +23,7 @@ namespace hudParse
         {
             m_Name      = "Unknown";
             m_Author    = "Unknown";
-            m_Link      = "Unknown";
-            m_HasDefaultLogo = true;
+            m_Link      = "Unknown";            
             m_FolderList = new List<HudFolder>();
         }
         
@@ -72,24 +70,48 @@ namespace hudParse
             {
                 return m_Logo;
             }
+            set
+            {
+                m_Logo = value;
+            }
         }
         public bool HasDefaultLogo
         {
             get
             {
-                return m_HasDefaultLogo;
+                if(m_Logo == null)
+                    return true;
+                else return false;
             }
         }        
+        public string FullName
+        {
+            get
+            {
+                return Path + Name;
+            }
+            set
+            {
+                if(value.IndexOf("\\") != -1)
+                {
+                    m_Name = value.Remove(0,value.LastIndexOf("\\") + 1);
+                    m_Path = value.Remove(value.Length - m_Name.Length);
+                }
+                else
+                {
+                    RefLib.StripAndTrim(ref value);
+                    m_Name = value;
+                }
+            }
+        }
 
         public void SetLogo(Image logo)
         {
-            m_Logo = logo;
-            m_HasDefaultLogo = false;
+            m_Logo = logo;            
         }
         public void SetDeafaultLogo()
         {
-            m_Logo = HudInstaller.Properties.Resources.logo_default;
-            m_HasDefaultLogo = true;
+            m_Logo = HudInstaller.Properties.Resources.logo_default;            
         }
         public void ApplyResource()
         {            
@@ -108,6 +130,16 @@ namespace hudParse
         public void Write()
         {      
                   
+        }
+
+        public List<String> GetFileNames()
+        {
+            List<String> l = new List<String>();
+            foreach(HudFolder hf in m_FolderList)
+            {
+                l.AddRange(hf.GetFileNames());                
+            }
+            return l;
         }
     }
 }

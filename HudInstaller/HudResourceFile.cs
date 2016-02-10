@@ -158,5 +158,11 @@ namespace hudParse
             }
             return new SubElement();
         }
+
+        public void MakeFilePathRelative(string hudPath)
+        {
+            if(Path.StartsWith(hudPath))
+                m_Path = m_Path.Remove(hudPath.Length);
+        }
     }
 }

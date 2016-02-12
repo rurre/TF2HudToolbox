@@ -19,14 +19,10 @@ namespace HudInstaller
         delegate void SetProgressBarValueCallback(int i);
 
         #region Variables        
-        
-        Hud fragmentDefault = new Hud();
+                
         Hud fragmentHud = new Hud();
-
         Hud defaultHud = new Hud();
-
         Hud combineHud1 = new Hud();
-
         Hud combineHud2 = new Hud();
 
         string gamePath;
@@ -40,6 +36,8 @@ namespace HudInstaller
         bool gameInstalled = false;
         bool defaultHudParsed = false;
 
+        string applicationPath = AppDomain.CurrentDomain.BaseDirectory;
+
         static Point formSize = new Point(497, 500);    //Different from designer value!!
         SettingsForm Settings = new SettingsForm();
         ResourceManager resourceManager = Properties.Resources.ResourceManager;
@@ -50,7 +48,7 @@ namespace HudInstaller
 #else
         public enum Languages { English };        
 #endif
-        enum Jobs { None, Parse, GetDefaultHud , ParseDefaultHud , Fragment, Combine_GetDefault1, Combine_GetDefault2, Combine ,Install, Error };
+        enum Jobs { None, Parse, GetDefaultHud , ParseDefaultHud , Fragment, Combine ,Install, Error };
 
         #endregion
 
@@ -600,7 +598,7 @@ namespace HudInstaller
         }
 
         private void button_Parse_Click(object sender,EventArgs e)
-        {            
+        {
             if(!backgroundWorker.IsBusy)
             {
                 job = Jobs.Parse;
@@ -613,6 +611,7 @@ namespace HudInstaller
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
         {
+
             if(folderBrowse_Fragment.SelectedPath != "")
             {
                 WriteStatus("Attempting to Create Hud Blueprint...");
@@ -622,28 +621,25 @@ namespace HudInstaller
                 var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
                 var filesInThisFolder = Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*");
 
-                SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count*2);
+                SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count + defaultHud.FileCount);
 
                 tempFragment = ParseHud(folderBrowse_Fragment.SelectedPath);
                 tempFragment.Resource = fragmentHud.Resource;
                 tempFragment.Path = fragmentHud.Path;
                 if(!fragmentHud.HasDefaultLogo)
                     tempFragment.Logo = fragmentHud.Logo;
-                
-                         
+
                 fragmentHud = tempFragment;
                 fragmentHud.ApplyResource();
-
-
-                fragmentDefault = GetDefaultHudFor(fragmentHud);
-                WriteStatus("Hold on");
             }
             else
             {
                 WriteStatus("Select a Hud folder first");
                 silentCancel = true;
                 backgroundWorker.CancelAsync();
-            }            
+            }
+
+            WriteStatus("Hold on");
             /*if(!backgroundWorker.IsBusy)
             {
                 job = Jobs.Fragment;
@@ -826,118 +822,75 @@ namespace HudInstaller
 
         #endregion
 
-        private Hud GetDefaultHudFor(Hud hud)
+        private void GetDefaultHud()
         {            
             Jobs oldJob = job;
             Jobs newJob = Jobs.ParseDefaultHud;
                                      
-            WriteStatus("Grabbing default Hud.");
-
-            //string temp = System.IO.Path.GetTempPath();
-            string temp = gamePath + "\\bin\\";
             try
             {
-                if(Directory.Exists(temp + "Hud Toolbox"))
-                    Directory.Delete(temp + "Hud Toolbox",true);
-                Directory.CreateDirectory(temp + "Hud Toolbox\\DefaultHud");
+                WriteStatus("Grabbing default Hud.");
+
+                string temp = System.IO.Path.GetTempPath();
+
+                if(Directory.Exists(temp + "HudToolbox\\DefaultHud"))
+                    Directory.Delete(temp + "HudToolbox\\DefaultHud",true);
+                Directory.CreateDirectory(temp + "HudToolbox\\DefaultHud");                
+
+                Process proc = new Process();                
+                proc.StartInfo.FileName = applicationPath + "HLExtract.exe";
+                proc.StartInfo.Arguments = "-p \"" + gamePath + "\\tf\\tf2_misc_dir.vpk\" -d \"" + temp + "HudToolbox\\DefaultHud\"" + " -e \"resource\" -e \"scripts\" -v";
+                proc.StartInfo.CreateNoWindow = false;
+                proc.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+                proc.Start();
+                proc.WaitForExit();
+                                
+                SetProgressBarMax(GetFiles(temp + "\\HudToolbox\\DefaultHud\\").Count*2);
+
+                WriteStatus("Got default Hud. Attempting to Parse");                
+                defaultHud = ParseHud(temp + "\\HudToolbox\\DefaultHud");
+                WriteStatus("Successfully Parsed Default Hud");
+
+                job = oldJob;
+                defaultHudParsed = true;
             }
             catch(Exception e)
             {
                 throw e;
-            }
-
-            //File.Copy(gamePath + "\\bin\\vpk.exe", temp + "\\Hud Toolbox\\vpk.exe");
-            //File.Copy(gamePath + "\\bin\\tier0.dll",temp + "\\Hud Toolbox\\tier0.dll");
-            //File.Copy(gamePath + "\\bin\\vstdlib.dll",temp + "\\Hud Toolbox\\vstdlib.dll");
-
-            
-            int rand = new Random().Next();            
-            if(Directory.Exists(gamePath + "\\bin\\resource"))            
-                Directory.Move(gamePath + "\\bin\\resource",gamePath + "\\bin\\resource" + rand);
-            if(Directory.Exists(gamePath + "\\bin\\scripts"))
-                Directory.Move(gamePath + "\\bin\\scripts",gamePath + "\\bin\\scripts" + rand);
-
-            string arguments = "x \"" + gamePath + "\\tf\\tf2_misc_dir.vpk\" ";
-            List<String> fileList = new List<String>();
-            fileList.AddRange(hud.GetFileNames());
-            string tempPath;
-            foreach(String s in fileList)
-            {
-                if(s.StartsWith(hud.FullName))                        
-                    arguments += s.Remove(0,hud.FullName.Length+1);                
-                else arguments += s;
-                arguments += " ";
-
-                if(!Directory.Exists(gamePath + "\\bin\\" + s.Remove(s.LastIndexOf("\\") + 1)))
-                {
-                    tempPath = s.Remove(s.LastIndexOf("\\") + 1);
-                    tempPath = tempPath.Remove(0,hud.FullName.Length);
-                    Directory.CreateDirectory(gamePath + "\\bin" + tempPath);
-                }
-            }
-                        
-            Process pr = new Process();
-            pr.StartInfo.Arguments = arguments;            
-            pr.StartInfo.FileName = gamePath + "\\bin\\vpk.exe";
-
-            pr.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            pr.StartInfo.CreateNoWindow = true;
-
-            pr.Start();            
-            pr.WaitForExit();
-
-            try
-            {
-                Directory.Move(gamePath + "\\bin\\resource",temp + "\\Hud Toolbox\\DefaultHud\\");
-                //Directory.Move(gamePath + "\\bin\\scripts",temp + "\\Hud Toolbox\\DefaultHud\\");
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
-
-            if(Directory.Exists(gamePath + "\\bin\\resource" + rand.ToString()))
-                Directory.Move(gamePath + "\\bin\\resource" + rand.ToString(),gamePath + "\\bin\\resource");
-            if(Directory.Exists(gamePath + "\\bin\\scripts" + rand.ToString()))
-                Directory.Move(gamePath + "\\bin\\scripts" + rand.ToString(),gamePath + "\\bin\\scripts");
-
-            WriteStatus("Got default Hud. Attempting to Parse");
-            job = oldJob;
-
-            Hud tempHud = ParseHud(temp + "\\DefaultHud");
-
-            WriteStatus("Successfully Parsed Default Hud");
-            return tempHud;
+                defaultHudParsed = false;
+            }        
         }
 
 
         private void backgroundWorker_DoWork(object sender,System.ComponentModel.DoWorkEventArgs e)
         {
-            if(gameInstalled)
-            {
-                //Get hud
-            }
             if(!gameInstalled)
             {
-                bool vpkExecFound = false;
+                bool hlExtractFound = false;
                 bool vpkFound = false;
-                if(File.Exists(folderBrowse_MainInstallPath.SelectedPath + "/bin/vpk.exe"))
-                    vpkExecFound = true;
+                if(File.Exists(applicationPath + "\\HlExtract.exe") && File.Exists(applicationPath + "\\HLLib.dll"))
+                    hlExtractFound = true;
                 else
-                    WriteStatus(gamePath + "/bin/vpk.exe Not found");
+                    WriteStatus("HLExtract.exe and/or HLLib.dll not found in " + applicationPath);
 
                 if(File.Exists(folderBrowse_MainInstallPath.SelectedPath + "/tf/tf2_misc_dir.vpk"))
                     vpkFound = true;
                 else
                     WriteStatus(gamePath + "/tf/tf2_misc_dir.vpk Not found");
 
-                if(!vpkExecFound || !vpkFound)
+                if(!hlExtractFound || !vpkFound)
                 {
                     WriteStatus("Can't continue until the above issues are resolved");
                     job = Jobs.Error;
                 }
                 else gameInstalled = true;
             }
+
+            if(gameInstalled && !defaultHudParsed)
+            {                
+                GetDefaultHud();
+            }
+
             if(job == Jobs.Parse)
             {
                 WriteStatus("Attempting to parse Hud...");
@@ -964,57 +917,30 @@ namespace HudInstaller
                     var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
                     var filesInThisFolder = Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*");
 
-                    SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count);
+                    SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count + defaultHud.FileCount);
 
                     tempFragment = ParseHud(folderBrowse_Fragment.SelectedPath);
                     tempFragment.Resource = fragmentHud.Resource;
+                    tempFragment.Path = fragmentHud.Path;
+                    if(!fragmentHud.HasDefaultLogo)
+                        tempFragment.Logo = fragmentHud.Logo;
+
                     fragmentHud = tempFragment;
                     fragmentHud.ApplyResource();
-
-
-                    GetDefaultHudFor(fragmentHud);
                 }
                 else
                 {
                     WriteStatus("Select a Hud folder first");
                     silentCancel = true;
                     backgroundWorker.CancelAsync();
-                }
+                }                
             }
             else if(job == Jobs.Error)
             {
                 backgroundWorker.CancelAsync();
             }
             else
-                throw new Exception("backgroundWorker asked to do work but a job wasn't assigned");
-            
-            /*WriteStatus("Parsing Hud...");
-            fragmentHud.Resource = new HudResourceFile("hudinfo","txt",fragmentHud.Path,new List<KeyValue>()
-            {
-                new KeyValue("name",textBox_Fragment_Name.Text),
-                new KeyValue("version",textBox_Fragment_Version.Text),
-                new KeyValue("author",textBox_Fragment_Author.Text),
-                new KeyValue("website",textBox_Fragment_Website.Text)
-            });
-
-            Hud tempHud = ParseHud(folderBrowse_Fragment.SelectedPath);
-            if(tempHud != null)
-                fragmentHud.m_FolderList = tempHud.m_FolderList;
-            else WriteStatus("Failed to parse Hud");*/
-
-            //Use if statement to check for job to do.            
-            /*for(int i = 0; i < 100; i++)
-            {
-                System.Threading.Thread.Sleep(100);
-                backgroundWorker.ReportProgress(i);
-
-                if(backgroundWorker.CancellationPending)
-                {
-                    e.Cancel = true;                    
-                    return;
-                }
-            }*/
-            //e.Result = new Hud();     
+                throw new Exception("backgroundWorker asked to do work but a job wasn't assigned");            
         }
 
         private void backgroundWorker_ProgressChanged(object sender,System.ComponentModel.ProgressChangedEventArgs e)
@@ -1068,7 +994,7 @@ namespace HudInstaller
                         defaultHudParsed = false;
                         break;
                     default:
-                        throw new Exception("Something went wrong");                       
+                        throw new Exception("Something went wrong. Resetting ~everything~");                       
                 }
                 job = Jobs.Error;
             }

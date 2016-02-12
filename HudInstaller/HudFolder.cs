@@ -23,6 +23,19 @@ namespace hudParse
             m_CopyNoParse = false;
         }
 
+        public int FileCount
+        {
+            get
+            {
+                int count = 0;
+                foreach(HudFolder f in m_SubFolderList)
+                {
+                    count += f.FileCount;
+                }
+                return m_FileList.Count + count;
+            }
+        }
+
         public string FullName
         {
             get

@@ -27,6 +27,18 @@ namespace hudParse
             m_FolderList = new List<HudFolder>();
         }
         
+        public int FileCount
+        {
+            get
+            {
+                int count = 0;
+                foreach(HudFolder f in m_FolderList)
+                {
+                    count += f.FileCount;
+                }
+                return count;
+            }
+        }
         public string Name
         {
             get

@@ -136,17 +136,18 @@ static class RefLib
             int commentIndex = s.IndexOf("//");
             int platformIndex = s.IndexOf('[');
 
-            int indexOfStart = s.IndexOf("/*");
-            int indexOfEnd = s.IndexOf("*/");
+            //Disabled since it's been causing trouble since some files have stuff like /**********
+            //int indexOfStart = s.IndexOf("/*");
+            //int indexOfEnd = s.IndexOf("*/");
 
-            if(indexOfEnd == -1 && indexOfStart != -1)
-                throw new Exception("Found beginning of block comment - \"/*\" but couldn't find end of it - \"*/\"");
+            //if(indexOfEnd == -1 && indexOfStart != -1)
+            //    throw new Exception("Found beginning of block comment - \"/*\" but couldn't find end of it - \"*/\"");
 
-            if(indexOfStart != -1)
-            {                   
-                s = s.Remove(indexOfStart,indexOfEnd - indexOfStart+2);
-                continue;
-            }
+            //if(indexOfStart != -1)
+            //{                   
+            //    s = s.Remove(indexOfStart,indexOfEnd - indexOfStart+2);
+            //   continue;
+            //}
 
             if((s.IndexOf("http://") != -1) || (s.IndexOf("https://") != -1))
             {

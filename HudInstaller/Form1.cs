@@ -844,7 +844,18 @@ namespace HudInstaller
                 proc.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                 proc.Start();
                 proc.WaitForExit();
+
+                //////////////////////////////////////////////////////////////////////////////
+                /////////////AWFUL TEMP SOLUTION TO PARSING PROBLEM IN THIS FILE//////////////
+                /////////////////////////TODO: FIX THIS LATER/////////////////////////////////
+                //To fix replace HudElement and SubElement with HudElementBlock that will serve
+                //as all the blocks inside the hud files and will accommodate format changes
+
+                if(File.Exists(temp + "HudToolbox\\DefaultHud\\resource\\newgamedialog.res"))
+                    File.Delete(temp + "HudToolbox\\DefaultHud\\resource\\newgamedialog.res");                
+                //////////////////////////////////////////////////////////////////////////////
                                 
+
                 SetProgressBarMax(GetFiles(temp + "\\HudToolbox\\DefaultHud\\").Count*2);
 
                 WriteStatus("Got default Hud. Attempting to Parse");                
@@ -856,8 +867,8 @@ namespace HudInstaller
             }
             catch(Exception e)
             {
-                throw e;
                 defaultHudParsed = false;
+                throw e;                
             }        
         }
 

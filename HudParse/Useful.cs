@@ -145,5 +145,55 @@ namespace HudParse
             }
             return comments;
         }
+
+        public static string GetElement(ref string file)
+        {
+            string s = file;
+            string ss = "";
+            bool spaceTerminates = true;
+            for(int i = 0; i <= file.Length; i++)
+            {
+                if(s == "")
+                    break;
+                if(s[0] == '\"')
+                {
+                    if(spaceTerminates)
+                    {
+                        spaceTerminates = false;
+                        s = s.Remove(0,1);
+                    }
+                    else
+                    {
+                        s = s.Remove(0,1);
+                        s = Useful.Seek(ref s);
+                        break;
+                    }
+                }
+
+                if((s[0] == ' ') || (s[0] == '\t'))
+                {
+                    if(spaceTerminates)
+                    {
+                        s = Seek(ref s);
+                        break;
+                    }
+                }
+                else if((s[0] == '\r') && (s[1] == '\n'))
+                {
+                    s = s.Remove(0,2);
+                    break;
+                }
+                else if((s[0] == '{') || (s[0] == '}'))
+                    break;
+
+                ss += s[0];
+                s = s.Remove(0,1);
+            }
+            file = s;
+            if(ss == "")
+                return null;
+            else
+                return ss;
+        }
     }
 }

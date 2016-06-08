@@ -108,71 +108,77 @@ namespace HudParse
             string value = "";
             string tag = "";
             string commentHeader = "";
+            string s = "";
 
             bool foundValue = false;
             bool foundKey = false;
             bool foundTag = false;
-
-            bool spaceTerminates = true;
-            
+            bool valueIsBlock = false;
+                        
             KeyValue kv = new KeyValue();
-
+            List<KeyValue> kvList = new List<KeyValue>();
+            
             //Get comments
             commentHeader += Useful.GetCommentHeader(ref file);
 
             //Get Key           
-            for(int i = 0; i < file.Length; i++)
+            s = Useful.GetElement(ref file);
+            if(s != null)
             {
-                if(file[0] == '\"')
-                {
-                    if(spaceTerminates)
-                    {
-                        spaceTerminates = false;
-                        file = file.Remove(0,1);
-                    }
-                    else
-                    {
-                        file = file.Remove(0,1);
-                        file = Useful.Seek(ref file);
-                        break;
-                    }
-                }
-
-                if(file[0] == ' ')
-                {
-                    if(spaceTerminates)
-                    {
-                        file = file.Remove(0,1);
-                        break;
-                    }
-                }
-                else if((file[0] == '\r') && (file[1] == '\n'))
-                {
-                    file = file.Remove(0,2);
-                    break;
-                }                
-                key += file[0];
-                file = file.Remove(0,1);
+                key = s;
+                foundKey = true;
             }
-
-            spaceTerminates = true;
-            foundKey = true;
-            file = Useful.Seek(ref file);
-                        
             //Get Value/Tag
-            for(int i = 0; i < file.Length; i++)
+            s = Useful.GetElement(ref file);
+            if(s.IndexOf('[') != -1)
             {
-                if(file[0] == '[')
+                s = s.Replace("[","");
+                s = s.Replace("]","");
+                tag = s;
+                foundTag = true;
             }
-
-            spaceTerminates = true;
-            file = Useful.Seek(ref file);
-
+            else
+            {
+                if((s == null) && (file.Length > 0))
+                {
+                    valueIsBlock = true;
+                }
+                else
+                {
+                    value = s;
+                    foundValue = true;
+                }
+            }
             //Get Value/Tag
-            for(int i = 0; i < file.Length; i++)
+            if(!foundValue)
             {
-                file = file.Remove(0,1);
+                if(valueIsBlock)
+                {
+                    //get block
+                }
             }
+            else
+            {
+                s = Useful.GetElement(ref file);
+                if(s.IndexOf('[') != -1)
+                {
+                    s = s.Replace("[","");
+                    s = s.Replace("]","");
+                    tag = s;
+                    foundTag = true;
+                }
+            }
+            if(foundKey)
+                kv.key = key;
+            if(foundTag)
+                kv.tag = tag;
+            if(foundValue)
+            {
+                if(!valueIsBlock)
+                    kv.value = value;
+                else
+                    kv.subKeyValues = kvList;
+            }            
             return kv;
         }
     }

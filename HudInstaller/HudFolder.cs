@@ -11,8 +11,8 @@ namespace hudParse
         string m_Name;
         string m_Path;
         bool m_CopyNoParse;
-        List<HudFile> m_FileList;
-        List<HudFolder> m_SubFolderList;        
+        public List<HudFile> m_FileList;
+        public List<HudFolder> m_SubFolderList;        
 
         public HudFolder()
         {

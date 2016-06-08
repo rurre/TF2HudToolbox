@@ -189,5 +189,31 @@ static class RefLib
         var result = input.TrimEnd(digits);
         return result;
     }
+
+    static void CreateShortcut(string applicationPath,string pathName)
+    {
+        Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
+        dynamic shell = Activator.CreateInstance(t);
+        try
+        {
+            if(!pathName.EndsWith(".lnk"))
+                pathName += ".lnk";
+            var lnk = shell.CreateShortcut(pathName);
+            try
+            {
+                lnk.TargetPath = applicationPath;
+                lnk.IconLocation = "shell32.dll, 1";
+                lnk.Save();
+            }
+            finally
+            {
+                System.Runtime.InteropServices.Marshal.FinalReleaseComObject(lnk);
+            }
+        }
+        finally
+        {
+            System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell);
+        }
+    }
 }
 

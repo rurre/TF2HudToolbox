@@ -143,7 +143,34 @@ namespace hudParse
                 if(element.Name.ToLower() == name.ToLower())
                     return element;
             }
-            return new KeyValue();
+            return null;
+        }
+        public SubElement FindSub(string name)
+        {
+            foreach(SubElement sb in m_SubList)
+            {
+                if(sb.Name.ToLower() == name.ToLower())
+                    return sb;
+            }
+            return null;
+        }
+
+        public bool CheckIfDefault(HudElement defaultElement)
+        {
+            if(Name.ToLower() == defaultElement.Name.ToLower())
+            {
+                foreach(KeyValue kv in m_ValueList)
+                {
+                    if(kv != defaultElement.FindKeyValue(kv.Name))
+                        return false;                   
+                }
+                foreach(SubElement sb in m_SubList)
+                {
+                    if(sb != defaultElement.FindSub(sb.Name))
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }

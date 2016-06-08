@@ -610,44 +610,15 @@ namespace HudInstaller
         }
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
-        {
-
-            if(folderBrowse_Fragment.SelectedPath != "")
-            {
-                WriteStatus("Attempting to Create Hud Blueprint...");
-                Hud tempFragment = new Hud();
-
-                //Set progress bar to length of nr of files in hud
-                var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
-                var filesInThisFolder = Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*");
-
-                SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count + defaultHud.FileCount);
-
-                tempFragment = ParseHud(folderBrowse_Fragment.SelectedPath);
-                tempFragment.Resource = fragmentHud.Resource;
-                tempFragment.Path = fragmentHud.Path;
-                if(!fragmentHud.HasDefaultLogo)
-                    tempFragment.Logo = fragmentHud.Logo;
-
-                fragmentHud = tempFragment;
-                fragmentHud.ApplyResource();
-            }
-            else
-            {
-                WriteStatus("Select a Hud folder first");
-                silentCancel = true;
-                backgroundWorker.CancelAsync();
-            }
-
-            WriteStatus("Hold on");
-            /*if(!backgroundWorker.IsBusy)
+        {            
+            if(!backgroundWorker.IsBusy)
             {
                 job = Jobs.Fragment;
                 working = true;
                 UpdateButtonState();
                 SetProgressBarValue(0);
                 backgroundWorker.RunWorkerAsync();
-            }*/
+            }
         }
 
         void pr_OutputDataReceived(object sender,DataReceivedEventArgs e)
@@ -794,32 +765,6 @@ namespace HudInstaller
             return files;
         }
 
-        void CreateShortcut(string applicationPath,string pathName)
-        {
-            Type t = Type.GetTypeFromCLSID(new Guid("72C24DD5-D70A-438B-8A42-98424B88AFB8")); //Windows Script Host Shell Object
-            dynamic shell = Activator.CreateInstance(t);
-            try
-            {
-                if(!pathName.EndsWith(".lnk"))
-                    pathName += ".lnk";
-                var lnk = shell.CreateShortcut(pathName);
-                try
-                {
-                    lnk.TargetPath = applicationPath;
-                    lnk.IconLocation = "shell32.dll, 1";
-                    lnk.Save();
-                }
-                finally
-                {
-                    System.Runtime.InteropServices.Marshal.FinalReleaseComObject(lnk);
-                }
-            }
-            finally
-            {
-                System.Runtime.InteropServices.Marshal.FinalReleaseComObject(shell);
-            }
-        }
-
         #endregion
 
         private void GetDefaultHud()
@@ -924,7 +869,7 @@ namespace HudInstaller
                     WriteStatus("Attempting to Create Hud Blueprint...");
                     Hud tempFragment = new Hud();
 
-                    //Set progress bar to length of nr of files in hud
+                    //Set progress bar to length of nr of files in hud and increment bar by 1 after each file parsed
                     var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
                     var filesInThisFolder = Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*");
 
@@ -938,13 +883,21 @@ namespace HudInstaller
 
                     fragmentHud = tempFragment;
                     fragmentHud.ApplyResource();
+
+                    foreach(HudFolder folder in fragmentHud.m_FolderList)
+                    {
+                        foreach(HudFile file in folder.m_FileList)
+                        {
+                            //file.CheckIfDefault(
+                        }
+                    }
                 }
                 else
                 {
                     WriteStatus("Select a Hud folder first");
                     silentCancel = true;
                     backgroundWorker.CancelAsync();
-                }                
+                }
             }
             else if(job == Jobs.Error)
             {

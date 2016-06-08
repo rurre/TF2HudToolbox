@@ -13,6 +13,7 @@ namespace hudParse
         string m_Name;
         string m_FileType;
         string m_Path;
+        bool m_IsDefault;
 
         public HudFile()
         {
@@ -20,6 +21,7 @@ namespace hudParse
             m_FileType = "res";
             m_Path = null;
             m_Name = null;
+            m_IsDefault = false;
         }
         public HudFile(string name) : base()
         {
@@ -121,6 +123,26 @@ namespace hudParse
         {
             if(Path.StartsWith(hudPath))
                 m_Path = m_Path.Remove(0,hudPath.Length);
+        }
+
+        public bool CheckIfDefault(HudFile file)
+        {
+            foreach(HudElement he in m_ElementList)
+            {
+                he.CheckIfDefault(file.FindElement(he.Name));                                    
+            }
+            return true;
+        }
+
+        public HudElement FindElement(string name)
+        {
+            foreach(HudElement he in m_ElementList)
+            {
+                if(he.Name.ToLower() == name.ToLower())
+                    return he;
+                else break;
+            }
+            return null;
         }
     }
 }

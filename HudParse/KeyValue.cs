@@ -62,7 +62,7 @@ namespace HudParse
             {
                 foreach(KeyValue kv in subKeyValues)
                 {
-                    if(indentIndex == 0)
+                    if(kv.indentIndex == 0)
                         kv.indentIndex = indentIndex + 1;
                 }
                 if(commentHeader != null)
@@ -114,8 +114,8 @@ namespace HudParse
             bool foundKey = false;
             bool foundTag = false;
             bool valueIsBlock = false;
-                        
-            KeyValue kv = new KeyValue();
+
+            KeyValue kv = null;
             List<KeyValue> kvList = new List<KeyValue>();
             
             //Get comments
@@ -128,48 +128,94 @@ namespace HudParse
                 key = s;
                 foundKey = true;
             }
+            else
+                return null;
             //Get Value/Tag
             s = Useful.GetElement(ref file);
-            if(s.IndexOf('[') != -1)
+            if(s != null)
             {
-                s = s.Replace("[","");
-                s = s.Replace("]","");
-                tag = s;
-                foundTag = true;
-            }
-            else
-            {
-                if((s == null) && (file.Length > 0))
-                {
-                    valueIsBlock = true;
-                }
-                else
-                {
-                    value = s;
-                    foundValue = true;
-                }
-            }
-            //Get Value/Tag
-            if(!foundValue)
-            {
-                if(valueIsBlock)
-                {
-                    //get block
-                }
-            }
-            else
-            {
-                s = Useful.GetElement(ref file);
                 if(s.IndexOf('[') != -1)
                 {
                     s = s.Replace("[","");
                     s = s.Replace("]","");
                     tag = s;
                     foundTag = true;
+                    valueIsBlock = true;
+                }
+                else
+                {
+                    if((s == null) && (file.Length > 0))
+                    {
+                        valueIsBlock = true;
+                    }
+                    else
+                    {
+                        value = s;
+                        foundValue = true;
+                    }
+                }
+            }
+            else
+            {
+                if(file[0] == '{')
+                    valueIsBlock = true;
+            }
+            //Get Value/Tag
+            if(!foundValue)
+            {
+                if(valueIsBlock)
+                {
+                    file = Useful.Seek(ref file);
+                    if(file[0] == '{')
+                    {
+                        file = file.Remove(0,1);                        
+                        while(file != "")
+                        {
+                            file = Useful.Seek(ref file);
+                            KeyValue subKv = Parse(ref file);
+                            if(subKv != null)
+                            {
+                                kvList.Add(subKv);
+                                foundValue = true;
+                            }
+                            else
+                            {
+                                file = Useful.Seek(ref file);
+                                if(file == "")
+                                    break;
+                                else if(file[0] == '}')
+                                {
+                                    file = file.Remove(0,1);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                string ss = file;
+                s = Useful.GetElement(ref ss);
+                if(s != null)
+                {
+                    if(s.IndexOf('[') != -1)
+                    {
+                        s = s.Replace("[","");
+                        s = s.Replace("]","");
+                        tag = s;
+                        foundTag = true;
+                        file = ss;
+                    }
                 }
             }
             if(foundKey)
+            {                
+                kv = new KeyValue();
                 kv.key = key;
+            }
+            if(commentHeader != "")
+                kv.commentHeader = commentHeader;
             if(foundTag)
                 kv.tag = tag;
             if(foundValue)

@@ -20,13 +20,16 @@ namespace HudParse
 
         public static string Seek(string s)
         {
-            while((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r'))
+            if(s != "")
             {
-                s = s.Remove(0,1);
-                if(s.Length == 0)
-                    break;
-                else if(!((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r')))
-                    break;
+                while((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r'))
+                {
+                    s = s.Remove(0,1);
+                    if(s.Length == 0)
+                        break;
+                    else if(!((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r')))
+                        break;
+                }
             }
             return s;
         }
@@ -134,15 +137,25 @@ namespace HudParse
         public static string GetCommentHeader(ref string file)
         {
             file = Useful.Seek(ref file);
+            if(file == "")
+                return "";
             string comments = "";
             while((file[0] == '/') && (file[1] == '/'))
-            {                
+            {
                 string ss = "";
-                ss += file.Substring(0,(file.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
+                int index;
+                if((index = file.IndexOf(Environment.NewLine)) == -1)
+                    index = file.Length;
+                else
+                    index += Environment.NewLine.Length;
+                ss += file.Substring(0,index);
                 file = file.Remove(0,ss.Length);
                 comments += ss;
                 file = Useful.Seek(ref file);
-            }
+
+                if(file == "")
+                    break;
+            }           
             return comments;
         }
 

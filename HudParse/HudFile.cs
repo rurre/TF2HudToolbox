@@ -92,7 +92,8 @@ namespace HudParse
                 {
                     file = Useful.Seek(ref file);
                     KeyValue kv = KeyValue.Parse(ref file);
-                    kvList.Add(kv);
+                    if(kv != null)
+                        kvList.Add(kv);
                 }
                 return new HudFile(kvList);                
             }

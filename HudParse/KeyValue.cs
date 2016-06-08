@@ -114,12 +114,64 @@ namespace HudParse
             bool foundTag = false;
 
             bool spaceTerminates = true;
-
+            
             KeyValue kv = new KeyValue();
 
+            //Get comments
+            commentHeader += Useful.GetCommentHeader(ref file);
+
+            //Get Key           
             for(int i = 0; i < file.Length; i++)
             {
+                if(file[0] == '\"')
+                {
+                    if(spaceTerminates)
+                    {
+                        spaceTerminates = false;
+                        file = file.Remove(0,1);
+                    }
+                    else
+                    {
+                        file = file.Remove(0,1);
+                        file = Useful.Seek(ref file);
+                        break;
+                    }
+                }
 
+                if(file[0] == ' ')
+                {
+                    if(spaceTerminates)
+                    {
+                        file = file.Remove(0,1);
+                        break;
+                    }
+                }
+                else if((file[0] == '\r') && (file[1] == '\n'))
+                {
+                    file = file.Remove(0,2);
+                    break;
+                }                
+                key += file[0];
+                file = file.Remove(0,1);
+            }
+
+            spaceTerminates = true;
+            foundKey = true;
+            file = Useful.Seek(ref file);
+                        
+            //Get Value/Tag
+            for(int i = 0; i < file.Length; i++)
+            {
+                if(file[0] == '[')
+            }
+
+            spaceTerminates = true;
+            file = Useful.Seek(ref file);
+
+            //Get Value/Tag
+            for(int i = 0; i < file.Length; i++)
+            {
+                file = file.Remove(0,1);
             }
             return kv;
         }

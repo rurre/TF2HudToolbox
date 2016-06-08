@@ -19,7 +19,7 @@ namespace HudParse
 
         private void parseButton_Click(object sender,EventArgs e)
         {
-            //output.AppendText(new HudFile(pathBox.Text).ToString());            
+            output.AppendText(new HudFile(pathBox.Text).ToString());
         }
 
         private void testButton_Click(object sender,EventArgs e)

@@ -133,14 +133,15 @@ namespace HudParse
 
         public static string GetCommentHeader(ref string file)
         {
-            Useful.Seek(ref file);
+            file = Useful.Seek(ref file);
             string comments = "";
             while((file[0] == '/') && (file[1] == '/'))
-            {
-                string ss = file;
+            {                
+                string ss = "";
                 ss += file.Substring(0,(file.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
                 file = file.Remove(0,ss.Length);
                 comments += ss;
+                file = Useful.Seek(ref file);
             }
             return comments;
         }

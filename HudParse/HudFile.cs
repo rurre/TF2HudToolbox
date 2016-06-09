@@ -66,7 +66,7 @@ namespace HudParse
             return s;
         }
 
-        public HudFile ParseFromPath(string path)
+        public static HudFile ParseFromPath(string path)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace HudParse
             }            
         }
 
-        public HudFile Parse(ref string file)
+        public static HudFile Parse(ref string file)
         {
             List<KeyValue> kvList = new List<KeyValue>();             
             try
@@ -101,6 +101,11 @@ namespace HudParse
             {
                 throw e;
             }               
+        }
+
+        public void MakeFilePathsRelative(string hudPath)
+        {
+            filePath = filePath.Replace(hudPath,"");
         }
     }
 }

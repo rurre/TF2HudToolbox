@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -207,6 +208,22 @@ namespace HudParse
                 return null;
             else
                 return ss;
+        }
+
+        public static string[] GetFiles(string path,SearchOption s,string[] extensions)
+        {
+            for(int i = 0; i < extensions.Length; i++)
+            {
+                if((extensions[i][0] != '*') && (extensions[i][1] != '.'))
+                    extensions[i] = "*." + extensions[i];
+            }
+
+            List<string> l = new List<string>();
+            for(int i = 0; i < extensions.Length; i++)
+            {
+                l.AddRange(Directory.GetFiles(path,extensions[i],s));
+            }
+            return l.ToArray();
         }
     }
 }

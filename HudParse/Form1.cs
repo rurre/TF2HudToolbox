@@ -59,5 +59,19 @@ namespace HudParse
                 pathBox.Text = openFileDialog1.FileName;
             }
         }
+
+        private void browseHudButton_Click(object sender,EventArgs e)
+        {
+            if(folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                hudPathBox.Text = folderBrowserDialog1.SelectedPath;
+            }
+        }
+
+        private void parseHudButton_Click(object sender,EventArgs e)
+        {
+            Hud h = new Hud(hudPathBox.Text);
+            output.AppendText(h.ToString());
+        }
     }
 }

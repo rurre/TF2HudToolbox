@@ -35,6 +35,10 @@
             this.testButton = new System.Windows.Forms.Button();
             this.testButton2 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.hudPathBox = new System.Windows.Forms.TextBox();
+            this.browseHudButton = new System.Windows.Forms.Button();
+            this.parseHudButton = new System.Windows.Forms.Button();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
             // 
             // pathBox
@@ -52,7 +56,7 @@
             this.parseButton.Name = "parseButton";
             this.parseButton.Size = new System.Drawing.Size(93, 23);
             this.parseButton.TabIndex = 1;
-            this.parseButton.Text = "Parse";
+            this.parseButton.Text = "Parse File";
             this.parseButton.UseVisualStyleBackColor = true;
             this.parseButton.Click += new System.EventHandler(this.parseButton_Click);
             // 
@@ -60,12 +64,17 @@
             // 
             this.output.AcceptsReturn = true;
             this.output.AcceptsTab = true;
-            this.output.Location = new System.Drawing.Point(13, 51);
+            this.output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.output.Location = new System.Drawing.Point(13, 73);
             this.output.Multiline = true;
             this.output.Name = "output";
             this.output.ReadOnly = true;
-            this.output.Size = new System.Drawing.Size(551, 427);
+            this.output.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.output.Size = new System.Drawing.Size(551, 405);
             this.output.TabIndex = 2;
+            this.output.WordWrap = false;
             // 
             // browseButton
             // 
@@ -79,6 +88,7 @@
             // 
             // testButton
             // 
+            this.testButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.testButton.Location = new System.Drawing.Point(13, 485);
             this.testButton.Name = "testButton";
             this.testButton.Size = new System.Drawing.Size(260, 23);
@@ -89,6 +99,7 @@
             // 
             // testButton2
             // 
+            this.testButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.testButton2.Location = new System.Drawing.Point(279, 484);
             this.testButton2.Name = "testButton2";
             this.testButton2.Size = new System.Drawing.Size(285, 23);
@@ -101,11 +112,43 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // hudPathBox
+            // 
+            this.hudPathBox.AllowDrop = true;
+            this.hudPathBox.Location = new System.Drawing.Point(13, 41);
+            this.hudPathBox.Name = "hudPathBox";
+            this.hudPathBox.Size = new System.Drawing.Size(355, 22);
+            this.hudPathBox.TabIndex = 6;
+            this.hudPathBox.Text = "D:\\Desktop\\testhud\\";
+            // 
+            // browseHudButton
+            // 
+            this.browseHudButton.Location = new System.Drawing.Point(373, 40);
+            this.browseHudButton.Name = "browseHudButton";
+            this.browseHudButton.Size = new System.Drawing.Size(92, 23);
+            this.browseHudButton.TabIndex = 7;
+            this.browseHudButton.Text = "Browse";
+            this.browseHudButton.UseVisualStyleBackColor = true;
+            this.browseHudButton.Click += new System.EventHandler(this.browseHudButton_Click);
+            // 
+            // parseHudButton
+            // 
+            this.parseHudButton.Location = new System.Drawing.Point(471, 40);
+            this.parseHudButton.Name = "parseHudButton";
+            this.parseHudButton.Size = new System.Drawing.Size(93, 23);
+            this.parseHudButton.TabIndex = 8;
+            this.parseHudButton.Text = "Parse Hud";
+            this.parseHudButton.UseVisualStyleBackColor = true;
+            this.parseHudButton.Click += new System.EventHandler(this.parseHudButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(576, 518);
+            this.Controls.Add(this.parseHudButton);
+            this.Controls.Add(this.browseHudButton);
+            this.Controls.Add(this.hudPathBox);
             this.Controls.Add(this.testButton2);
             this.Controls.Add(this.testButton);
             this.Controls.Add(this.browseButton);
@@ -128,6 +171,10 @@
         private System.Windows.Forms.Button testButton;
         private System.Windows.Forms.Button testButton2;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.TextBox hudPathBox;
+        private System.Windows.Forms.Button browseHudButton;
+        private System.Windows.Forms.Button parseHudButton;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
     }
 }
 

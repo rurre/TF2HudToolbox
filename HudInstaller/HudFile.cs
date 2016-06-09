@@ -1,146 +1,131 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 
-namespace hudParse
+namespace HudParse
 {
-    public class HudFile
+    class HudFile
     {
-        public List<HudElement> m_ElementList;
-        string m_Name;
-        string m_FileType;
-        string m_Path;
-        bool m_IsDefault;
+        string filePath;
+        int errorId = -1;        
 
-        public HudFile()
-        {
-            m_ElementList = new List<HudElement>();
-            m_FileType = "res";
-            m_Path = null;
-            m_Name = null;
-            m_IsDefault = false;
-        }
-        public HudFile(string name) : base()
-        {
-            Name = name;
-        }
+        List<KeyValue> keyValues = new List<KeyValue>();
 
-        public string Name
+        string Path
         {
             get
             {
-                return m_Name;
-            }
-            set
-            {
-                if(value.IndexOf('.') != -1)
-                    value = value.Remove(value.LastIndexOf('.'));
-                m_Name = value.Replace("\"","");
+                return filePath;
             }
         }
-        public string Path
-        {
-            get { return m_Path; }
-            set
-            {
-                m_Path = value.Replace("\"","");
-            }
-        }
-        public string FullName
-        {
-            get
-            {                
-                return m_Path + m_Name + "." + m_FileType;                
-            }
-            set
-            {
-                value = value.Replace('/','\\');
-                string temp = value.Remove(0,value.LastIndexOf("\\") + 1);
-                Name = value.Remove(0,value.LastIndexOf("\\") + 1);                
-                Path = value.Remove(value.Length - temp.Length);                                
-            }
-        }
-        public bool IsNull
+        int ErrorId
         {
             get
             {
-                if(m_ElementList.Count > 0)
-                    return false;
-                else return true;
+                return errorId;
             }
         }
 
-        public void Add(HudElement element)
+        private HudFile() { }
+
+        public HudFile(string path,List<KeyValue> kvList)
         {
-            m_ElementList.Add(element);
+            keyValues = kvList;
+            filePath = path;
         }
-        public void Remove(string name)
+
+        public HudFile(string path)
         {
-            foreach(HudElement element in m_ElementList)
-            {
-                if(element.Name == name)
-                {
-                    m_ElementList.Remove(element);
-                    break;
-                }
-            }
+            HudFile hf = ParseFromPath(path);
+            this.errorId = hf.errorId;
+            this.filePath = hf.filePath;
+            this.keyValues = hf.keyValues;            
         }
-        public void Write()
+
+        public HudFile(List<KeyValue> kvList)
         {
-            if(!this.IsNull)
-            {
-                if(m_Path != null)
-                {
-                    StreamWriter sr = new StreamWriter(m_Path + m_Name + "." + m_FileType);
-                    sr.WriteLine("\"" + m_Path + m_Name + "." + m_FileType + "\"\n{\n");
-                    foreach(HudElement element in m_ElementList)
-                    {
-                        sr.WriteLine(element.ToString());
-                    }
-                    sr.WriteLine("}");
-                    sr.Close();
-                }
-                else throw new Exception("Filepath is empty");
-            }
-            else throw new Exception("Requested to write a null file");
+            keyValues = kvList;
         }
+
+        public void AddKeyValue(KeyValue kv)
+        {
+            if(kv != null)
+                keyValues.Add(kv);
+        }
+
         public override string ToString()
-        {            
+        {
             string s = "";
-            s += "\"" + m_Path + m_Name + "." + m_FileType + "\"\n{\n";
-            foreach(HudElement element in m_ElementList)
+            foreach(KeyValue kv in keyValues)
             {
-                s += element.ToString();
+                s += kv.ToString();
             }
-            s += "\n}";
-            return s;            
+            return s;
+        }
+
+        public static HudFile ParseFromPath(string path)
+        {
+            try
+            {
+                HudFile hf = new HudFile();
+                string file = System.IO.File.ReadAllText(path);
+                hf = Parse(ref file);
+                hf.filePath = path;
+
+                return hf;
+            }
+            catch(Exception)
+            {
+                throw;
+            }            
+        }
+
+        public static HudFile Parse(ref string file)
+        {
+            List<KeyValue> kvList = new List<KeyValue>();             
+            try
+            {
+                while(file != "")
+                {
+                    file = Useful.Seek(ref file);
+                    KeyValue kv = KeyValue.Parse(ref file);
+                    if(kv != null)
+                        kvList.Add(kv);
+                }
+                return new HudFile(kvList);                
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }               
         }
 
         public void MakeFilePathsRelative(string hudPath)
         {
-            if(Path.StartsWith(hudPath))
-                m_Path = m_Path.Remove(0,hudPath.Length);
+            filePath = filePath.Replace(hudPath,"");
         }
 
-        public bool CheckIfDefault(HudFile file)
+        public KeyValue FindKeyValue(string name)
         {
-            foreach(HudElement he in m_ElementList)
+            for(int i = 0; i < keyValues.Count; i++)
             {
-                he.CheckIfDefault(file.FindElement(he.Name));                                    
+                if(keyValues[i].Key.ToLower() == name.ToLower())
+                    return keyValues[i];
             }
-            return true;
+            return null;
         }
 
-        public HudElement FindElement(string name)
+        public KeyValue FindKeyValueIgnoreEndNr(string name)
         {
-            foreach(HudElement he in m_ElementList)
+            for(int i = 0; i < keyValues.Count; i++)
             {
-                if(he.Name.ToLower() == name.ToLower())
-                    return he;
-                else break;
+                string s = keyValues[i].Key.ToLower();
+                s = Useful.StripEndNumbers(s);
+                if(s == name.ToLower())
+                    return keyValues[i];
             }
             return null;
         }

@@ -28,39 +28,7 @@ static class RefLib
         s = s.Replace("|","");
         return s;
     }
-    /// <summary>
-    /// Removes spaces, tabs, new lines and carriage returns from the beginning of a string up until a character that isn't either of these.
-    /// </summary>
-    /// <param name="s"></param>
-    /// <returns></returns>
-    public static string Seek(ref string s)
-    {
-        if(s.Length > 0)
-        {
-            while((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r'))
-            {
-                s = s.Remove(0,1);
-                if(s.Length == 0)
-                    break;
-                else if(!((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r')))
-                    break;
-            }
-        }
-        return s;
-    }
-
-    public static string Seek(string s)
-    {
-        while((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r'))
-        {
-            s = s.Remove(0,1);
-            if(s.Length == 0)
-                break;
-            else if(!((s.First() == '\t') || (s.First() == '\n') || (s.First() == ' ') || (s.First() == '\r')))
-                break;
-        }    
-        return s;
-    }
+   
     /// <summary>
     /// Removes all new lines, tabs, spaces and carriage returns from string.
     /// </summary>

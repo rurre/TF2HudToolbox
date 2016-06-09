@@ -9,6 +9,11 @@ namespace HudParse
 {
     public static class Useful
     {
+        /// <summary>
+        /// Adds tabs to the beginning of string
+        /// </summary>
+        /// <param name="i">Number of tabs to add</param>
+        /// <returns></returns>
         public static string AddTabs(int i)
         {
             string s = "";
@@ -18,7 +23,11 @@ namespace HudParse
             }
             return s;
         }
-
+        /// <summary>
+        /// Remove tabs, spaces, carriage returns and newlines from start of string
+        /// </summary>
+        /// <param name="s">String to seek</param>
+        /// <returns></returns>
         public static string Seek(string s)
         {
             if(s != "")
@@ -39,7 +48,11 @@ namespace HudParse
         {
             return Seek(s);
         }
-
+        /// <summary>
+        /// Seek string and return number of characters removed
+        /// </summary>
+        /// <param name="s">String to seek</param>
+        /// <returns></returns>
         public static int SeekGetIndex(string s)
         {
             int i = 0;
@@ -53,88 +66,12 @@ namespace HudParse
                     break;
             }
             return i;
-        }
-
-        public static string GetLine(ref string s)
-        {
-            return GetLines(1,ref s);
-        }
+        }        
         /// <summary>
-        /// Takes a string and removes a given number of lines from it.
+        /// Get comments from beginning of file
         /// </summary>
-        /// <param name="nr">Number of lines to take out</param>
-        /// <param name="s">Target string</param>
-        /// <returns>Returns the removed lines</returns>
-        public static string GetLines(int nr,ref string s)
-        {
-            int foundNewLine = 0;
-            string result = "";
-            for(int i = 0; i < s.Length; i++)
-            {
-                if(s[i] != '\n')
-                {
-                    result += s[i];
-                    continue;
-                }
-                foundNewLine++;
-                if(foundNewLine == nr)
-                    break;
-            }
-            if(result.Length + 2 <= s.Length)
-                s = s.Remove(0,result.Length + 2);
-            else s = "";
-            if(result.IndexOf('\r') != -1)
-                result = result.Replace("\r","");
-            return result;
-        }
-
-        static string GetKeyValuePair(string s)
-        {
-            string ss = s;
-            string result = "";
-            int quoteNr = 0;
-            Seek(ref ss);
-            bool foundKey = false;
-            bool foundInBetween = false;
-            string key = "";
-            string value = "";
-            string inBetween = "";
-            bool valueIsBlock = false;
-
-            if(ss != "")
-            {
-                for(int i = 0; i < ss.Length; i++)
-                {
-                    if((ss[i] != '\t') && (ss[i] != ' ') && (ss[i] != '\r') && (ss[i] != '\n'))
-                    {
-                        if(ss[i] == '\"')
-                            quoteNr++;
-                        if(!foundKey)
-                            key += ss[i];
-                        else
-                        {
-                            foundInBetween = true;
-                            value += ss[i];
-                        }
-                    }
-                    else
-                    {
-                        foundKey = true;
-                        if(!foundInBetween)
-                            inBetween += ss[i];
-                        if(foundInBetween && foundKey)
-                            break;
-                    }
-                }
-                result = key + inBetween + value;
-            }
-            ss = ss.Remove(0,result.Length);
-            ss = GetLine(ref ss);
-            if(ss != "")
-                result += ss;
-            return result;
-        }
-
+        /// <param name="file">File to get from</param>
+        /// <returns></returns>                      
         public static string GetCommentHeader(ref string file)
         {
             file = Useful.Seek(ref file);
@@ -160,6 +97,11 @@ namespace HudParse
             return comments;
         }
 
+        /// <summary>
+        /// Get key, value or tag.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static string GetElement(ref string file)
         {
             string s = file;
@@ -210,6 +152,13 @@ namespace HudParse
                 return ss;
         }
 
+        /// <summary>
+        /// Get files in a directory by path
+        /// </summary>
+        /// <param name="path">Path to look in</param>
+        /// <param name="s">Options to look in subfolders or only top folder</param>
+        /// <param name="extensions">Extensions to look for, with or without dot</param>
+        /// <returns></returns>
         public static string[] GetFiles(string path,SearchOption s,string[] extensions)
         {
             for(int i = 0; i < extensions.Length; i++)
@@ -229,6 +178,18 @@ namespace HudParse
                 l.AddRange(Directory.GetFiles(path,extensions[i],s));
             }
             return l.ToArray();
+        }
+
+        /// <summary>
+        /// Remove numbers off the end of a string
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string StripEndNumbers(string s)
+        {
+            var digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };            
+            var result = s.TrimEnd(digits);
+            return s;
         }
     }
 }

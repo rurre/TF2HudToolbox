@@ -1,165 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
 
-namespace hudParse
+namespace HudParse
 {
-    public class Hud
-    {        
-        string  m_Name;        
-        Image   m_Logo;
-        string  m_Path;
-        string  m_Author;
-        string  m_Link;
-        HudResourceFile m_Resource;        
-
-        public List<HudFolder> m_FolderList;
+    class Hud
+    {
+        List<HudFile> files = new List<HudFile>();
+        string hudPath;
 
         public Hud()
         {
-            m_Name      = "Unknown";
-            m_Author    = "Unknown";
-            m_Link      = "Unknown";            
-            m_FolderList = new List<HudFolder>();
         }
-        
-        public int FileCount
-        {
-            get
-            {
-                int count = 0;
-                foreach(HudFolder f in m_FolderList)
-                {
-                    count += f.FileCount;
-                }
-                return count;
-            }
-        }
-        public string Name
-        {
-            get
-            {
-                return m_Name;
-            }
 
-            set
-            {
-                RefLib.StripAndTrim(ref value);
-                m_Name = value;
-            }
-        }
-        internal HudResourceFile Resource
+        public Hud(string filepath)
         {
-            get
-            {
-                return m_Resource;
-            }
+            Hud h = ParseHud(filepath);
+            this.files = h.files;
+        }
 
-            set
-            {
-                m_Resource = value;
-            }
-        }
-        public string Path
+        Hud ParseHud(string filepath)
         {
-            get
-            {
-                return m_Path;
-            }
+            Hud h = new Hud();
+            h.hudPath = filepath;
 
-            set
+            var folders = Directory.GetDirectories(filepath);            
+            for(int i = 0; i < folders.Length; i++)
             {
-                m_Path = value;
-            }
-        }
-        public Image Logo
-        {
-            get
-            {
-                return m_Logo;
-            }
-            set
-            {
-                m_Logo = value;
-            }
-        }
-        public bool HasDefaultLogo
-        {
-            get
-            {
-                if(m_Logo == null)
-                    return true;
-                else return false;
-            }
-        }        
-        public string FullName
-        {
-            get
-            {
-                return Path + Name;
-            }
-            set
-            {
-                if(value.IndexOf("\\") != -1)
+                if(folders[i].ToLower().EndsWith("\\resource") || (folders[i].ToLower().EndsWith("\\scripts")))
                 {
-                    m_Name = value.Remove(0,value.LastIndexOf("\\") + 1);
-                    m_Path = value.Remove(value.Length - m_Name.Length);
-                }
-                else
-                {
-                    RefLib.StripAndTrim(ref value);
-                    m_Name = value;
+                    var files = Useful.GetFiles(filepath, SearchOption.AllDirectories, new string[] { "res" });
+                    for(int j = 0; j < files.Length; j++)
+                    {
+                        HudFile hf = HudFile.ParseFromPath(files[i]);
+                        if(hf != null)
+                            h.files.Add(hf);
+                    }
                 }
             }
-        }
 
-        public void SetLogo(Image logo)
-        {
-            m_Logo = logo;            
-        }
-        public void SetDeafaultLogo()
-        {
-            m_Logo = HudInstaller.Properties.Resources.logo_default;            
-        }
-        public void ApplyResource()
-        {            
-            if(m_Resource.FindKeyValue("name") != null)
-                m_Name = m_Resource.FindKeyValue("name").Value;
-            if(m_Resource.FindKeyValue("author") != null)
-                m_Author = m_Resource.FindKeyValue("author").Value;
-            if(m_Resource.FindKeyValue("website") != null)
-                m_Link = m_Resource.FindKeyValue("website").Value;            
-        }
-        public void Add(HudFolder folder)
-        {
-            m_FolderList.Add(folder);
-        }
-
-        public void Write()
-        {      
-                  
-        }
-
-        public void Fragment(Hud defaultHud)
-        {
-            /*foreach(HudFolder in m_FolderList)
+            foreach(HudFile f in h.files)
             {
+                f.MakeFilePathsRelative(h.hudPath);
+            }
+            return h;           
+        }
 
+        public override string ToString()
+        {
+            string s = "";
+            foreach(HudFile hf in files)
+            {
+                s += hf.ToString();
+            }
+            return s;
+        }
+
+        int write()
+        {
+            /*List<String> errors = new List<String>();
+            foreach(HudFile f in files)
+            {                
+                    errors.Add(Error.toString(result,f.Path));
+            }
+            switch(errors.Count)
+            {
+                case 0:
+                    return 0;
+                default:
+                    break;
             }*/
-        }
-
-        public List<String> GetFileNames()
-        {
-            List<String> l = new List<String>();
-            foreach(HudFolder hf in m_FolderList)
-            {
-                l.AddRange(hf.GetFileNames());                
-            }
-            return l;
+            return 0;
         }
     }
 }

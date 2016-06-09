@@ -61,38 +61,6 @@ namespace HudInstaller.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;HelpInfo_English&quot;
-        ///{
-        ///	&quot;button_MinimalDefault_name&quot;	&quot;Minimal to Default&quot;
-        ///	&quot;button_MinimalDefault_desc&quot;	&quot;Turns Minimal Hud (cl_Hud_minmode 1) values into Default Hud (cl_Hud_minmode 0) values then removes the Minimal values from the Hud.&quot;
-        ///	
-        ///	&quot;button_StripMinimal_name&quot;		&quot;Strip Minimal Hud&quot;
-        ///	&quot;button_StripMinimal_desc&quot;		&quot;This option will remove all Minimal Hud (cl_Hud_minmode 1) values from the selected Hud. This doesn&apos;t overwrite the selected Hud, only the one that gets installed.&quot;
-        ///	
-        ///	&quot;button_fragment_n [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string helpinfo_English {
-            get {
-                return ResourceManager.GetString("helpinfo_English", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &quot;HelpInfo_Test&quot;
-        ///{
-        ///	&quot;button_MinimalDefault_name&quot;	&quot;Minimal ta Default&quot;
-        ///	&quot;button_MinimalDefault_desc&quot;	&quot;Turns Minimal Hud (cl_Hud_minmode 1) joints tha fuck into Default Hud (cl_Hud_minmode 0) joints then removes tha Minimal joints from tha Hud.&quot;
-        ///	
-        ///	&quot;button_StripMinimal_name&quot;		&quot;Strip Minimal Hud&quot;
-        ///	&quot;button_StripMinimal_desc&quot;		&quot;This option will remove all Minimal Hud (cl_Hud_minmode 1) joints from tha selected Hud. Y&apos;all KNOW dat shit, muthafucka! This don&apos;t overwrite tha selected Hud, only tha one dat gets [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string helpinfo_test {
-            get {
-                return ResourceManager.GetString("helpinfo_test", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon icon {

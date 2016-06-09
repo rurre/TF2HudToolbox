@@ -62,10 +62,7 @@
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
     <Compile Include="Hud.cs" />
-    <Compile Include="HudElement.cs" />
     <Compile Include="HudFile.cs" />
-    <Compile Include="HudFolder.cs" />
-    <Compile Include="HudResourceFile.cs" />
     <Compile Include="KeyValue.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,7 +72,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RefLib.cs" />
-    <Compile Include="SubElement.cs" />
+    <Compile Include="Useful.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -116,13 +113,7 @@
     <None Include="Resources\toolbox_English.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\helpinfo_English.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\icon_settings.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\helpinfo_test.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\toolbox_test.txt" />

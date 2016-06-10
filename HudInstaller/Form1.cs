@@ -99,15 +99,18 @@ namespace HudInstaller
             SetLanguageDefault();
 
 #if(DEBUG)
-            WriteStatus("!!!!Debug build!!!!");
-            WriteStatus("Debugging Fragment Hud");
+            WriteStatusString("debug_buildwarning");
+            WriteStatusString("debug_testString", "REPLACED");
             folderBrowse_Fragment.SelectedPath = "D:\\Desktop\\testhud\\";
             textBox_FragmentHudBrowse.Text = folderBrowse_Fragment.SelectedPath;
             tabControl_Main.SelectedIndex = 1;
 #endif
         }
 
-
+        /// <summary>
+        /// Appends status string to the status text box. Thread safe
+        /// </summary>
+        /// <param name="s">String to write</param>
         public void WriteStatus(string s)
         {
             if(this.textBox_MainStatus.InvokeRequired)
@@ -119,6 +122,47 @@ namespace HudInstaller
             {
                 textBox_MainStatus.AppendText("-" + s + "\n");
             }
+        }
+        public void WriteStatusString(string s)
+        {
+            WriteStatusStringArray(s,null);
+        }
+        public void WriteStatusString(string s, string val = "")
+        {
+            string[] ss = null;
+
+            if(val != "")
+            {
+                ss = new string[] { (string)val };
+                WriteStatusStringArray(s,ss);
+            }
+            else
+                WriteStatusStringArray(s,val);
+        }
+        /// <summary>
+        /// Appends a text string from the localization file by name. Thread safe
+        /// </summary>
+        /// <param name="s">String to search localization file for</param>
+        /// <param name="ss">String array to replace %number with value</param>
+        public void WriteStatusStringArray(string s, params string[] ss)
+        {
+            KeyValue status = localizationFile.FindKeyValue("status");
+            KeyValue kv = status.FindSubKeyValue(s);
+            string result = "";
+            if(kv != null)
+            {
+                result = kv.Value;
+                if(ss != null)
+                {
+                    for(int i = 0; i < ss.Length; i++)
+                    {
+                        result = result.Replace("%" + i,ss[i]);
+                    }
+                }
+                WriteStatus(result);
+            }
+            else
+                WriteStatus("Missing string: " + s);            
         }
 
         public void SetProgressBarMax(int i)
@@ -342,7 +386,7 @@ namespace HudInstaller
                 {
                     //hud.Resource = ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");
                     //hud.ApplyResource();
-                    //WriteStatus("Found hudinfo.txt for " + hud.Name);                                     
+                    //WriteStatusString("hud_foundhudinfo", hud.Name);                                     
                 }
                 else
                 {
@@ -693,7 +737,7 @@ namespace HudInstaller
                     installPath = gamePath + "\\tf\\custom\\";
                     fbd.SelectedPath = gamePath;
                 }
-                else WriteStatus("Couldn't find TF2 install path, select an install folder manually");
+                else WriteStatus("Couldn't find TF2 install path, select the install folder manually");
             }
         }
         /// <summary>
@@ -711,30 +755,27 @@ namespace HudInstaller
         /// Checks if out backgroundWorker is busy, if so buttons get disabled and cancel enabled
         /// </summary>
         private void UpdateButtonState()
-        {
-            if(working)
+        {                        
+            ButtonBase[] obj = 
             {
-                button_Parse.Enabled = false;
-                button_MinimalDefault.Enabled = false;
-                button_StripMinimal.Enabled = false;
-                button_Install.Enabled = false;
-                button_FragmentMain.Enabled = false;
-                button_Combine.Enabled = false;
-                button_Customize.Enabled = false;
-
-                button_MainCancel.Enabled = true;
-            }
-            else
+                button_Parse,
+                button_Install,
+                button_FragmentMain,
+                button_Combine,
+                button_Customize,
+                button_MainCancel,
+                radio_InstallMode_Hard,
+                radio_InstallMode_Soft,
+                radio_MinamalDefault,
+                radio_None,
+                radio_StripMinimal
+            };
+            for(int i = 0; i < obj.Length; i++)
             {
-                button_Parse.Enabled = true;
-                button_MinimalDefault.Enabled = true;
-                button_StripMinimal.Enabled = true;
-                button_Install.Enabled = true;
-                button_FragmentMain.Enabled = true;
-                button_Combine.Enabled = true;
-                button_Customize.Enabled = true;
-
-                button_MainCancel.Enabled = false;                
+                if(working)                
+                    obj[i].Enabled = false;                
+                else                
+                    obj[i].Enabled = true;                
             }
         }
 

@@ -1,44 +1,47 @@
 "Toolbox"
 {	
 	//Install Tab
-	"label_Static_Hud"					"Hddd"
-	"label_Static_Hudname"				"namae"
-	"label_Static_HudVersion"			"Ver"
-	"label_Static_HudWebsite"			"We"
-	"label_Static_HudAuthor"			"Aut"
-	"label_static_logo"					"Lo"	
-	"label_static_result"				"lt"
-	"label_TF2Folder"					"TF2 :"
+	"label_Static_Hud"					"~Hud~"
+	"label_Static_Hudname"				"~Name~"
+	"label_Static_HudVersion"			"~Version~"
+	"label_Static_HudWebsite"			"~Website~"
+	"label_Static_HudAuthor"			"~Author~"
+	"label_static_logo"					"~Logo~"	
+	"label_static_result"				"~Result~"
+	"label_TF2Folder"					"~TF2 Folder:~"
 
-	"groupbox_HudInfo"					"Hud INFO"
-	"groupbox_InstallMode"				"Install "
+	"groupbox_HudInfo"					"~Hud Info~"
+	"groupbox_InstallMode"				"~Install Mode~"
 
-	"checkbox_CombineUseMinimal"		"Use values"
-	"checkbox_CombineHudUseDefault"	"Use TF2 Hud"	
+	"checkbox_CombineUseMinimal"		"~Use minmode values~"
+	"checkbox_CombineHudUseDefault"		"~Use Default TF2 Hud~"	
 	
-	"button_MainBrowse"					"Brow"
-	"button_Parse"						"Prs"
-	"button_Install"					"Inst"
-	"button_Customize"					"Cust"
-	"button_MainInstallBrowseClear"		"Clr"
-	"button_MainInstallBrowse"			"Bro"
-	"button_StripMinimal"				"MINMIN"
-	"button_MinimalDefault"				"MINDEF"
-	"button_ToggleHelp"					"KJHFFDDDD"
-	"button_FragmentHudBrowse"			"!*@(&#!"
-	"button_FragmentMain"				"YYYUUUIII"
-	"button_FragmentLogoBrowse"			"YYYYY"	
-	"button_CombineResultBrowseLogo"	"123"	
-	"button_MainCancel"					"Chhhh"
+	"button_MainBrowse"					"~Browse~"
+	"button_Parse"						"~Parse~"
+	"button_Install"					"~Install~"
+	"button_Customize"					"~Customize~"
+	"button_MainInstallBrowseClear"		"~Clear~"
+	"button_MainInstallBrowse"			"~Browse~"
+	"button_StripMinimal"				"~StripMinimal~"
+	"button_MinimalDefault"				"~Minimal to Default~"
+	"button_ToggleHelp"					"~Toggle Help~"
+	"button_FragmentHudBrowse"			"~Browse~"
+	"button_FragmentMain"				"~Create Blueprint~"
+	"button_FragmentLogoBrowse"			"~Browse Logo~"	
+	"button_CombineResultBrowseLogo"	"~Browse~"	
+	"button_MainCancel"					"~Cancel~"
 	
-	"tab_Install"						"HHHHHHHH"
-	"tab_Fragment"						"QWEQWE"
-	"tab_CombineHuds"					"CCCCC"
-	"tab_About"							"YYYYY"
-	
-	"radio_installmode_hard"			"zzzz"
-	"radio_installmode_soft"			"zzzz"
+	"tab_Install"						"~Install Hud~"
+	"tab_Fragment"						"~Create Blueprint~"
+	"tab_CombineHuds"					"~Combine Huds~"
+	"tab_About"							"~About~"
 
+	"radio_installmode_hard"			"~Hard~"
+	"radio_installmode_soft"			"~Soft (Recommended)~"
+	"radio_none"						"~None~"
+	"radio_minimalToDefault"			"~Minmal to Default~"
+	"radio_stripMinimal"				"~Strip Minimal~"
+	
 }
 
 "HelpInfo"
@@ -55,30 +58,39 @@
 	"button_Parse_name"				"Parse da Hud"
 	"button_Parse_desc"				"This option loadz tha selected Hud n' tha Default TF2 Hud tha fuck into memory. Yo ass gotta parse a Hud before you can do anythang wit dat shit."
 	
-	"button_Customize_name"		"Customize da Hud"
+	"button_Customize_name"			"Customize da Hud"
 	"button_Customize_desc"			"This lets you customize tha Hud before installin dat shit."
 	
 	"button_Browse_name"			"Browse"
-	"button_Browse_desc"				"Browse fo' Hud Fragment."	
+	"button_Browse_desc"			"Browse fo' Hud Fragment."	
 
 	"button_ToggleHelp_name"		"Toggle Help"
 	"button_ToggleHelp_desc"		"This button togglez tha help window on n' off. Yo ass probably figured dat up already."
 	
-	"button_Install_name"				"'nstall Hud"
-	"button_Install_desc"				"'nstall tha selected Hud wit tha selected mode n' customizations fo' realz. Available install modes are:-Soft: Overwrites only KeyValues inside Hud Elements, n' you can put dat on yo' toast. -Hard: Overwrites whole Hud Elements.If unusure select Soft Install. Well shiiiit, it is less likely ta cause crashes afta thugged-out shiznit when Valve addz freshly smoked up shiznit ta tha default Hud."
+	"button_Install_name"			"'nstall Hud"
+	"button_Install_desc"			"'nstall tha selected Hud wit tha selected mode n' customizations fo' realz. Available install modes are:-Soft: Overwrites only KeyValues inside Hud Elements, n' you can put dat on yo' toast. -Hard: Overwrites whole Hud Elements.If unusure select Soft Install. Well shiiiit, it is less likely ta cause crashes afta thugged-out shiznit when Valve addz freshly smoked up shiznit ta tha default Hud."
 
-	"tab_InstallHud_name"				"'nstall Hud"
-	"tab_InstallHud_desc"				"Lets you customize n' install a Hud from a Fragment, as well as all dem other options."
+	"tab_InstallHud_name"			"'nstall Hud"
+	"tab_InstallHud_desc"			"Lets you customize n' install a Hud from a Fragment, as well as all dem other options."
 
-	"tab_CombineHuds_name"		"Combine Huds"
+	"tab_CombineHuds_name"			"Combine Huds"
 	"tab_CombineHuds_desc"			"Lets you combine 2 Hudz tha fuck into 1 dat you can toggle between by switchin ta Minimal Hud (cl_hud_minmode 1) n' back ta Default Hud (cl_hud_minmode 0)"
 
 	"tab_Fragment_name"				"Fragment Hud"
 	"tab_Fragment_desc"				"Lets you create a Fragment file from a existin Hud, as well as set itz resource info n' logo."
 
-	"tab_About_name"					"About"
-	"tab_About_desc"						"Extra info."
+	"tab_About_name"				"About"
+	"tab_About_desc"				"Extra info."
 
-	"info_Help_Name"						"Item title is ghon be displayed here"
-	"info_Help_desc"						"Detailed shiznit is ghon be displayed here, so peek-a-boo, clear tha way, I be comin' thru fo'sho. To receive detailed shiznit fo' a Button move yo' mouse over dat shit. For help wit a Tab - click dat shit."
+	"info_Help_Name"				"Item title is ghon be displayed here"
+	"info_Help_desc"				"Detailed shiznit is ghon be displayed here, so peek-a-boo, clear tha way, I be comin' thru fo'sho. To receive detailed shiznit fo' a Button move yo' mouse over dat shit. For help wit a Tab - click dat shit."
+}
+
+"status"
+{
+	"debug_buildwarning"					"!!!!Debug build!!!!"
+	"debug_testStringArray"					"ZERO - %0, ONE - %1, TWO - %2, THREE - %3"
+	"debug_testString"						"Test string - %0"
+
+	"hud_foundHudInfo"						"Found hudinfo.txt for %0"
 }

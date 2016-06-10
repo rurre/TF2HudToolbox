@@ -31,8 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tab_Install = new System.Windows.Forms.TabPage();
+            this.button_MainInstallBrowseClear = new System.Windows.Forms.Button();
             this.label_static_hud = new System.Windows.Forms.Label();
+            this.button_MainInstallBrowse = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.textBox_MainInstallPath = new System.Windows.Forms.TextBox();
             this.groupBox_HudInfo = new System.Windows.Forms.GroupBox();
             this.label_HudAuthor = new System.Windows.Forms.Label();
             this.linkLabel_HudWebsite = new System.Windows.Forms.LinkLabel();
@@ -42,16 +45,11 @@
             this.label_Static_HudAuthor = new System.Windows.Forms.Label();
             this.label_Static_HudVersion = new System.Windows.Forms.Label();
             this.label_Static_HudName = new System.Windows.Forms.Label();
-            this.groupBox_InstallMode = new System.Windows.Forms.GroupBox();
-            this.button_MainInstallBrowseClear = new System.Windows.Forms.Button();
-            this.button_MainInstallBrowse = new System.Windows.Forms.Button();
-            this.textBox_MainInstallPath = new System.Windows.Forms.TextBox();
             this.label_TF2Folder = new System.Windows.Forms.Label();
+            this.groupBox_InstallMode = new System.Windows.Forms.GroupBox();
             this.radio_InstallMode_Hard = new System.Windows.Forms.RadioButton();
             this.radio_InstallMode_Soft = new System.Windows.Forms.RadioButton();
             this.button_Install = new System.Windows.Forms.Button();
-            this.button_MinimalDefault = new System.Windows.Forms.Button();
-            this.button_StripMinimal = new System.Windows.Forms.Button();
             this.button_Customize = new System.Windows.Forms.Button();
             this.button_MainBrowse = new System.Windows.Forms.Button();
             this.textBox_MainBrowse = new System.Windows.Forms.TextBox();
@@ -72,6 +70,10 @@
             this.textBox_Fragment_Version = new System.Windows.Forms.TextBox();
             this.label_static_hudname1 = new System.Windows.Forms.Label();
             this.textBox_Fragment_Name = new System.Windows.Forms.TextBox();
+            this.groupBox_Misc = new System.Windows.Forms.GroupBox();
+            this.radio_MinamalDefault = new System.Windows.Forms.RadioButton();
+            this.radio_None = new System.Windows.Forms.RadioButton();
+            this.radio_StripMinimal = new System.Windows.Forms.RadioButton();
             this.label_Static_Hud1 = new System.Windows.Forms.Label();
             this.button_FragmentHudBrowse = new System.Windows.Forms.Button();
             this.textBox_FragmentHudBrowse = new System.Windows.Forms.TextBox();
@@ -124,6 +126,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictureBox_HudThumb)).BeginInit();
             this.tab_Fragment.SuspendLayout();
             this.groupBox_HudInfo1.SuspendLayout();
+            this.groupBox_Misc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_FragmentHudMain)).BeginInit();
             this.tab_CombineHuds.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -149,13 +152,15 @@
             // tab_Install
             // 
             this.tab_Install.BackColor = System.Drawing.Color.Transparent;
+            this.tab_Install.Controls.Add(this.button_MainInstallBrowseClear);
             this.tab_Install.Controls.Add(this.label_static_hud);
+            this.tab_Install.Controls.Add(this.button_MainInstallBrowse);
             this.tab_Install.Controls.Add(this.pictureBox2);
+            this.tab_Install.Controls.Add(this.textBox_MainInstallPath);
             this.tab_Install.Controls.Add(this.groupBox_HudInfo);
+            this.tab_Install.Controls.Add(this.label_TF2Folder);
             this.tab_Install.Controls.Add(this.groupBox_InstallMode);
             this.tab_Install.Controls.Add(this.button_Install);
-            this.tab_Install.Controls.Add(this.button_MinimalDefault);
-            this.tab_Install.Controls.Add(this.button_StripMinimal);
             this.tab_Install.Controls.Add(this.button_Customize);
             this.tab_Install.Controls.Add(this.button_MainBrowse);
             this.tab_Install.Controls.Add(this.textBox_MainBrowse);
@@ -169,6 +174,16 @@
             this.tab_Install.TabIndex = 0;
             this.tab_Install.Text = "Install Hud";
             // 
+            // button_MainInstallBrowseClear
+            // 
+            this.button_MainInstallBrowseClear.Location = new System.Drawing.Point(425, 231);
+            this.button_MainInstallBrowseClear.Name = "button_MainInstallBrowseClear";
+            this.button_MainInstallBrowseClear.Size = new System.Drawing.Size(77, 23);
+            this.button_MainInstallBrowseClear.TabIndex = 20;
+            this.button_MainInstallBrowseClear.Text = "Clear";
+            this.button_MainInstallBrowseClear.UseVisualStyleBackColor = true;
+            this.button_MainInstallBrowseClear.Click += new System.EventHandler(this.button_MainInstallBrowseClear_Click);
+            // 
             // label_static_hud
             // 
             this.label_static_hud.AutoSize = true;
@@ -177,6 +192,16 @@
             this.label_static_hud.Size = new System.Drawing.Size(34, 17);
             this.label_static_hud.TabIndex = 21;
             this.label_static_hud.Text = "Hud";
+            // 
+            // button_MainInstallBrowse
+            // 
+            this.button_MainInstallBrowse.Location = new System.Drawing.Point(516, 231);
+            this.button_MainInstallBrowse.Name = "button_MainInstallBrowse";
+            this.button_MainInstallBrowse.Size = new System.Drawing.Size(79, 23);
+            this.button_MainInstallBrowse.TabIndex = 19;
+            this.button_MainInstallBrowse.Text = "Browse";
+            this.button_MainInstallBrowse.UseVisualStyleBackColor = true;
+            this.button_MainInstallBrowse.Click += new System.EventHandler(this.button_MainInstallBrowse_Click);
             // 
             // pictureBox2
             // 
@@ -188,6 +213,14 @@
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 20;
             this.pictureBox2.TabStop = false;
+            // 
+            // textBox_MainInstallPath
+            // 
+            this.textBox_MainInstallPath.Location = new System.Drawing.Point(427, 203);
+            this.textBox_MainInstallPath.Name = "textBox_MainInstallPath";
+            this.textBox_MainInstallPath.Size = new System.Drawing.Size(168, 22);
+            this.textBox_MainInstallPath.TabIndex = 18;
+            this.textBox_MainInstallPath.TextChanged += new System.EventHandler(this.textBox_MainInstallPath_TextChanged);
             // 
             // groupBox_HudInfo
             // 
@@ -291,57 +324,25 @@
             this.label_Static_HudName.TabIndex = 0;
             this.label_Static_HudName.Text = "Name:";
             // 
-            // groupBox_InstallMode
-            // 
-            this.groupBox_InstallMode.Controls.Add(this.button_MainInstallBrowseClear);
-            this.groupBox_InstallMode.Controls.Add(this.button_MainInstallBrowse);
-            this.groupBox_InstallMode.Controls.Add(this.textBox_MainInstallPath);
-            this.groupBox_InstallMode.Controls.Add(this.label_TF2Folder);
-            this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Hard);
-            this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Soft);
-            this.groupBox_InstallMode.Location = new System.Drawing.Point(425, 95);
-            this.groupBox_InstallMode.Name = "groupBox_InstallMode";
-            this.groupBox_InstallMode.Size = new System.Drawing.Size(170, 162);
-            this.groupBox_InstallMode.TabIndex = 18;
-            this.groupBox_InstallMode.TabStop = false;
-            this.groupBox_InstallMode.Text = "Install Mode";
-            // 
-            // button_MainInstallBrowseClear
-            // 
-            this.button_MainInstallBrowseClear.Location = new System.Drawing.Point(6, 132);
-            this.button_MainInstallBrowseClear.Name = "button_MainInstallBrowseClear";
-            this.button_MainInstallBrowseClear.Size = new System.Drawing.Size(77, 23);
-            this.button_MainInstallBrowseClear.TabIndex = 20;
-            this.button_MainInstallBrowseClear.Text = "Clear";
-            this.button_MainInstallBrowseClear.UseVisualStyleBackColor = true;
-            this.button_MainInstallBrowseClear.Click += new System.EventHandler(this.button_MainInstallBrowseClear_Click);
-            // 
-            // button_MainInstallBrowse
-            // 
-            this.button_MainInstallBrowse.Location = new System.Drawing.Point(88, 132);
-            this.button_MainInstallBrowse.Name = "button_MainInstallBrowse";
-            this.button_MainInstallBrowse.Size = new System.Drawing.Size(79, 23);
-            this.button_MainInstallBrowse.TabIndex = 19;
-            this.button_MainInstallBrowse.Text = "Browse";
-            this.button_MainInstallBrowse.UseVisualStyleBackColor = true;
-            this.button_MainInstallBrowse.Click += new System.EventHandler(this.button_MainInstallBrowse_Click);
-            // 
-            // textBox_MainInstallPath
-            // 
-            this.textBox_MainInstallPath.Location = new System.Drawing.Point(8, 104);
-            this.textBox_MainInstallPath.Name = "textBox_MainInstallPath";
-            this.textBox_MainInstallPath.Size = new System.Drawing.Size(156, 22);
-            this.textBox_MainInstallPath.TabIndex = 18;
-            this.textBox_MainInstallPath.TextChanged += new System.EventHandler(this.textBox_MainInstallPath_TextChanged);
-            // 
             // label_TF2Folder
             // 
             this.label_TF2Folder.AutoSize = true;
-            this.label_TF2Folder.Location = new System.Drawing.Point(6, 83);
+            this.label_TF2Folder.Location = new System.Drawing.Point(425, 182);
             this.label_TF2Folder.Name = "label_TF2Folder";
             this.label_TF2Folder.Size = new System.Drawing.Size(77, 17);
             this.label_TF2Folder.TabIndex = 17;
             this.label_TF2Folder.Text = "TF2 folder:";
+            // 
+            // groupBox_InstallMode
+            // 
+            this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Hard);
+            this.groupBox_InstallMode.Controls.Add(this.radio_InstallMode_Soft);
+            this.groupBox_InstallMode.Location = new System.Drawing.Point(428, 28);
+            this.groupBox_InstallMode.Name = "groupBox_InstallMode";
+            this.groupBox_InstallMode.Size = new System.Drawing.Size(170, 83);
+            this.groupBox_InstallMode.TabIndex = 18;
+            this.groupBox_InstallMode.TabStop = false;
+            this.groupBox_InstallMode.Text = "Install Mode";
             // 
             // radio_InstallMode_Hard
             // 
@@ -375,27 +376,6 @@
             this.button_Install.UseVisualStyleBackColor = true;
             this.button_Install.Click += new System.EventHandler(this.button_Install_Click);
             this.button_Install.MouseHover += new System.EventHandler(this.button_Install_MouseHover);
-            // 
-            // button_MinimalDefault
-            // 
-            this.button_MinimalDefault.Location = new System.Drawing.Point(424, 24);
-            this.button_MinimalDefault.Margin = new System.Windows.Forms.Padding(12, 3, 12, 3);
-            this.button_MinimalDefault.Name = "button_MinimalDefault";
-            this.button_MinimalDefault.Size = new System.Drawing.Size(170, 31);
-            this.button_MinimalDefault.TabIndex = 8;
-            this.button_MinimalDefault.Text = "Minimal to Default";
-            this.button_MinimalDefault.UseVisualStyleBackColor = true;
-            this.button_MinimalDefault.MouseHover += new System.EventHandler(this.button_MinimalDefault_MouseHover);
-            // 
-            // button_StripMinimal
-            // 
-            this.button_StripMinimal.Location = new System.Drawing.Point(424, 58);
-            this.button_StripMinimal.Name = "button_StripMinimal";
-            this.button_StripMinimal.Size = new System.Drawing.Size(170, 31);
-            this.button_StripMinimal.TabIndex = 7;
-            this.button_StripMinimal.Text = "Strip Minimal";
-            this.button_StripMinimal.UseVisualStyleBackColor = true;
-            this.button_StripMinimal.MouseHover += new System.EventHandler(this.button_StripMinimal_MouseHover);
             // 
             // button_Customize
             // 
@@ -461,6 +441,7 @@
             // 
             this.tab_Fragment.BackColor = System.Drawing.Color.Transparent;
             this.tab_Fragment.Controls.Add(this.groupBox_HudInfo1);
+            this.tab_Fragment.Controls.Add(this.groupBox_Misc);
             this.tab_Fragment.Controls.Add(this.label_Static_Hud1);
             this.tab_Fragment.Controls.Add(this.button_FragmentHudBrowse);
             this.tab_Fragment.Controls.Add(this.textBox_FragmentHudBrowse);
@@ -488,16 +469,16 @@
             this.groupBox_HudInfo1.Controls.Add(this.textBox_Fragment_Version);
             this.groupBox_HudInfo1.Controls.Add(this.label_static_hudname1);
             this.groupBox_HudInfo1.Controls.Add(this.textBox_Fragment_Name);
-            this.groupBox_HudInfo1.Location = new System.Drawing.Point(233, 36);
+            this.groupBox_HudInfo1.Location = new System.Drawing.Point(233, 16);
             this.groupBox_HudInfo1.Name = "groupBox_HudInfo1";
-            this.groupBox_HudInfo1.Size = new System.Drawing.Size(356, 311);
+            this.groupBox_HudInfo1.Size = new System.Drawing.Size(356, 277);
             this.groupBox_HudInfo1.TabIndex = 18;
             this.groupBox_HudInfo1.TabStop = false;
             this.groupBox_HudInfo1.Text = "Hud Info";
             // 
             // button_FragmentClearLogo
             // 
-            this.button_FragmentClearLogo.Location = new System.Drawing.Point(222, 261);
+            this.button_FragmentClearLogo.Location = new System.Drawing.Point(222, 239);
             this.button_FragmentClearLogo.Name = "button_FragmentClearLogo";
             this.button_FragmentClearLogo.Padding = new System.Windows.Forms.Padding(2, 0, 0, 0);
             this.button_FragmentClearLogo.Size = new System.Drawing.Size(27, 27);
@@ -508,7 +489,7 @@
             // 
             // button_FragmentLogoBrowse
             // 
-            this.button_FragmentLogoBrowse.Location = new System.Drawing.Point(247, 261);
+            this.button_FragmentLogoBrowse.Location = new System.Drawing.Point(247, 239);
             this.button_FragmentLogoBrowse.Name = "button_FragmentLogoBrowse";
             this.button_FragmentLogoBrowse.Size = new System.Drawing.Size(88, 27);
             this.button_FragmentLogoBrowse.TabIndex = 10;
@@ -518,7 +499,7 @@
             // 
             // textBox_Fragment_LogoBrowse
             // 
-            this.textBox_Fragment_LogoBrowse.Location = new System.Drawing.Point(19, 262);
+            this.textBox_Fragment_LogoBrowse.Location = new System.Drawing.Point(19, 240);
             this.textBox_Fragment_LogoBrowse.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
             this.textBox_Fragment_LogoBrowse.Name = "textBox_Fragment_LogoBrowse";
             this.textBox_Fragment_LogoBrowse.Size = new System.Drawing.Size(202, 22);
@@ -528,7 +509,7 @@
             // label_static_logo
             // 
             this.label_static_logo.AutoSize = true;
-            this.label_static_logo.Location = new System.Drawing.Point(16, 239);
+            this.label_static_logo.Location = new System.Drawing.Point(16, 218);
             this.label_static_logo.Name = "label_static_logo";
             this.label_static_logo.Size = new System.Drawing.Size(40, 17);
             this.label_static_logo.TabIndex = 8;
@@ -537,7 +518,7 @@
             // label_static_hudwebsite1
             // 
             this.label_static_hudwebsite1.AutoSize = true;
-            this.label_static_hudwebsite1.Location = new System.Drawing.Point(16, 188);
+            this.label_static_hudwebsite1.Location = new System.Drawing.Point(16, 168);
             this.label_static_hudwebsite1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
             this.label_static_hudwebsite1.Name = "label_static_hudwebsite1";
             this.label_static_hudwebsite1.Size = new System.Drawing.Size(59, 17);
@@ -546,7 +527,7 @@
             // 
             // textBox_Fragment_Website
             // 
-            this.textBox_Fragment_Website.Location = new System.Drawing.Point(19, 211);
+            this.textBox_Fragment_Website.Location = new System.Drawing.Point(19, 191);
             this.textBox_Fragment_Website.Name = "textBox_Fragment_Website";
             this.textBox_Fragment_Website.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Website.TabIndex = 6;
@@ -554,7 +535,7 @@
             // label_static_hudauthor1
             // 
             this.label_static_hudauthor1.AutoSize = true;
-            this.label_static_hudauthor1.Location = new System.Drawing.Point(16, 134);
+            this.label_static_hudauthor1.Location = new System.Drawing.Point(16, 118);
             this.label_static_hudauthor1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
             this.label_static_hudauthor1.Name = "label_static_hudauthor1";
             this.label_static_hudauthor1.Size = new System.Drawing.Size(50, 17);
@@ -563,7 +544,7 @@
             // 
             // textBox_Fragment_Author
             // 
-            this.textBox_Fragment_Author.Location = new System.Drawing.Point(19, 157);
+            this.textBox_Fragment_Author.Location = new System.Drawing.Point(19, 141);
             this.textBox_Fragment_Author.Name = "textBox_Fragment_Author";
             this.textBox_Fragment_Author.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Author.TabIndex = 4;
@@ -571,7 +552,7 @@
             // label_static_hudversion1
             // 
             this.label_static_hudversion1.AutoSize = true;
-            this.label_static_hudversion1.Location = new System.Drawing.Point(16, 80);
+            this.label_static_hudversion1.Location = new System.Drawing.Point(16, 68);
             this.label_static_hudversion1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
             this.label_static_hudversion1.Name = "label_static_hudversion1";
             this.label_static_hudversion1.Size = new System.Drawing.Size(56, 17);
@@ -580,7 +561,7 @@
             // 
             // textBox_Fragment_Version
             // 
-            this.textBox_Fragment_Version.Location = new System.Drawing.Point(19, 103);
+            this.textBox_Fragment_Version.Location = new System.Drawing.Point(19, 91);
             this.textBox_Fragment_Version.Name = "textBox_Fragment_Version";
             this.textBox_Fragment_Version.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Version.TabIndex = 2;
@@ -588,7 +569,7 @@
             // label_static_hudname1
             // 
             this.label_static_hudname1.AutoSize = true;
-            this.label_static_hudname1.Location = new System.Drawing.Point(16, 29);
+            this.label_static_hudname1.Location = new System.Drawing.Point(16, 21);
             this.label_static_hudname1.Name = "label_static_hudname1";
             this.label_static_hudname1.Size = new System.Drawing.Size(45, 17);
             this.label_static_hudname1.TabIndex = 1;
@@ -596,10 +577,54 @@
             // 
             // textBox_Fragment_Name
             // 
-            this.textBox_Fragment_Name.Location = new System.Drawing.Point(19, 50);
+            this.textBox_Fragment_Name.Location = new System.Drawing.Point(19, 42);
             this.textBox_Fragment_Name.Name = "textBox_Fragment_Name";
             this.textBox_Fragment_Name.Size = new System.Drawing.Size(316, 22);
             this.textBox_Fragment_Name.TabIndex = 0;
+            // 
+            // groupBox_Misc
+            // 
+            this.groupBox_Misc.Controls.Add(this.radio_MinamalDefault);
+            this.groupBox_Misc.Controls.Add(this.radio_None);
+            this.groupBox_Misc.Controls.Add(this.radio_StripMinimal);
+            this.groupBox_Misc.Location = new System.Drawing.Point(233, 299);
+            this.groupBox_Misc.Name = "groupBox_Misc";
+            this.groupBox_Misc.Size = new System.Drawing.Size(356, 48);
+            this.groupBox_Misc.TabIndex = 21;
+            this.groupBox_Misc.TabStop = false;
+            this.groupBox_Misc.Text = "Misc";
+            // 
+            // radio_MinamalDefault
+            // 
+            this.radio_MinamalDefault.AutoSize = true;
+            this.radio_MinamalDefault.Location = new System.Drawing.Point(209, 19);
+            this.radio_MinamalDefault.Name = "radio_MinamalDefault";
+            this.radio_MinamalDefault.Size = new System.Drawing.Size(141, 21);
+            this.radio_MinamalDefault.TabIndex = 21;
+            this.radio_MinamalDefault.Text = "Minimal to Default";
+            this.radio_MinamalDefault.UseVisualStyleBackColor = true;
+            // 
+            // radio_None
+            // 
+            this.radio_None.AutoSize = true;
+            this.radio_None.Checked = true;
+            this.radio_None.Location = new System.Drawing.Point(21, 19);
+            this.radio_None.Name = "radio_None";
+            this.radio_None.Size = new System.Drawing.Size(63, 21);
+            this.radio_None.TabIndex = 20;
+            this.radio_None.TabStop = true;
+            this.radio_None.Text = "None";
+            this.radio_None.UseVisualStyleBackColor = true;
+            // 
+            // radio_StripMinimal
+            // 
+            this.radio_StripMinimal.AutoSize = true;
+            this.radio_StripMinimal.Location = new System.Drawing.Point(93, 19);
+            this.radio_StripMinimal.Name = "radio_StripMinimal";
+            this.radio_StripMinimal.Size = new System.Drawing.Size(109, 21);
+            this.radio_StripMinimal.TabIndex = 19;
+            this.radio_StripMinimal.Text = "Strip Minimal";
+            this.radio_StripMinimal.UseVisualStyleBackColor = true;
             // 
             // label_Static_Hud1
             // 
@@ -1064,6 +1089,8 @@
             this.tab_Fragment.PerformLayout();
             this.groupBox_HudInfo1.ResumeLayout(false);
             this.groupBox_HudInfo1.PerformLayout();
+            this.groupBox_Misc.ResumeLayout(false);
+            this.groupBox_Misc.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_FragmentHudMain)).EndInit();
             this.tab_CombineHuds.ResumeLayout(false);
             this.tab_CombineHuds.PerformLayout();
@@ -1113,8 +1140,6 @@
         private System.Windows.Forms.Button button_MainBrowse;
         private System.Windows.Forms.TextBox textBox_MainBrowse;
         private System.Windows.Forms.TextBox textBox_HudNameMain;
-        private System.Windows.Forms.Button button_MinimalDefault;
-        private System.Windows.Forms.Button button_StripMinimal;
         private System.Windows.Forms.Button button_ToggleHelp;
         private System.Windows.Forms.Button button_Customize;
         private System.Windows.Forms.Button button_Install;
@@ -1167,6 +1192,10 @@
         private System.Windows.Forms.Button button_Settings;
         private System.Windows.Forms.Label label_static_hud;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.GroupBox groupBox_Misc;
+        private System.Windows.Forms.RadioButton radio_MinamalDefault;
+        private System.Windows.Forms.RadioButton radio_None;
+        private System.Windows.Forms.RadioButton radio_StripMinimal;
     }
 }
 

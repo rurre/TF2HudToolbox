@@ -38,12 +38,13 @@ namespace HudParse
                 commentHeader = null;
         }
 
-        public KeyValue(string key, string value, string tag, int indentIndex) : this()
+        public KeyValue(string key, string value, string tag = "", int indentIndex = 0) : this()
         {
             this.key = key;
             this.value = value;
             this.indentIndex = indentIndex;
-            this.tag = tag;
+            if(tag != "")
+                this.tag = tag;
         }
 
         public KeyValue(string key, List<KeyValue> valueBlock, string tag, int indentIndex) : this()

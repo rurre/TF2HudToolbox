@@ -38,10 +38,10 @@
 
 	"radio_installmode_hard"			"Hard"
 	"radio_installmode_soft"			"Soft (Recommended)"
-
-
-	//Lesson learned - Never use stupidly long names like these ever again
-	//Also never code my own localization when I can just use what everyone else does
+	"radio_none"						"None"
+	"radio_minimalToDefault"			"Minmal to Default"
+	"radio_stripMinimal"				"Strip Minimal"
+	
 }
 
 "HelpInfo"
@@ -84,4 +84,13 @@
 
 	"info_Help_Name"						"Item title will be displayed here"
 	"info_Help_desc"						"Detailed information will be displayed here. To receive detailed information for a Button move your mouse over it. For help with a Tab - click it."
+}
+
+"status"
+{
+	"debug_buildwarning"					"!!!!Debug build!!!!"
+	"debug_testStringArray"					"ZERO - %0, ONE - %1, TWO - %2, THREE - %3"
+	"debug_testString"						"Test string - %0"
+
+	"hud_foundHudInfo"						"Found hudinfo.txt for %0"
 }

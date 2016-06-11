@@ -12,7 +12,9 @@ namespace HudParse
         string value = null;
         string tag = null;
         string commentHeader = null;
-        int indentIndex = 0;        
+        int indentIndex = 0;
+
+        bool valueIsEmptyBlock = false;  
 
         List<KeyValue> subKeyValues = new List<KeyValue>();
 
@@ -75,6 +77,10 @@ namespace HudParse
         {
             string file = "";            
             file += Useful.AddTabs(indentIndex);
+
+            if(valueIsEmptyBlock)
+                return "\"" + key + "\"" + " {}";
+
             if(subKeyValues.Count > 0)
             {
                 foreach(KeyValue kv in subKeyValues)
@@ -131,6 +137,7 @@ namespace HudParse
             bool foundKey = false;
             bool foundTag = false;
             bool valueIsBlock = false;
+            bool valueIsEmpty = false;            
 
             KeyValue kv = null;
             List<KeyValue> kvList = new List<KeyValue>();
@@ -176,6 +183,8 @@ namespace HudParse
             {
                 if(file[0] == '{')
                     valueIsBlock = true;
+                else
+                    valueIsEmpty = true;
             }
             //Get Value/Tag
             if(!foundValue)
@@ -189,6 +198,20 @@ namespace HudParse
                         while(file != "")
                         {
                             file = Useful.Seek(ref file);
+                            if(file.Length > 2)
+                            {
+                                if(file[1] == '}')
+                                {
+                                    string temp = file;
+                                    if(temp.Remove(0,1) == "")
+                                    {
+                                        valueIsBlock = true;                                        
+                                        foundValue = true;
+                                        file = temp;
+                                        break;
+                                    }
+                                }
+                            }
                             KeyValue subKv = Parse(ref file);
                             if(subKv != null)
                             {
@@ -218,11 +241,21 @@ namespace HudParse
                 {
                     if(s.IndexOf('[') != -1)
                     {
-                        s = s.Replace("[","");
-                        s = s.Replace("]","");
-                        tag = s;
-                        foundTag = true;
-                        file = ss;
+                        try
+                        {
+                            if((s[0] != '/') && (s[1] != '/'))
+                            {
+                                s = s.Replace("[","");
+                                s = s.Replace("]","");
+                                tag = s;
+                                foundTag = true;
+                                file = ss;
+                            }
+                        }
+                        catch(Exception)
+                        {
+                            throw;
+                        }
                     }
                 }
             }
@@ -238,15 +271,26 @@ namespace HudParse
             if(foundValue)
             {
                 if(!valueIsBlock)
-                    kv.value = value;
+                {
+                    if(!valueIsEmpty)
+                        kv.value = value;
+                    else
+                        kv.value = "";
+                }
                 else
+                {
                     kv.subKeyValues = kvList;
+                    if(kvList.Count == 0)
+                        kv.valueIsEmptyBlock = true;
+                }
             }            
             return kv;
         }
 
         public KeyValue FindSubKeyValue(string name)
         {
+            if(name == "*")
+                return subKeyValues[0];
             for(int i = 0; i < subKeyValues.Count; i++)
             {
                 if(subKeyValues[i].Key.ToLower() == name.ToLower())
@@ -257,10 +301,14 @@ namespace HudParse
 
         public KeyValue FindSubKeyValueIgnoreEndNr(string name)
         {
+            if(name == "*")
+                return subKeyValues[0];
+
+            name = Useful.StripEndNumbers(name);
+
             for(int i = 0; i < subKeyValues.Count; i++)
             {
-                string s = subKeyValues[i].Key.ToLower();
-                s = Useful.StripEndNumbers(s);
+                string s = subKeyValues[i].Key.ToLower();                
                 if(s == name.ToLower())
                     return subKeyValues[i];
             }

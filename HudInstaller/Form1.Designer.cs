@@ -35,7 +35,7 @@
             this.label_static_hud = new System.Windows.Forms.Label();
             this.button_MainInstallBrowse = new System.Windows.Forms.Button();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.textBox_MainInstallPath = new System.Windows.Forms.TextBox();
+            this.textBox_GameInstallPath = new System.Windows.Forms.TextBox();
             this.groupBox_HudInfo = new System.Windows.Forms.GroupBox();
             this.label_HudAuthor = new System.Windows.Forms.Label();
             this.linkLabel_HudWebsite = new System.Windows.Forms.LinkLabel();
@@ -156,7 +156,7 @@
             this.tab_Install.Controls.Add(this.label_static_hud);
             this.tab_Install.Controls.Add(this.button_MainInstallBrowse);
             this.tab_Install.Controls.Add(this.pictureBox2);
-            this.tab_Install.Controls.Add(this.textBox_MainInstallPath);
+            this.tab_Install.Controls.Add(this.textBox_GameInstallPath);
             this.tab_Install.Controls.Add(this.groupBox_HudInfo);
             this.tab_Install.Controls.Add(this.label_TF2Folder);
             this.tab_Install.Controls.Add(this.groupBox_InstallMode);
@@ -214,13 +214,13 @@
             this.pictureBox2.TabIndex = 20;
             this.pictureBox2.TabStop = false;
             // 
-            // textBox_MainInstallPath
+            // textBox_GameInstallPath
             // 
-            this.textBox_MainInstallPath.Location = new System.Drawing.Point(427, 203);
-            this.textBox_MainInstallPath.Name = "textBox_MainInstallPath";
-            this.textBox_MainInstallPath.Size = new System.Drawing.Size(168, 22);
-            this.textBox_MainInstallPath.TabIndex = 18;
-            this.textBox_MainInstallPath.TextChanged += new System.EventHandler(this.textBox_MainInstallPath_TextChanged);
+            this.textBox_GameInstallPath.Location = new System.Drawing.Point(427, 203);
+            this.textBox_GameInstallPath.Name = "textBox_GameInstallPath";
+            this.textBox_GameInstallPath.Size = new System.Drawing.Size(168, 22);
+            this.textBox_GameInstallPath.TabIndex = 18;
+            this.textBox_GameInstallPath.TextChanged += new System.EventHandler(this.textBox_MainInstallPath_TextChanged);
             // 
             // groupBox_HudInfo
             // 
@@ -935,8 +935,7 @@
             this.textBox_About.Size = new System.Drawing.Size(345, 230);
             this.textBox_About.TabIndex = 1;
             this.textBox_About.TabStop = false;
-            this.textBox_About.Text = "Hud Toolbox v1.0\r\nMade by Pumkin\r\nOr whatever other name I\'m using at the time.\r\n" +
-    "\r\nhttp://steamcommunity.com/groups/ivhud";
+            this.textBox_About.Text = resources.GetString("textBox_About.Text");
             // 
             // pictureBox_About_Logo
             // 
@@ -1186,7 +1185,7 @@
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Button button_MainInstallBrowseClear;
         private System.Windows.Forms.Button button_MainInstallBrowse;
-        private System.Windows.Forms.TextBox textBox_MainInstallPath;
+        private System.Windows.Forms.TextBox textBox_GameInstallPath;
         private System.Windows.Forms.Label label_TF2Folder;
         private System.Windows.Forms.FolderBrowserDialog folderBrowse_MainInstallPath;
         private System.Windows.Forms.Button button_Settings;

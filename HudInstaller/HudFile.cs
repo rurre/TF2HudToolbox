@@ -110,6 +110,8 @@ namespace HudParse
 
         public KeyValue FindKeyValue(string name)
         {
+            if(name == "*")
+                return keyValues[0];
             for(int i = 0; i < keyValues.Count; i++)
             {
                 if(keyValues[i].Key.ToLower() == name.ToLower())
@@ -120,10 +122,14 @@ namespace HudParse
 
         public KeyValue FindKeyValueIgnoreEndNr(string name)
         {
+            if(name == "*")
+                return keyValues[0];
+
+            name = Useful.StripEndNumbers(name);
+
             for(int i = 0; i < keyValues.Count; i++)
             {
-                string s = keyValues[i].Key.ToLower();
-                s = Useful.StripEndNumbers(s);
+                string s = keyValues[i].Key.ToLower();                
                 if(s == name.ToLower())
                     return keyValues[i];
             }

@@ -30,6 +30,7 @@
 	"button_FragmentLogoBrowse"			"~Browse Logo~"	
 	"button_CombineResultBrowseLogo"	"~Browse~"	
 	"button_MainCancel"					"~Cancel~"
+	"button_Combine"					"~Combine~"
 	
 	"tab_Install"						"~Install Hud~"
 	"tab_Fragment"						"~Create Blueprint~"

@@ -29,6 +29,7 @@
 	"button_FragmentMain"				"Create Blueprint"
 	"button_FragmentLogoBrowse"			"Browse Logo"	
 	"button_CombineResultBrowseLogo"	"Browse"	
+	"button_Combine"					"Combine"
 	"button_MainCancel"					"Cancel"
 	
 	"tab_Install"						"Install Hud"
@@ -92,5 +93,15 @@
 	"debug_testStringArray"					"ZERO - %0, ONE - %1, TWO - %2, THREE - %3"
 	"debug_testString"						"Test string - %0"
 
-	"hud_foundHudInfo"						"Found hudinfo.txt for %0"
+	"hud_foundHudInfo"						"Found hudinfo.res for %0"
+	"hud_hudInfoNotFound"					"Couldn't find hudinfo.res, using folder name for Hud name"
+	"hud_foundLogo"							"Found logo for %0"
+	"hud_logoNotFound"						"Couldn't find logo for %0. Using default"
+	
+	"parse_mainvpknotfound"					"%0/tf/tf2_misc_dir.vpk Not found"
+	"parse_cantContinue"					"Can't continue until the above issues are resolved"	
+	"parse_fragmentAttempt"				"Attempting to Create Hud Blueprint..."
+	"parse_installAttempt"					"Attempting to Install Hud..."
+	"parse_combineAttempt"					"Attempting to Combine Huds..."
+	"parse_parseAttempt"					"Attempting to parse Hud..."
 }

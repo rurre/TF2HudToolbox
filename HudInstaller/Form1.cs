@@ -14,12 +14,38 @@ namespace HudInstaller
 {
     public partial class MainForm : Form
     {
-        delegate void SetTextCallback(string s);
-        delegate void SetProgressBarMaxCallback(int i);
-        delegate void SetProgressBarValueCallback(int i);
+        public delegate void SetTextCallback(string s);
+        public delegate void SetProgressBarMaxCallback(int i);
+        public delegate void SetProgressBarValueCallback(int i);
 
         #region Variables        
-                
+
+        //Form controls
+        public static FolderBrowserDialog _folderBrowse_CombineHud1;
+        public static FolderBrowserDialog _folderBrowse_CombineHud2;
+        public static FolderBrowserDialog _folderBrowse_Fragment;
+        public static FolderBrowserDialog _folderBrowse_GameInstallPath;
+
+        public static OpenFileDialog _openFile_FragmentLogoBrowse;
+
+        public static TextBox _textBox_MainBrowse;
+        public static TextBox _textBox_GameInstallPath;
+        public static TextBox _textBox_Fragment_Browse;
+        public static TextBox _textBox_Fragment_Name;
+        public static TextBox _textBox_Fragment_Version;
+        public static TextBox _textBox_Fragment_Author;
+        public static TextBox _textBox_Fragment_Website;
+        public static TextBox _textBox_Fragment_Logo_Browse;
+        public static TextBox _textBox_Fragment_Main;
+
+        public static PictureBox _pictureBox_Fragment;
+
+        public static ProgressBar _progress;
+
+        //Static
+        public static Image _defaultLogo;
+
+        //Huds                
         Hud fragmentHud = new Hud();
         Hud defaultHud = new Hud();
         Hud combineHud1 = new Hud();
@@ -79,14 +105,36 @@ namespace HudInstaller
             string toolbox = resourceManager.GetObject("toolbox_english").ToString();
             localizationFile = HudFile.Parse(ref toolbox);
             if(localizationFile == null)
-                throw new Exception("localizationFile is empty!");            
+                throw new Exception("localizationFile is empty!");
+
+            _folderBrowse_CombineHud1 = folderBrowse_CombineHud1;
+            _folderBrowse_CombineHud2 = folderBrowse_CombineHud2;
+            _folderBrowse_Fragment = folderBrowse_Fragment;
+            _folderBrowse_GameInstallPath = folderBrowse_MainInstallPath;
+
+            _textBox_MainBrowse = textBox_MainBrowse;
+            _textBox_GameInstallPath = textBox_GameInstallPath;
+            _textBox_Fragment_Browse = textBox_FragmentHudBrowse;
+            _textBox_Fragment_Name = textBox_Fragment_Name;
+            _textBox_Fragment_Version = textBox_Fragment_Version;
+            _textBox_Fragment_Author = textBox_Fragment_Author;
+            _textBox_Fragment_Website = textBox_Fragment_Website;
+            _textBox_Fragment_Logo_Browse = textBox_Fragment_LogoBrowse;
+            _textBox_Fragment_Main = textBox_FragmentHudMain;
+            _pictureBox_Fragment = pictureBox_FragmentHudMain;
+
+            _openFile_FragmentLogoBrowse = openFile_FragmentLogoBrowse;    
+
+            _defaultLogo = (Image)resourceManager.GetObject("logo_default");
+
+            _progress = progressBar_Main;
         }
 
         private void mainForm_Load(object sender,EventArgs e)
         {
             resourceManager.IgnoreCase = true;
 
-            GetInstallPaths(folderBrowse_MainInstallPath,textBox_MainInstallPath);
+            GetInstallPaths(folderBrowse_MainInstallPath,textBox_GameInstallPath);
             Width = formSize.X;
             Height = formSize.Y;
             CenterForm(this);
@@ -101,7 +149,7 @@ namespace HudInstaller
 #if(DEBUG)
             WriteStatusString("debug_buildwarning");
             WriteStatusString("debug_testString", "REPLACED");
-            folderBrowse_Fragment.SelectedPath = "D:\\Desktop\\testhud\\";
+            folderBrowse_Fragment.SelectedPath = "D:\\Desktop\\testhud2\\";
             textBox_FragmentHudBrowse.Text = folderBrowse_Fragment.SelectedPath;
             tabControl_Main.SelectedIndex = 1;
 #endif
@@ -179,7 +227,7 @@ namespace HudInstaller
         }
 
         public void SetProgressBarValue(int i)
-        {
+        {            
             if(this.progressBar_Main.InvokeRequired)
             {
                 SetProgressBarValueCallback d = new SetProgressBarValueCallback(SetProgressBarValue);
@@ -373,64 +421,103 @@ namespace HudInstaller
 
         void CombineHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb,Hud hud)
         {
-            FragmentHudBrowse(fbd,tb,hudName,pb,hud,null,null,null,null,null);
+            FragmentHudBrowse(FragmentBrowseModes.combine);
         }
 
-        void FragmentHudBrowse(FolderBrowserDialog fbd,TextBox tb,TextBox hudName,PictureBox pb, Hud hud,TextBox resName,TextBox resVersion,TextBox resAuthor,TextBox resWebsite, TextBox resLogo)
+        enum FragmentBrowseModes { combine, fragment };
+
+        void FragmentHudBrowse(FragmentBrowseModes mode)
         {
+            FolderBrowserDialog fbd;
+            TextBox tb, resName, resVersion, resWebsite, resAuthor, resLogo;
+            Hud hud;
+            PictureBox pb;            
+
+            if(mode == FragmentBrowseModes.fragment)
+            {
+                fbd = _folderBrowse_Fragment;
+                tb = _textBox_Fragment_Browse;
+                hud = fragmentHud;
+                pb = _pictureBox_Fragment;
+
+                resName = _textBox_Fragment_Name;
+                resVersion = _textBox_Fragment_Version;
+                resWebsite = _textBox_Fragment_Website;
+                resAuthor = _textBox_Fragment_Author;
+                resLogo = _textBox_Fragment_Logo_Browse;
+            }
+            else
+                throw new Exception("Not yet");
+
             if(fbd.ShowDialog() == DialogResult.OK)
             {
                 tb.Text = fbd.SelectedPath;
 
-                if(File.Exists(fbd.SelectedPath + "\\hudinfo.txt"))
+                KeyValue res = null;
+                string hudName, hudAuthor, hudWebsite, hudVersion;
+                string s = fbd.SelectedPath.Remove(0,fbd.SelectedPath.LastIndexOf("\\")+1);
+
+                if(File.Exists(fbd.SelectedPath + "\\hudinfo.res"))
                 {
-                    //hud.Resource = ParseHudResource(fbd.SelectedPath + "\\hudinfo.txt");
-                    //hud.ApplyResource();
-                    //WriteStatusString("hud_foundhudinfo", hud.Name);                                     
+                    hud.ParseResource(fbd.SelectedPath + "\\hudinfo.res");
+                    res = hud.Resource.FindKeyValue("*");
+                    hudName = res.FindSubKeyValue("name").Value;
+                    hudAuthor = res.FindSubKeyValue("author").Value;
+                    hudWebsite = res.FindSubKeyValue("website").Value;
+                    hudVersion = res.FindSubKeyValue("version").Value;
+                    WriteStatusString("hud_foundhudinfo",hudName);
                 }
                 else
                 {
-                    WriteStatus("Couldn't find hudinfo.txt, using folder name for Hud name");
-                    string s = fbd.SelectedPath.Remove(0,fbd.SelectedPath.LastIndexOf("\\")+1);
-
-                    /*hud.Resource = new HudResourceFile("hudinfo","txt",fbd.SelectedPath,new List<KeyValue>()
+                    WriteStatusString("hud_hudInfoNotFound");
+                    hud.Resource = new HudFile(fbd.SelectedPath + "\\hudinfo.res",new List<KeyValue>()
                     {
-                        new KeyValue("name",s),
-                        new KeyValue("author","Unknown"),
-                        new KeyValue("version","Unknown"),
-                        new KeyValue("website","Unknown")                        
-                    });                    */
+                        new KeyValue("Hud", new List<KeyValue>()
+                        {
+                            new KeyValue("name",s),
+                            new KeyValue("author","Unknown"),
+                            new KeyValue("version","Unknown"),
+                            new KeyValue("website","Unknown")
+                        })
+                    });
+                    hudName = s;
+                    hudAuthor = "Unknown";
+                    hudVersion = "Unknown";
+                    hudWebsite = "Unknown";
                 }
-                //hudName.Text = hud.Resource.FindKeyValue("name").Value;                
-                //hud.FullName = fbd.SelectedPath;
+                _textBox_Fragment_Name.Text = hudName;
+                _textBox_Fragment_Main.Text = s;
 
                 var files = Directory.GetFiles(fbd.SelectedPath,"logo.*");
                 if(files.Length > 0)
                 {
-                    //WriteStatus("Found logo for " + hud.Resource.FindKeyValue("name").Value);
-                    //hud.SetLogo(Image.FromFile(files[0]));                    
+                    WriteStatusString("hud_foundlogo",hudName);
+                    SetLogo(ref hud,Image.FromFile(files[0]));
                 }
                 else
                 {
-                    //WriteStatus("Couldn't find logo for " + hud.Resource.FindKeyValue("name").Value + ", using default");
-                    //hud.SetDeafaultLogo();
+                    WriteStatusString("hud_logonotfound",hudName);
+                    SetDefaultLogo(ref hud);
                 }
-                //pb.Image = hud.Logo;
-                //WriteStatus("Path of " + hudName.Text + " is " + hud.Path);
 
-                /*if(resName != null)
-                    resName.Text = hud.Resource.FindKeyValue("name").Value;
-                if(resAuthor != null)
-                    resAuthor.Text = hud.Resource.FindKeyValue("author").Value;
-                if(resVersion != null)
-                    resVersion.Text = hud.Resource.FindKeyValue("version").Value;
-                if(resWebsite != null)
-                    resWebsite.Text = hud.Resource.FindKeyValue("website").Value;
                 if(resLogo != null)
                 {
                     if(files.Length > 0)
                         resLogo.Text = files[0];
-                }*/
+                }
+
+                pb.Image = hud.Logo;
+                WriteStatus("Path of " + hudName + " is " + tb.Text);
+
+                KeyValue hr = hud.Resource.FindKeyValue("*");
+                if(resName != null)
+                    resName.Text = hr.FindSubKeyValue("name").Value;
+                if(resAuthor != null)
+                    resAuthor.Text = hr.FindSubKeyValue("author").Value;
+                if(resVersion != null)
+                    resVersion.Text = hr.FindSubKeyValue("version").Value;
+                if(resWebsite != null)
+                    resWebsite.Text = hr.FindSubKeyValue("website").Value;
             }            
         }
 
@@ -451,21 +538,21 @@ namespace HudInstaller
 
         private void button_FragmentClearLogo_Click(object sender,EventArgs e)
         {
-            /*textBox_Fragment_LogoBrowse.Text = "";
-            openFile_FragmentLogoBrowse.FileName = null;
-            fragmentHud.SetDeafaultLogo();
-            pictureBox_FragmentHudMain.Image = fragmentHud.Logo;*/
+            _textBox_Fragment_Logo_Browse.Text = "";
+            _openFile_FragmentLogoBrowse.FileName = null;
+            SetDefaultLogo(ref fragmentHud);
+            _pictureBox_Fragment.Image = fragmentHud.Logo;
         }
 
         private void button_FragmentHudBrowse_Click(object sender,EventArgs e)
         {
-            /*FragmentHudBrowse(folderBrowse_Fragment,textBox_FragmentHudBrowse,textBox_FragmentHudMain,pictureBox_FragmentHudMain,fragmentHud,textBox_Fragment_Name,textBox_Fragment_Version,textBox_Fragment_Author,textBox_Fragment_Website,textBox_Fragment_LogoBrowse);
-            if(fragmentHud.HasDefaultLogo)
-            {
-                textBox_Fragment_LogoBrowse.Text = "";
-                openFile_FragmentLogoBrowse.FileName = "";
-            }
-            else textBox_Fragment_LogoBrowse.Text = openFile_FragmentLogoBrowse.FileName;*/
+            FragmentHudBrowse(FragmentBrowseModes.fragment);
+            //if(fragmentHud.HasDefaultLogo)
+            //{
+            //    textBox_Fragment_LogoBrowse.Text = "";
+            //   openFile_FragmentLogoBrowse.FileName = "";
+            //}
+            //else textBox_Fragment_LogoBrowse.Text = openFile_FragmentLogoBrowse.FileName;
         }
 
 #endregion
@@ -615,7 +702,7 @@ namespace HudInstaller
 
         private void textBox_MainInstallPath_TextChanged(object sender,EventArgs e)
         {
-            folderBrowse_MainInstallPath.SelectedPath = textBox_MainInstallPath.Text;
+            folderBrowse_MainInstallPath.SelectedPath = textBox_GameInstallPath.Text;
         }
 
 #endregion
@@ -624,7 +711,7 @@ namespace HudInstaller
         private void button_MainInstallBrowseClear_Click(object sender,EventArgs e)
         {
             folderBrowse_MainInstallPath.SelectedPath = null;
-            textBox_MainInstallPath.Text = "";
+            textBox_GameInstallPath.Text = "";
         }
 
         private void button_MainInstallBrowse_Click(object sender,EventArgs e)
@@ -632,7 +719,7 @@ namespace HudInstaller
             if(folderBrowse_MainInstallPath.ShowDialog() == DialogResult.OK)
             {                
                 gamePath = folderBrowse_MainInstallPath.SelectedPath;
-                textBox_MainInstallPath.Text = gamePath;
+                textBox_GameInstallPath.Text = gamePath;
             }
         }
 
@@ -659,15 +746,17 @@ namespace HudInstaller
         }
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
-        {            
-            if(!backgroundWorker.IsBusy)
+        {
+            /*if(!backgroundWorker.IsBusy)
             {
                 job = Jobs.Fragment;
                 working = true;
                 UpdateButtonState();
                 SetProgressBarValue(0);
                 backgroundWorker.RunWorkerAsync();
-            }
+            }*/
+            //GetDefaultHud();
+            Hud newHud = Hud.ParseHud(_folderBrowse_Fragment.SelectedPath);
         }
 
         void pr_OutputDataReceived(object sender,DataReceivedEventArgs e)
@@ -783,8 +872,8 @@ namespace HudInstaller
 
         private void GetDefaultHud()
         {            
-            /*Jobs oldJob = job;
-            Jobs newJob = Jobs.ParseDefaultHud;
+            Jobs oldJob = job;
+            job = Jobs.ParseDefaultHud;
                                      
             try
             {
@@ -799,16 +888,22 @@ namespace HudInstaller
                 Process proc = new Process();                
                 proc.StartInfo.FileName = applicationPath + "HLExtract.exe";
                 proc.StartInfo.Arguments = "-p \"" + gamePath + "\\tf\\tf2_misc_dir.vpk\" -d \"" + temp + "HudToolbox\\DefaultHud\"" + " -e \"resource\" -e \"scripts\" -v";
+#if DEBUG
                 proc.StartInfo.CreateNoWindow = false;
                 proc.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+#else
+                proc.StartInfo.CreateNoWindow = true;
+                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+#endif
                 proc.Start();
                 proc.WaitForExit();
+                                               
+                SetProgressBarMax(Useful.GetFiles(temp + "\\HudToolbox\\DefaultHud\\",SearchOption.AllDirectories,new string[] { "*" }).Length * 2);
 
+                WriteStatus("Got default Hud. Attempting to Parse");     
+                           
+                defaultHud = Hud.ParseHud(temp + "\\HudToolbox\\DefaultHud");
 
-                SetProgressBarMax(GetFiles(temp + "\\HudToolbox\\DefaultHud\\").Count*2);
-
-                WriteStatus("Got default Hud. Attempting to Parse");                
-                defaultHud = ParseHud(temp + "\\HudToolbox\\DefaultHud");
                 WriteStatus("Successfully Parsed Default Hud");
 
                 job = oldJob;
@@ -818,90 +913,70 @@ namespace HudInstaller
             {
                 defaultHudParsed = false;
                 throw e;                
-            }        */
+            }        
         }
 
 
         private void backgroundWorker_DoWork(object sender,System.ComponentModel.DoWorkEventArgs e)
         {
             if(!gameInstalled)
-            {
-                bool hlExtractFound = false;
-                bool vpkFound = false;
-                if(File.Exists(applicationPath + "\\HlExtract.exe") && File.Exists(applicationPath + "\\HLLib.dll"))
-                    hlExtractFound = true;
-                else
-                    WriteStatus("HLExtract.exe and/or HLLib.dll not found in " + applicationPath);
+            {                
+                bool vpkFound = false;             
 
                 if(File.Exists(folderBrowse_MainInstallPath.SelectedPath + "/tf/tf2_misc_dir.vpk"))
                     vpkFound = true;
                 else
-                    WriteStatus(gamePath + "/tf/tf2_misc_dir.vpk Not found");
+                    WriteStatusString("parse_mainVpkNotFound",gamePath);
 
-                if(!hlExtractFound || !vpkFound)
+                if(!vpkFound)
                 {
-                    WriteStatus("Can't continue until the above issues are resolved");
+                    WriteStatusString("parse_cantcontinue");
                     job = Jobs.Error;
                 }
-                else gameInstalled = true;
-            }
-
-            if(gameInstalled && !defaultHudParsed)
-            {                
-                GetDefaultHud();
+                else
+                    gameInstalled = true;
             }
 
             if(job == Jobs.Parse)
             {
-                WriteStatus("Attempting to parse Hud...");
+                WriteStatus("parse_parseAttempt");
                 WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
             }
             else if(job == Jobs.Combine)
             {
-                WriteStatus("Attempting to Combine Huds...");
+                WriteStatusString("parse_combineAttempt");
                 WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
             }
             else if(job == Jobs.Install)
             {
-                WriteStatus("Attempting to Install Hud...");
+                WriteStatusString("parse_installAttempt");
                 WriteStatus("This is just a mockup. It doesn't actually do anything yet.");
             }
             else if(job == Jobs.Fragment)
             {
-               /* if(folderBrowse_Fragment.SelectedPath != "")
+                if(folderBrowse_Fragment.SelectedPath != "")
                 {
-                    WriteStatus("Attempting to Create Hud Blueprint...");
+                    WriteStatusString("parse_fragmentAttempt");
                     Hud tempFragment = new Hud();
 
-                    //Set progress bar to length of nr of files in hud and increment bar by 1 after each file parsed
-                    var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
-                    var filesInThisFolder = Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*");
+                    //var allHudfiles =  Directory.GetFiles(folderBrowse_Fragment.SelectedPath, "*", SearchOption.AllDirectories);
+                    GetDefaultHud();
 
-                    SetProgressBarMax(GetFiles(folderBrowse_Fragment.SelectedPath,true).Count + defaultHud.FileCount);
-
-                    tempFragment = ParseHud(folderBrowse_Fragment.SelectedPath);
+                    var allHudFiles = Useful.GetFiles(folderBrowse_Fragment.SelectedPath, SearchOption.AllDirectories, new string[] { "res", "txt" });
+                    SetProgressBarMax(defaultHud.FileCount + allHudFiles.Length);
+                    tempFragment = Hud.ParseHud(folderBrowse_Fragment.SelectedPath);
                     tempFragment.Resource = fragmentHud.Resource;
-                    tempFragment.Path = fragmentHud.Path;
-                    if(!fragmentHud.HasDefaultLogo)
-                        tempFragment.Logo = fragmentHud.Logo;
 
-                    fragmentHud = tempFragment;
-                    fragmentHud.ApplyResource();
+                    tempFragment.Logo = fragmentHud.Logo;
 
-                    foreach(HudFolder folder in fragmentHud.m_FolderList)
-                    {
-                        foreach(HudFile file in folder.m_FileList)
-                        {
-                            //file.CheckIfDefault(
-                        }
-                    }
+                    fragmentHud = tempFragment;                    
                 }
                 else
                 {
                     WriteStatus("Select a Hud folder first");
                     silentCancel = true;
                     backgroundWorker.CancelAsync();
-                }*/
+                }
             }
             else if(job == Jobs.Error)
             {
@@ -1115,6 +1190,17 @@ namespace HudInstaller
                 }
             }
             return hf;*/            
+        }
+
+        void SetDefaultLogo(ref Hud hud)
+        {
+            hud.Logo = _defaultLogo;
+            hud.HasDefaultLogo = true;
+        }
+        void SetLogo(ref Hud hud,Image logo)
+        {
+            hud.Logo = logo;
+            hud.HasDefaultLogo = false;
         }
     }
 }

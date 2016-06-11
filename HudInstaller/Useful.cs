@@ -111,18 +111,35 @@ namespace HudParse
             {
                 if(s == "")
                     break;
+                if(s.Length > 2)
+                {
+                    if((s[0] == '/') && (s[1] == '/'))
+                    {
+                        file = file.Remove(0,file.IndexOf(Environment.NewLine) + Environment.NewLine.Length);
+                        s = file;
+                    }
+                }
+                
                 if(s[0] == '\"')
                 {
-                    if(spaceTerminates)
+                    if(s[1] != '\"')
                     {
-                        spaceTerminates = false;
-                        s = s.Remove(0,1);
+                        if(spaceTerminates)
+                        {
+                            spaceTerminates = false;
+                            s = s.Remove(0,1);
+                        }
+                        else
+                        {
+                            s = s.Remove(0,1);
+                            s = Useful.Seek(ref s);
+                            break;
+                        }
                     }
                     else
-                    {
-                        s = s.Remove(0,1);
-                        s = Useful.Seek(ref s);
-                        break;
+                    {                        
+                        file = file.Remove(0,2);
+                        return null;
                     }
                 }
 
@@ -189,7 +206,7 @@ namespace HudParse
         {
             var digits = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };            
             var result = s.TrimEnd(digits);
-            return s;
+            return result;
         }
     }
 }

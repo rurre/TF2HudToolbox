@@ -9,23 +9,50 @@ namespace HudParse
 {
     class HudFile
     {
-        string filePath;
+        string filePath,name;
         int errorId = -1;        
 
         List<KeyValue> keyValues = new List<KeyValue>();
 
-        string Path
+        public string Path
         {
             get
             {
                 return filePath;
             }
+            set
+            {
+                filePath = value;
+                name = value.Remove(0,value.LastIndexOf("\\") + 1);                
+            }
         }
-        int ErrorId
+
+        public string Folder
+        {
+            get
+            {
+                return Path.Remove(Path.Length - name.Length,name.Length);
+            }
+        }
+        public int ErrorId
         {
             get
             {
                 return errorId;
+            }
+        }
+        public List<KeyValue> KeyValues
+        {
+            get
+            {
+                return keyValues;
+            }
+        }
+        public string Name
+        {
+            get
+            {
+                return name;
             }
         }
 
@@ -34,14 +61,14 @@ namespace HudParse
         public HudFile(string path,List<KeyValue> kvList)
         {
             keyValues = kvList;
-            filePath = path;
+            Path = path;
         }
 
         public HudFile(string path)
         {
             HudFile hf = ParseFromPath(path);
             this.errorId = hf.errorId;
-            this.filePath = hf.filePath;
+            Path = hf.filePath;
             this.keyValues = hf.keyValues;            
         }
 
@@ -73,7 +100,7 @@ namespace HudParse
                 HudFile hf = new HudFile();
                 string file = System.IO.File.ReadAllText(path);
                 hf = Parse(ref file);
-                hf.filePath = path;
+                hf.Path = path;
 
                 return hf;
             }
@@ -134,6 +161,30 @@ namespace HudParse
                     return keyValues[i];
             }
             return null;
+        }
+
+        public bool Equals(HudFile hf)
+        {
+            if((hf == null) && (this == null))
+                return true;
+            else
+            {
+                foreach(KeyValue kv in keyValues)
+                {
+                    bool found = false;
+                    foreach(KeyValue kvv in hf.keyValues)
+                    {
+                        if(kv.Equals(kvv))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found)
+                        return false;
+                }
+                return true;
+            }
         }
     }
 }

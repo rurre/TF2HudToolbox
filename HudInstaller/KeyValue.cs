@@ -33,6 +33,13 @@ namespace HudParse
                 return value;
             }
         }
+        public List<KeyValue> SubKeyValues
+        {
+            get
+            {
+                return subKeyValues;
+            }
+        }
 
         private KeyValue()
         {
@@ -314,5 +321,50 @@ namespace HudParse
             }
             return null;
         }
+
+        public bool Equals(KeyValue kv)
+        {
+            if((kv == null) && (this == null))
+                return true;
+            else
+            {
+                foreach(KeyValue skv in subKeyValues)
+                {
+                    bool found = false;
+                    foreach(KeyValue skvv in kv.subKeyValues)
+                    {
+                        if(skv.Equals(skvv))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found)
+                        return false;
+                }
+                return true;
+            }
+        }
+
+
+        /*public override bool Equals(object obj)
+        {
+            if(obj == null)
+                return false;
+
+            KeyValue kv = null;
+
+            if(typeof(object) != typeof(KeyValue))
+                return false;
+            else
+                kv = (KeyValue)obj;            
+
+            
+            if((kv.key.ToLower() == this.key.ToLower()) &&
+                ((kv.value.ToLower() == this.value.ToLower())) && (kv.tag == this.tag))
+                return true;
+            else
+                return false;
+        }*/
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HudInstaller;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -94,6 +95,13 @@ namespace HudParse
                 return files.Count;
             }          
         }
+        public List<HudFile> Files
+        {
+            get
+            {
+                return files;
+            }
+        }
         
         //Constructors
         public Hud()
@@ -112,7 +120,7 @@ namespace HudParse
         }
 
         //Methods
-        public static Hud ParseHud(string filepath)
+        public static Hud ParseHud(string filepath, MainForm form = null)
         {
             Hud h = new Hud();
             h.hudPath = filepath;            
@@ -122,14 +130,32 @@ namespace HudParse
             {
                 if(folders[i].ToLower().EndsWith("\\resource") || (folders[i].ToLower().EndsWith("\\scripts")))
                 {
-                    var files = Useful.GetFiles(filepath, SearchOption.AllDirectories, new string[] { "res" });
+                    var files = Useful.GetFiles(filepath, SearchOption.AllDirectories, new string[] { "res" });                                    
                     for(int j = 0; j < files.Length; j++)
                     {
-                        HudFile hf = HudFile.ParseFromPath(files[i]);
+                        if(form != null)
+                            form.debugPrint("Attempting to parse " + files[i]);
+
+                        string temp = files[j].Remove(files[j].LastIndexOf("\\"), files[j].Length - files[j].LastIndexOf("\\"));
+
+                        if(temp == filepath)
+                            continue;   //Later make it copy over the file instead
+
+                        HudFile hf = HudFile.ParseFromPath(files[j]);
+                        
                         if(hf != null)
                         {
                             h.files.Add(hf);
-                            //HudInstaller.MainForm._progress.Value = HudInstaller.MainForm._progress.Value++;
+                            if(form != null)
+                            {
+                                form.IncrementProgressBarValue();
+                                form.debugPrint("Successfully parsed " + files[j]);
+                            }
+                        }
+                        else
+                        {
+                            if(form != null)
+                                form.debugPrint("Parsed " + files[j] + " but got null");
                         }
                     }
                 }
@@ -173,6 +199,16 @@ namespace HudParse
         {
             if(File.Exists(filepath))
                 Resource = HudFile.ParseFromPath(filepath);
-        }        
+        }
+
+        public HudFile FindFile(string name)
+        {
+            foreach(HudFile hf in files)
+            {
+                if(hf.Name.ToLower() == name.ToLower())
+                    return hf;
+            }
+            return null;
+        }     
     }
 }

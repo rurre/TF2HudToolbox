@@ -93,6 +93,14 @@ namespace HudParse
             return s;
         }
 
+        public void SaveToFolder(string folderPath)
+        {
+            if(!Directory.Exists(folderPath + Folder))
+                Directory.CreateDirectory(folderPath + Folder);
+
+            System.IO.File.WriteAllText(folderPath + filePath, this.ToString());            
+        }
+
         public static HudFile ParseFromPath(string path)
         {
             try
@@ -184,6 +192,29 @@ namespace HudParse
                         return false;
                 }
                 return true;
+            }
+        }
+
+        public void StripSameValues(HudFile hf)
+        {
+            foreach(KeyValue kv in keyValues)
+            {
+                KeyValue temp;
+                if((temp = hf.FindKeyValue(kv.Key)) != null)
+                    kv.StripSameValues(temp);                
+            }
+            RemoveNullKeys();
+        }
+
+        public void RemoveNullKeys()
+        {
+            for(int i = keyValues.Count - 1; i >= 0; i--)
+            {
+                if(keyValues[i].SubKeyValues.Count > 0)
+                    keyValues[i].RemoveNullSubKeys();
+                else
+                    if(keyValues[i].Key == null)
+                        keyValues.RemoveAt(i);
             }
         }
     }

@@ -32,6 +32,21 @@ namespace HudParse
             {
                 return value;
             }
+            set
+            {
+                this.value = value;
+            }
+        }
+
+        public bool HasSubkeys
+        {
+            get
+            {
+                if(subKeyValues.Count == 0)
+                    return false;
+                else
+                    return true;
+            }
         }
         public List<KeyValue> SubKeyValues
         {
@@ -298,6 +313,9 @@ namespace HudParse
         {
             if(name == "*")
                 return subKeyValues[0];
+            else if(name == null)
+                return null;
+
             for(int i = 0; i < subKeyValues.Count; i++)
             {
                 if(subKeyValues[i].Key.ToLower() == name.ToLower())
@@ -328,24 +346,183 @@ namespace HudParse
                 return true;
             else
             {
-                foreach(KeyValue skv in subKeyValues)
+                if(subKeyValues.Count != kv.SubKeyValues.Count)
+                    return false;
+
+                if((subKeyValues.Count == 0) && (kv.subKeyValues.Count == 0))
                 {
-                    bool found = false;
-                    foreach(KeyValue skvv in kv.subKeyValues)
+                    if(this.key.ToLower() == kv.key.ToLower())
                     {
-                        if(skv.Equals(skvv))
+                        if((this.value == "") && (kv.value == ""))
                         {
-                            found = true;
-                            break;
+                            if((this.tag != null) && (kv.tag != null))
+                            {
+                                if(this.tag.ToLower() == kv.tag.ToLower())
+                                    return true;
+                                else
+                                    return false;
+                            }
+                            else if((this.tag == null) && (kv.tag == null))
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
                         }
+                        else
+                        {
+                            if((this.value != null) && (kv.value != null))
+                            {
+                                if(this.value.ToLower() == kv.value.ToLower())
+                                {
+                                    if((this.tag != null) && (kv.tag != null))
+                                    {
+                                        if(this.tag.ToLower() == kv.tag.ToLower())
+                                            return true;
+                                        else
+                                            return false;
+                                    }
+                                    else if((this.tag == null) && (kv.tag == null))
+                                    {
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                if((this.tag != null) && (kv.tag != null))
+                                {
+                                    if(this.tag.ToLower() == kv.tag.ToLower())
+                                        return true;
+                                    else
+                                        return false;
+                                }
+                                else if((this.tag == null) && (kv.tag == null))
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                        }                        
                     }
-                    if(!found)
+                    else
+                    {
                         return false;
+                    }
                 }
-                return true;
+                else
+                {
+                    foreach(KeyValue skv in subKeyValues)
+                    {
+                        bool found = false;
+                        foreach(KeyValue skvv in kv.subKeyValues)
+                        {
+                            if(skv.Equals(skvv))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found)
+                            return false;
+                    }
+                    return true;
+                }
             }
         }
 
+
+        public void ReplaceValues(KeyValue kv)
+        {
+            if(kv.subKeyValues.Count == 0)
+            {
+                value = kv.value;
+            }
+            else
+            {
+                KeyValue kvv;
+                KeyValue kvvv;
+                for(int i = 0; i < kv.subKeyValues.Count; i++)
+                {
+                    kvv = kv.subKeyValues[i];
+                    if((kvvv = FindSubKeyValue(kvv.key)) != null)                    
+                        if(!kvv.Equals(kvvv))
+                            kvvv.ReplaceValues(kvv);                    
+                }
+                value = null;
+            }
+        }
+
+        public void StripSameValues(KeyValue kv)
+        {
+            KeyValue kvv;       //Default kv subkeyvalue
+            KeyValue kvvv;      //Custom hud keyvalue
+            bool toClear = false;
+
+            if(kv.subKeyValues.Count > 0)
+            {
+                for(int i = 0; i < kv.subKeyValues.Count; i++)
+                {
+                    kvv = kv.subKeyValues[i];
+                    if((kvvv = FindSubKeyValue(kvv.key)) != null)
+                        if(kvv.Equals(kvvv))
+                            SubKeyValues.Remove(kvvv);
+                        else
+                        {
+                            if(kvvv.SubKeyValues.Count > 0)
+                            {
+                                foreach(KeyValue kk in kvvv.SubKeyValues)
+                                {
+                                    KeyValue defKv = kvv.FindSubKeyValue(kk.key);
+                                    if(defKv == null)
+                                        continue;
+                                    kk.StripSameValues(defKv);
+                                }
+                            }
+                        }
+                }
+                if((value == null) && (!HasSubkeys) && (!valueIsEmptyBlock))
+                    toClear = true;
+            }
+            else
+            {
+                if(this.Equals(kv))                
+                    toClear = true;                
+            }
+            if(toClear)
+            {
+                key = null;
+                value = null;
+                valueIsEmptyBlock = false;
+                subKeyValues.Clear();                
+            }
+
+            RemoveNullSubKeys();
+        }
+
+        public void RemoveNullSubKeys()
+        {
+            for(int i = subKeyValues.Count - 1; i >= 0; i--)
+            {
+                if(subKeyValues[i].subKeyValues.Count > 0)
+                    subKeyValues[i].RemoveNullSubKeys();
+                else if(subKeyValues[i].Key == null)
+                    subKeyValues.RemoveAt(i);
+            }
+        }
 
         /*public override bool Equals(object obj)
         {

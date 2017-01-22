@@ -117,20 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBox_About.Text" xml:space="preserve">
-    <value>Hud Toolbox v0.1 Beta
-Made by Pumkin
-Or whatever other name I'm using at the time.
-
-http://steamcommunity.com/groups/ivhud
-
-HLLib.NET
- &amp; HLExtract by:
-Ryan Gregg 
-Michael Mohr (Linux Port)
-
-http://nemesis.thewavelength.net/</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="PictureBox_HudThumb.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -2482,6 +2468,20 @@ http://nemesis.thewavelength.net/</value>
         DYqIiIhn//2//n89gyzUevYiswAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="textBox_About.Text" xml:space="preserve">
+    <value>Hud Toolbox v0.1 Beta
+Made by Pumkin
+Or whatever other name I'm using at the time.
+
+http://steamcommunity.com/groups/ivhud
+
+HLLib.NET
+ &amp; HLExtract by:
+Ryan Gregg 
+Michael Mohr (Linux Port)
+
+http://nemesis.thewavelength.net/</value>
+  </data>
   <metadata name="folderBrowse_CombineHud1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
@@ -2498,7 +2498,10 @@ http://nemesis.thewavelength.net/</value>
     <value>1006, 17</value>
   </metadata>
   <metadata name="backgroundWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 60</value>
+    <value>17, 56</value>
+  </metadata>
+  <metadata name="saveFile_FragmentHud.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>1218, 17</value>
   </metadata>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

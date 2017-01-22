@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO.Compression;
 
 namespace HudParse
 {
@@ -134,7 +135,7 @@ namespace HudParse
                     for(int j = 0; j < files.Length; j++)
                     {
                         if(form != null)
-                            form.debugPrint("Attempting to parse " + files[i]);
+                            form.debugPrint("Attempting to parse " + files[j]);
 
                         string temp = files[j].Remove(files[j].LastIndexOf("\\"), files[j].Length - files[j].LastIndexOf("\\"));
 
@@ -145,6 +146,7 @@ namespace HudParse
                         
                         if(hf != null)
                         {
+                            hf.MakeFilePathsRelative(h.hudPath);
                             h.files.Add(hf);
                             if(form != null)
                             {
@@ -159,11 +161,6 @@ namespace HudParse
                         }
                     }
                 }
-            }
-
-            foreach(HudFile f in h.files)
-            {
-                f.MakeFilePathsRelative(h.hudPath);
             }
             return h;           
         }
@@ -209,6 +206,47 @@ namespace HudParse
                     return hf;
             }
             return null;
-        }     
+        }
+
+        public void SaveToFolder(string folderPath)
+        {
+            try
+            {
+                string temp = HudInstaller.MainForm.tempDirectoryPath;
+                if(Directory.Exists(temp + "HudToolbox\\SavedHud"))
+                    Directory.Delete(temp + "HudToolbox\\SavedHud",true);
+                Directory.CreateDirectory(temp + "HudToolbox\\SavedHud");
+
+                resource.MakeFilePathsRelative(hudPath);
+                resource.SaveToFolder(folderPath + "\\SavedHud");
+                logo.Save(folderPath + "\\SavedHud\\logo.png");
+                foreach(HudFile f in files)
+                {
+                    f.SaveToFolder(folderPath + "\\SavedHud");
+                }
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public string SaveFragmentToFolder(string folderPath)
+        {
+            string zip = folderPath +"\\" + Name + "_blueprint.blu";
+            try
+            {
+                SaveToFolder(folderPath);                
+                if(File.Exists(zip))
+                    File.Delete(zip);
+
+                ZipFile.CreateFromDirectory(folderPath + "\\SavedHud",zip);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+            return zip;
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace HudInstaller
         public static FolderBrowserDialog _folderBrowse_GameInstallPath;
 
         public static OpenFileDialog _openFile_FragmentLogoBrowse;
+        public static SaveFileDialog _saveFile_FragmentHud;
 
         public static TextBox _textBox_MainBrowse;
         public static TextBox _textBox_GameInstallPath;
@@ -46,6 +47,13 @@ namespace HudInstaller
 
         //Static
         public static Image _defaultLogo;
+        public static string tempDirectoryPath;
+
+        static Point formSize = new Point(497, 500);    //Different from designer value!!
+        SettingsForm Settings = new SettingsForm();
+        static ResourceManager resourceManager = Properties.Resources.ResourceManager;
+
+        static HudFile localizationFile = null;
 
         //Huds                
         Hud fragmentHud = new Hud();
@@ -66,12 +74,9 @@ namespace HudInstaller
 
         string applicationPath = AppDomain.CurrentDomain.BaseDirectory;
 
-        static Point formSize = new Point(497, 500);    //Different from designer value!!
-        SettingsForm Settings = new SettingsForm();
-        static ResourceManager resourceManager = Properties.Resources.ResourceManager;
+        string fragmentSavePath;
+        string fragmentTempPath;
 
-        static HudFile localizationFile = null;
-                       
 
 #if DEBUG
         public enum Languages { English, Test };
@@ -125,11 +130,15 @@ namespace HudInstaller
             _textBox_Fragment_Main = textBox_FragmentHudMain;
             _pictureBox_Fragment = pictureBox_FragmentHudMain;
 
+            _saveFile_FragmentHud = saveFile_FragmentHud;
+
             _openFile_FragmentLogoBrowse = openFile_FragmentLogoBrowse;    
 
             _defaultLogo = (Image)resourceManager.GetObject("logo_default");
 
             _progress = progressBar_Main;
+
+            tempDirectoryPath = System.IO.Path.GetTempPath();
         }
 
         private void mainForm_Load(object sender,EventArgs e)
@@ -147,7 +156,7 @@ namespace HudInstaller
             ClearLabel(ref linkLabel_HudWebsite);
 
             SetLanguageDefault();
-
+            
 #if(DEBUG)
             WriteStatusString("debug_buildwarning");
             WriteStatusString("debug_testString", "REPLACED");
@@ -766,14 +775,20 @@ namespace HudInstaller
 
         private void button_FragmentMain_Click(object sender,EventArgs e)
         {
-            if(!backgroundWorker.IsBusy)
-            {
-                job = Jobs.Fragment;
-                working = true;
-                UpdateButtonState();
-                SetProgressBarValue(0);
-                backgroundWorker.RunWorkerAsync();
+            _saveFile_FragmentHud.FileName = _textBox_Fragment_Name.Text;
+            if(_saveFile_FragmentHud.ShowDialog() == DialogResult.OK)
+            {                
+                fragmentSavePath = _saveFile_FragmentHud.FileName;
+                if(!backgroundWorker.IsBusy)
+                {
+                    job = Jobs.Fragment;
+                    working = true;
+                    UpdateButtonState();
+                    SetProgressBarValue(0);
+                    backgroundWorker.RunWorkerAsync();
+                }
             }
+                        
            //Hud newHud = Hud.ParseHud(_folderBrowse_Fragment.SelectedPath);
            //GetDefaultHud(newHud);
         }
@@ -901,7 +916,8 @@ namespace HudInstaller
                 string temp = System.IO.Path.GetTempPath();
 
                 if(Directory.Exists(temp + "HudToolbox\\DefaultHud"))
-                    Directory.Delete(temp + "HudToolbox\\DefaultHud",true);                                
+                    Directory.Delete(temp + "HudToolbox\\DefaultHud",true);
+                Directory.CreateDirectory(temp + "HudToolbox\\DefaultHud");
 
                 Process proc = new Process();                
                 proc.StartInfo.FileName = applicationPath + "HLExtract.exe";
@@ -925,8 +941,7 @@ namespace HudInstaller
                 proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
 #endif
                 proc.StartInfo.Arguments = "-p \"" + gamePath + "\\tf\\tf2_misc_dir.vpk\" -d \"" + temp + "HudToolbox\\DefaultHud\"" + files;
-
-                Directory.CreateDirectory(temp + "HudToolbox\\DefaultHud");
+                
 
                 proc.Start();
                 proc.WaitForExit();
@@ -950,7 +965,8 @@ namespace HudInstaller
                            
                 defaultHud = Hud.ParseHud(temp + "\\HudToolbox\\DefaultHud",this);
 
-                WriteStatus("Successfully Parsed Default Hud");
+                if(defaultHud.FileCount != 0)
+                    WriteStatus("Successfully Parsed Default Hud");
 
                 job = oldJob;
                 defaultHudParsed = true;
@@ -958,7 +974,9 @@ namespace HudInstaller
             catch(Exception e)
             {
                 defaultHudParsed = false;
-                throw e;                
+
+                if(e.Message != "The directory is not empty.\r\n")
+                    throw e;                
             }        
         }
 
@@ -1018,19 +1036,28 @@ namespace HudInstaller
                     GetDefaultHud(tempFragment);
 
                     tempFragment.Logo = fragmentHud.Logo;
-                    foreach(HudFile f in tempFragment.Files)
+                    for(int i = 0; i < tempFragment.Files.Count; i++)
                     {
                         HudFile df;
+                        HudFile f = tempFragment.Files[i];
                         if((df = defaultHud.FindFile(f.Name)) != null)
                         {
                             if(f.Equals(df))
+                            {
                                 debugPrint(df.Name + " is equal to " + f.Name);
-                                //DO STUFF HERE
+                                debugPrint("Removed " + f.Name + " from fragmentHud");
+                                tempFragment.Files.RemoveAt(i);
+                            }
                             else
-                                debugPrint(df.Name + " is not equal to " + f.Name);
+                            {
+                                debugPrint("-------- " + df.Name + " is not equal to default" + f.Name + ", stripping off same values.");
+                                f.StripSameValues(df);                                
+                            }
                         }
                     }
                     fragmentHud = tempFragment;
+                    //fragmentHud.SaveToFolder(tempDirectoryPath + "HudToolbox\\SavedHud");
+                    fragmentTempPath = (fragmentHud.SaveFragmentToFolder(tempDirectoryPath + "HudToolbox"));                    
                 }
                 else
                 {
@@ -1076,6 +1103,9 @@ namespace HudInstaller
                         case (Jobs.Install):
                             WriteStatus("Cancelled Hud Install");
                             break;
+                        case (Jobs.ParseDefaultHud):
+                            WriteStatus("Cancelled Parsing of default Hud");
+                            break;
                         default:
                             throw new Exception("backgroundWorker stopped working but job wasn't reported");
                     }
@@ -1110,13 +1140,24 @@ namespace HudInstaller
                         //WriteStatus("Successfully Combined Huds " + combineHud1.Name + " and " + combineHud2.Name);
                         break;
                     case (Jobs.Fragment):
-                        //WriteStatus("Successfully created Blueprint from " + fragmentHud.Name);
-                        break;
+                        {
+                            if(File.Exists(fragmentSavePath))
+                                File.Delete(fragmentSavePath);
+
+                            File.Move(fragmentTempPath,fragmentSavePath);
+                            _textBox_MainBrowse.Text = fragmentSavePath;
+
+                            WriteStatus("Successfully created Blueprint from " + fragmentHud.Name);
+                            break;
+                        }
                     case (Jobs.Parse):
                         WriteStatus("Successfully completed Parsing Hud");
                         break;
                     case (Jobs.Install):
                         WriteStatus("Succesfully Installed Hud");
+                        break;
+                    case (Jobs.ParseDefaultHud):
+                        WriteStatus("Successfully Parsed default Hud");
                         break;
                     case (Jobs.Error):
                     break;
